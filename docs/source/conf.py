@@ -25,8 +25,8 @@ sys.path.append('/home/huardda/repos/fortrandoc')
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-#extensions = ['mathpng']
-extensions = ['sphinx.ext.pngmath', 'fortrandoc']#'sphinx.ext.autodoc']
+# extensions = ['mathpng']
+# extensions = ['sphinx.ext.pngmath', 'fortrandoc']#'sphinx.ext.autodoc']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
@@ -161,7 +161,7 @@ latex_documents = [
 #latex_use_parts = False
 
 # Additional stuff for the LaTeX preamble.
-latex_preamble = '\usepackage{amsmath}'
+# latex_preamble = '\usepackage{amsmath}'
 
 # Documents to append as an appendix to all manuals.
 #latex_appendices = []

@@ -81,6 +81,7 @@
          write (filename, '("output/sea_ice_volume.",i2.2)') expno
          open (10, file = filename, status = 'unknown')
          write(10,10) year, month, day, VOL
+         close(10)
       endif
 
 10 format (i4.4, i2.2, i2.2, f8.4)

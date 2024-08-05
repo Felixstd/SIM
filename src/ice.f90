@@ -161,6 +161,7 @@ PROGRAM ice
          print *, 'postdate ', datetime_str(post_date(i))
       END DO
 
+
       startdate =  datetime_str_6(start_date)
       enddate =   datetime_str_6(end_date)
       ! e.g. start_date = 1990-01-01-00-00, startdate = 010190 (old stuff)
@@ -177,7 +178,7 @@ PROGRAM ice
       if (Deltat .ge. 1) then
          date_step = delta_init(seconds=int(Deltat))
       else
-	 date_step = delta_init(millis=int(Deltat*1000))
+	      date_step = delta_init(millis=int(Deltat*1000))
       endif
 
          
@@ -185,10 +186,36 @@ PROGRAM ice
       call ocn_Tclim                 ! load monthly clim ocean T
       call ini_get (restart, expno_r,restart_date)! ini conds
 
+      if ( Rheology .eq. 4 ) then
+         if (restart .eq. 1) then
+            call initial_conditions_muPhi
+            call shear(uice, vice)
+            call inertial_number
+            call angle_friction_mu()
+            call dilatancy()
+         endif
+         if (uniaxial) then
+            call initial_conditions_uniaxial
+            call Ice_strength
+            call shear(uice, vice)
+         endif
+         ! else
+         ! call Ice_strength()
+            ! call shear(uice, vice)
+            ! call inertial_number
+            ! call angle_friction_mu()
+            ! call dilatancy()
+         
+         ! endif
+      endif
+
+      call sea_ice_post(now_date, expno)
+      call stress_strain(uice, vice, now_date, k, expno)
+      
+      ! print *, 'calc_month_mean', calc_month_mean
 !------------------------------------------------------------------------
 !     Allocate variables to calc monthly mean fields if specified by user
 !------------------------------------------------------------------------
-
       if ( calc_month_mean ) then
 
          m_current = start_date%month ! current month of mean fields
@@ -230,10 +257,12 @@ PROGRAM ice
     
          call stepper (now_date, tstep, expno)
 
+
          if (tstep .eq. 1) call info_file (expno)
          if (now_date .eq. post_date(k)) then
             write(*,*) k, ' -- Calling sea-ice_post'
             call sea_ice_post (now_date, expno)
+            call stress_strain(uice, vice, now_date, k, expno)
             k = k + 1
          endif
 

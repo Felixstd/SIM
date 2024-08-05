@@ -1,0 +1,9 @@
+This folder contains python routines for plots based on SIM outputs. 
+
+Please provide details on how to use a routine at the top of the .py file.
+
+-------------------------------------------------------------------------
+
+sig_map_plot.py: plots 2D field of stress invariants (p and q). 
+
+calc_extent_volume.py: calculates extent and volume over the whole domain.

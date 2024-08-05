@@ -33,9 +33,12 @@
       type(datetime_type), intent(in) :: date
       
       integer, intent(in) :: expno
-      integer i, j, k, kk, year, month, day, hour, minute
+      integer i, j, k, kk, year, month, day, hour, minute, second
 
-      character filename*32
+      ! character directory*32
+
+      ! character filename*34
+      character filename*64
 
       double precision hactual(0:nx+1,0:ny+1)
 
@@ -44,60 +47,102 @@
       day = date%day
       hour = date%hour
       minute = date%minute
+      second = date%second
+
+      ! directory = "/storage/fstdenis/Mu_Phi//storage/fstdenis/output_sim/"
+
+
      
-      write (filename,'("output/h",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
-           year, month, day, hour, minute, expno
+      write (filename,'("/storage/fstdenis/output_sim/h",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+           year, month, day, hour, minute, second, expno
       open (10, file = filename, status = 'unknown')
 
-      write (filename,'("output/A",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
-           year, month, day, hour, minute, expno
+      write (filename,'("/storage/fstdenis/output_sim/A",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+           year, month, day, hour, minute, second, expno
       open (11, file = filename, status = 'unknown')
 
       if ( Dynamic ) then
 
-         write (filename,'("output/u",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
-              year, month, day, hour, minute, expno
+         write (filename,'("/storage/fstdenis/output_sim/u",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
          open (12, file = filename, status = 'unknown')
-         
-         write (filename,'("output/v",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
-              year, month, day, hour, minute, expno
+
+         write (filename,'("/storage/fstdenis/output_sim/v",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
          open (13, file = filename, status = 'unknown')
+
+         write (filename,'("/storage/fstdenis/output_sim/p",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
+         open (14, file = filename, status = 'unknown')
+
+         write (filename,'("/storage/fstdenis/output_sim/e_II",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
+         open (15, file = filename, status = 'unknown')
+
+         write (filename,'("/storage/fstdenis/output_sim/eta",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
+         open (41, file = filename, status = 'unknown')
+
+         write (filename,'("/storage/fstdenis/output_sim/zeta",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
+         open (42, file = filename, status = 'unknown')
 
       endif
 
       if ( Thermodyn ) then
 
-         write (filename,'("output/Ta",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
-              year, month, day, hour, minute, expno
+         write (filename,'("/storage/fstdenis/output_sim/Ta",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+               year, month, day, hour, minute, second, expno
          open (20, file = filename, status = 'unknown')
 
-         write (filename,'("output/To",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
-              year, month, day, hour, minute, expno
+         write (filename,'("/storage/fstdenis/output_sim/To",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
          open (21, file = filename, status = 'unknown')
 
-         write (filename,'("output/Ti",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
-              year, month, day, hour, minute, expno
+         write (filename,'("/storage/fstdenis/output_sim/Ti",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
          open (22, file = filename, status = 'unknown')
 
-         write (filename,'("output/Pvap",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
-              year, month, day, hour, minute, expno
+         write (filename,'("/storage/fstdenis/output_sim/Pvap",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
          open (24, file = filename, status = 'unknown')
 
-         write (filename,'("output/Qsh_io",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
-              year, month, day, hour, minute, expno
+         write (filename,'("/storage/fstdenis/output_sim/Qsh_io",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)')&
+              year, month, day, hour, minute, second, expno
          open (31, file = filename, status = 'unknown')
 
-         write (filename,'("output/Qoa",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
-              year, month, day, hour, minute, expno
+         write (filename,'("/storage/fstdenis/output_sim/Qoa",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
          open (33, file = filename, status = 'unknown')
 
       endif
 
       if ( BuoyTrack) then
 
-         write (filename,'("output/Tracer",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
-              year, month, day, hour, minute, expno
-         open (35, file = filename, status = 'unknown')
+         ! write (filename,'("/storage/fstdenis/output_sim/Tracer",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+         !      year, month, day, hour, minute, expno
+         ! open (35, file = filename, status = 'unknown')
+      
+      endif
+
+      if (Rheology .eq. 4) then
+         write (filename,'("/storage/fstdenis/output_sim/I",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
+         open (36, file = filename, status = 'unknown')
+
+         write (filename,'("/storage/fstdenis/output_sim/phi_I",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
+         open (40, file = filename, status = 'unknown')
+
+         write (filename,'("/storage/fstdenis/output_sim/mu_I",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
+         open (38, file = filename, status = 'unknown')
+
+
+         write (filename,'("/storage/fstdenis/output_sim/Peq",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
+         open (39, file = filename, status = 'unknown')
+
 
       endif
 
@@ -114,27 +159,34 @@
       enddo
 
       do j = 0, ny+1
-         write(10,10) ( h(i,j),       i = 0, nx+1 )
-         write(11,10) ( A(i,j),       i = 0, nx+1 )
+         write(10,*) ( h(i,j),       i = 0, nx+1 )
+         write(11,*) ( A(i,j),       i = 0, nx+1 )
       enddo
 
 
       if ( Dynamic ) then
 
-         do j = 1, ny
-            write(12,20) ( uice(i,j), i = 1, nx+1 )
+         ! do j = 1, ny
+         do j = 0, ny+1
+            write(12,*) ( uice(i,j), i = 1, nx+1 )
 !            write(17,20) ( uwatnd(i,j), i = 1, nx+1 )
          enddo
 
          do j = 0, ny+1
-!            write(15,30) ( etaC(i,j), i = 0, nx+1 )
-!            write(38,30) ( zetaC(i,j), i = 0, nx+1 )
+           write(41,*) ( etaC(i,j), i = 0, nx+1 )
+           write(42,*) ( zetaC(i,j), i = 0, nx+1 )
          enddo
 
-         do j = 1, ny+1
-            write(13,10) ( vice(i,j), i = 1, nx )
+         do j = 0, ny+1
+            write(13,*) ( vice(i,j), i = 1, nx+1 )
 !            write(18,10) ( vwatnd(i,j), i = 1, nx )
          enddo
+
+!          do j = 1, ny+1
+!             write(14,*) ( P(i,j), i = 1, nx )
+! !            write(18,10) ( vwatnd(i,j), i = 1, nx )
+!          enddo
+
 
       endif
 
@@ -174,8 +226,24 @@
          enddo
       endif
 
+      if (Rheology .eq. 4 ) then
+         do j = 0, ny+1
+            write(36,*) ( inertial(i,j), i = 0, nx+1)
+            write(40,*) ( Phi_I(i,j), i = 0, nx+1)
+            write(38,*) ( mu_I(i,j), i = 0, nx+1)
+            write(14,*) ( Pp(i,j), i = 0, nx+1)
+            write(39,*) ( Peq(i,j), i = 0, nx+1)
+            write(15,*) (shear_I(i, j), i = 0, nx+1)
+            write(41,*) (etaC(i, j), i = 0, nx+1)
+         enddo
+         
+         ! do j = 0, ny+1
+            
+         ! enddo
+      
+      endif
 
-      do k = 9, 37
+      do k = 9, 41
          close(k)
       enddo
 
@@ -202,11 +270,11 @@ subroutine info_file (expno)
   include 'CB_const.h'
   include 'CB_options.h'
 
-  character filename*30
+  character filename*38
 
   integer, intent(in) :: expno
 
-  write (filename, '("output/info.",i2.2)') expno
+  write (filename, '("/storage/fstdenis/output_sim/info.",i2.2)') expno
   open (10, file = filename, status = 'unknown')
 
   write(10,*) ('PHYSICAL PARAMETERS')

@@ -20,6 +20,7 @@
 
         use ellipse
         use elastic
+        use muphi
         use ice_albedo
         use numerical_VP
         use numerical_EVP
@@ -82,6 +83,7 @@
       theta_cor = datan(sin(phi*pi/180d0))*180d0/pi  ! Stress correction path angle if using generalized MEB
 
 
+
 !------------------------------------------------------------------------
 !     set run parameters (dynamic - thermodynamic - options - domain)
 !------------------------------------------------------------------------
@@ -130,6 +132,7 @@
       OcnTemp    = 'calculated'      ! MonthlyClim, specified,calculated
       calc_month_mean = .false.      ! to calc monthly mean fields
       runoff     = .false.
+      uniaxial   = .false.
         
 !------------------------------------------------------------------------
 !     Grid parameters: resolution
@@ -144,7 +147,20 @@
       elseif  ((nx == 63) .and. (ny == 53)) then
          Deltax     =  80d03           ! Pan-Arctic 80km
       elseif ((nx == 100) .and. (ny == 250)) then
-         Deltax     =  1d03            ! Uniaxial loading (Ringeisen et al., 2019). 
+         ! Deltax     =  2.5d01            ! Uniaxial loading (Ringeisen et al., 2019).
+         Deltax     = 1d02
+         ! Deltax     = 1d03
+      elseif ((nx == 200) .and. (ny == 500)) then
+         ! Deltax     =  1d03       / 10     ! Uniaxial loading (Ringeisen et al., 2019).
+         Deltax     = 1d03
+         ! Deltax     = 25d0
+
+      elseif (((nx == 200) .or. (nx == 400)) .and. (ny == 1000)) then
+         ! Deltax     =  1d03           !  Uniaxial loading (Ringeisen et al., 2019).
+
+         Deltax     = 2.5d01
+         ! Deltax     = 5.5d02
+      
       elseif ((nx == 102) .and. (ny == 402)) then
          Deltax     =  2d03            ! Ideal ice bridge (Plante et al., 2020) 
       else
@@ -154,6 +170,22 @@
 
       Deltax2 = Deltax**2d0
 
+! Mu(I) - Phi(I) rheology (rheology = 4)
+      ! d_average  = Deltax*
+      d_average  = 1d03
+      ! mu_0       = 1.3d-01            
+      ! mu_infty   = 4.0d-01      
+
+      mu_0 = TAN(30*pi/180d0)
+      mu_infty = TAN(50*pi/180d0)
+      ! c_phi      = 0.53      
+      c_phi      = 1    
+      I_0        = 6.8d-05                  
+      ! mu_b       = 7.3d-01
+
+      mu_b       = 3.0d-01
+      Phi_0      = 1
+
 !------------------------------------------------------------------------
 !     Numerical parameters
 !------------------------------------------------------------------------      
@@ -161,13 +193,16 @@
       solver = 2               ! 1 = Picard, 2 = JFNK, 3 = EVP   
 
       wjac  = 0.575d0
+      ! wsor  = 2d0           ! relaxation parameter for SOR precond
+      ! wlsor = 1.40d0           ! relaxation parameter for SOR precond
+      wlsor = 1.4d0
       wsor  = 0.95d0           ! relaxation parameter for SOR precond
-      wlsor = 1.40d0           ! relaxation parameter for SOR precond
       kjac  = 10               !
       ksor  = 10               ! nb of ite of precond SOR
       klsor = 10               ! nb of ite of precond line SOR
 
       gamma_nl = 1d-03         ! nonlinear convergence criterion for JFNK 
+      ! gamma_nl = 1d-01        ! nonlinear convergence criterion for JFNK 
       dropini = 1.5d0          ! res_t = L2norm_ini/dropini (L2norm_ini: beg of Newton loop)
       NLmax = 200              ! max nb of Newton loop for JFNK
       OLmax = 500              ! max nb of Outer loop for Picard
@@ -345,6 +380,7 @@ subroutine read_namelist
         use numerical_EVP
         use solver_choice
         use basal_param
+        use muphi
 
       implicit none
 
@@ -366,16 +402,18 @@ subroutine read_namelist
            adv_scheme, AirTemp, OcnTemp, Wind, RampupWind,      &
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,            &
-           BasalStress
+           BasalStress, uniaxial
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub
 
       namelist /phys_param_nml/ &
            Pstar, C, e_ratio, k1, k2, rhoair, rhoice, rhowater, &
-           Cdair, Cdwater, f
+           Cdair, Cdwater, f, d_average, mu_0 , mu_infty, c_phi, &
+            I_0, mu_b , Phi_0    
 
-      filename ='namelistSIM'
+      ! filename ='namelistMuPhi'
+      filename ='namelistMuPhi_uniaxial'
       filenb = 10
 
       print *, 'Reading namelist values'
@@ -417,7 +455,7 @@ subroutine read_namelist
       Cdw        =  rhowater * Cdwater
       Cda        =  rhoair * Cdair
       rhof       =  rhoice * f
-
+      print *, d_average, mu_0, mu_infty
       end subroutine read_namelist
 
       subroutine verify_options
@@ -445,7 +483,7 @@ subroutine read_namelist
       endif
 
       if ( Rheology .ne. 1 .and. Rheology .ne. 2 .and.                 &
-           Rheology .ne. 3) then
+           Rheology .ne. 3 .and. Rheology .ne. 4) then
          print *, 'Wrong Rheology chosen by user'
          stop
       endif
@@ -503,6 +541,7 @@ subroutine read_namelist
       endif
 
       if (1d0*Deltat .gt. Deltax) then
+         ! print *, Deltat, Deltax
          print *, 'CFL condition not respected. Reduce time step'
          stop
       endif
@@ -553,12 +592,59 @@ subroutine read_namelist
       if ((nx == 100) .and. (ny == 250)) then
          !Make mask:
          do i = 0, nx+1
-         do j = 0, ny+1
-           maskC(i,j) = 1
-           if ((j .lt. 1)) then
-              maskC(i,j) = 0
-           endif
+            do j = 0, ny+1
+               maskC(i,j) = 1
+               if ((j .lt. 1)) then
+                  maskC(i,j) = 0                        
+               endif
+            enddo
          enddo
+
+      elseif ((nx == 400) .and. (ny == 1000)) then
+         !Make mask:
+         do i = 0, nx+1
+            do j = 0, ny+1
+               maskC(i,j) = 1
+               if ((j .lt. 1)) then
+                  maskC(i,j) = 0                        
+               endif
+            enddo
+         enddo
+      elseif ((nx == 200) .and. (ny == 500)) then
+         !Make mask:
+         do i = 0, nx+1
+            do j = 0, ny+1
+               maskC(i,j) = 1
+               if ((j .lt. 1)) then
+                  maskC(i,j) = 0                        
+               endif
+            enddo
+         enddo
+      elseif ((nx == 200) .and. (ny == 1000)) then
+         !Make mask:
+         do i = 0, nx+1
+            do j = 0, ny+1
+               maskC(i,j) = 1
+               if ((j .lt. 1)) then
+                  maskC(i,j) = 0                        
+               endif
+            enddo
+         enddo
+
+      elseif ((nx == 100) .and. (ny == 300)) then
+         !Make mask:
+         do i = 0, nx+1
+            do j = 0, ny+1
+               maskC(i,j) = 1
+               ! if ((j .gt. ny+1)) then
+               !    maskC(i,j) = 0                        
+
+               if (j .lt.  2) then
+                  maskC(i,j) = 0 
+               ! elseif (j .gt. ny) then
+               !    maskC(i, j) =0
+               endif
+            enddo
          enddo
          
 ! Ideal ice bridge experiment, 2.0 km resolution.	 

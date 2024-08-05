@@ -1,9 +1,16 @@
 1                   input namelist
 0                   restart
-17                  exp version
+21                  exp version
 1990-01-01:00:00:00 starting date
-1990-01-01:04:00:00 end date
-1990-01-01:01:00:00 posting date
+2000-01-01:00:20:00 end date
+1991-01-01:00:00:00  posting date
+1992-01-01:00:00:00  posting date
+1993-01-01:00:00:00  posting date
+1994-01-01:00:00:00  posting date
+1995-01-01:00:00:00  posting date
+1996-01-01:00:00:00  posting date
+1997-01-01:00:00:00  posting date
+1998-01-01:00:00:00  posting date
+1999-01-01:00:00:00  posting date
+2000-01-01:00:00:00  posting date
 stop                end of post date string
-
-

@@ -228,13 +228,24 @@
          x = xini + aLS*sol
          call transformer (utp,vtp,x,0)
          if ( IMEX .gt. 0 ) then ! IMEX method 1 or 2   
+
+            ! if (uniaxial) call velocityBC_Uniaxial
             call advection ( un1, vn1, utp, vtp, hn2, An2, hn1, An1, h, A )
             if (Rheology .eq. 3) then ! calculate the damage factor
                dam  = dam1
                !call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam) 
                call stress_strain_MEB(uice,vice,dummy,0,0)
-            else
+
+            elseif ( Rheology .eq. 4) then 
+               ! call shear(uice, vice)
+               ! call inertial_number()
+               ! call angle_friction_mu()
+               ! call dilatancy()
                call Ice_strength()
+            else
+               ! call shear(utp, vtp)
+               call Ice_strength()
+               ! call inertial_number()
             endif
             call bvect_ind
          endif

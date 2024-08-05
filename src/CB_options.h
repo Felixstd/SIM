@@ -10,7 +10,8 @@
                 RampupWind,     &
                 RampupForcing,  &
                 ideal,          &
-                runoff
+                runoff,         &
+                uniaxial
 
       character(LEN=20)         &
                 BndyCond,       &
@@ -37,6 +38,7 @@
                 calc_month_mean,& ! to calc monthly mean fields (yes or no)
                 Buoys,          & ! 'Track' or 'Daily'
                 runoff,         & ! River runoff switch
+                uniaxial,       & ! uniaxial experiment (yes or no)
                 AirTemp,        & ! specified, MonthlyMean
                 OcnTemp,        & ! specified, MonthlyMean
                 Wind,           & ! specified, MonthlyMean
@@ -61,4 +63,3 @@
                 ini_guess,      & ! freedrift, previous time step
                 Jac_finite_diff,&
                 Dam_correction    ! Choice of MEB stress correction: standard, specified
-

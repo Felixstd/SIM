@@ -31,10 +31,11 @@
 
       type(datetime_type), intent(in) :: date
 
-      character filename*45
+      ! character filename*45
+      character filename*77
 
       integer, intent(in) :: k, expno
-      integer i, j, m, year, month, day, hour, minute
+      integer i, j, m, year, month, day, hour, minute, second
 
       double precision dudx, dvdy, dudy, dvdx, land, lowA
 
@@ -51,9 +52,10 @@
       day = date%day
       hour = date%hour
       minute = date%minute
+      second = date%second
 
       land=-999d0
-      lowA=-888d0
+      lowA=-0d0
 
 !      land=0d0
 !      lowA=0d0
@@ -85,7 +87,7 @@
 
                   zetaCout(i,j) = zetaCf(i,j) ! no special value for A<0.5
 
-                  if (A(i,j) .lt. 0.5d0) then
+                  if (A(i,j) .lt. 5.0d-01) then
                      div(i,j)       = lowA
                      shear(i,j)     = lowA
                      sigI(i,j)      = lowA
@@ -93,7 +95,7 @@
                      sigInorm(i,j)  = lowA
                      sigIInorm(i,j) = lowA
 
-                  elseif (A(i,j) .ge. 0.5d0) then
+                  elseif (A(i,j) .ge. 5.0d-01) then
                   
                   dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
                   dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
@@ -239,40 +241,49 @@
             endif
          enddo
 
-      write (filename,'("output/sigI",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
-           year, month, day, hour, minute, k, expno
+      write (filename,&
+      '("/storage/fstdenis/output_sim/sigI",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+           year, month, day, hour, minute, second, k, expno
       open (12, file = filename, status = 'unknown')
 
-      write (filename,'("output/sigII",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
-           year, month, day, hour, minute, k, expno
+      write (filename, &
+      '("/storage/fstdenis/output_sim/sigII",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+           year, month, day, hour, minute, second, k, expno
       open (13, file = filename, status = 'unknown')
 
-      write (filename,'("output/sigInorm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
-           year, month, day, hour, minute, k, expno
+      write (filename,&
+      '("/storage/fstdenis/output_sim/sigInorm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+           year, month, day, hour, minute, second, k, expno
       open (14, file = filename, status = 'unknown')
 
-      write (filename,'("output/sigIInorm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
-           year, month, day, hour, minute, k, expno
+      write (filename,&
+      '("/storage/fstdenis/output_sim/sigIInorm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+           year, month, day, hour, minute, second, k, expno
       open (15, file = filename, status = 'unknown')
 
-      write (filename,'("output/sig1norm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
-           year, month, day, hour, minute, k, expno
+      write (filename,&
+      '("/storage/fstdenis/output_sim/sig1norm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+           year, month, day, hour, minute, second, k, expno
       open (16, file = filename, status = 'unknown')
 
-      write (filename,'("output/sig2norm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
-           year, month, day, hour, minute, k, expno
+      write (filename,&
+      '("/storage/fstdenis/output_sim/sig2norm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+           year, month, day, hour, minute, second, k, expno
       open (17, file = filename, status = 'unknown')
 
-      write (filename,'("output/div",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
-           year, month, day, hour, minute, k, expno
+      write (filename,&
+      '("/storage/fstdenis/output_sim/div",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+           year, month, day, hour, minute, second, k, expno
       open (18, file = filename, status = 'unknown')
 
-      write (filename,'("output/shear",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
-           year, month, day, hour, minute, k, expno
+      write (filename,&
+      '("/storage/fstdenis/output_sim/shear",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+           year, month, day, hour, minute, second, k, expno
       open (19, file = filename, status = 'unknown')
 
-      write (filename,'("output/zetaC",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
-           year, month, day, hour, minute, k, expno
+      write (filename,&
+      '("/storage/fstdenis/output_sim/zetaC",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+           year, month, day, hour, minute, second, k, expno
       open (20, file = filename, status = 'unknown')
 
       do j = 0, ny+1

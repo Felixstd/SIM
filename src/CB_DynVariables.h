@@ -40,7 +40,17 @@
                 sigxy    (0:nx+2,0:ny+2), &
                 sigxyB   (0:nx+2,0:ny+2), &
                 sigxx    (0:nx+2,0:ny+2), &
-                sigyy    (0:nx+2,0:ny+2)
+                sigyy    (0:nx+2,0:ny+2), &
+
+
+!========================================================================
+!               mu(I) - Phi(I) rheology variables                       !
+                Pmax     (0:nx+2,0:ny+2), &
+                Peq      (0:nx+2,0:ny+2), &
+                inertial (0:nx+2,0:ny+2), &
+                shear_I  (0:nx+2,0:ny+2), &
+                Phi_I    (0:nx+2,0:ny+2), &
+                mu_I     (0:nx+2,0:ny+2)
 
 
       common/DynVariables/      &
@@ -80,7 +90,16 @@
                 sigxy,          & ! shear stress at center
                 sigxyB,         & ! shear stress at node
                 sigxx,          & ! normal stress at center
-                sigyy             ! normal stress at center
+                sigyy,  & ! normal stress at center
+
+
+                Pmax,           & ! replacement pressure
+                Peq, &
+                inertial, &
+                shear_I, &
+                Phi_I, &
+                mu_I
+
 
 
 

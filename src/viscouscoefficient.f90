@@ -63,16 +63,18 @@ subroutine ViscousCoefficient(utp,vtp)
   double precision utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
   if (Rheology .eq. 3) then
      call MEBcoeff
-  elseif (visc_method .eq. 1) then
-     call ViscousCoeff_method1(utp,vtp)
-  elseif (visc_method .eq. 2) then
-     call ViscousCoeff_method2(utp,vtp)
-  elseif (visc_method .eq. 3 .or. visc_method .eq. 4) then
-     call ViscousCoeff_method3_and_4(utp,vtp)
-  else
-     print *, 'Wrong setting of visc_method'
-     stop
-  endif
+   elseif (Rheology .eq. 4) then
+      call MuPhiCoeff
+   elseif (visc_method .eq. 1) then
+      call ViscousCoeff_method1(utp,vtp)
+   elseif (visc_method .eq. 2) then
+      call ViscousCoeff_method2(utp,vtp)
+   elseif (visc_method .eq. 3 .or. visc_method .eq. 4) then
+      call ViscousCoeff_method3_and_4(utp,vtp)
+   else
+      print *, 'Wrong setting of visc_method'
+      stop
+   endif
 
   call etaB_at_open_boundaries
   
@@ -1330,12 +1332,6 @@ subroutine etaB_at_open_boundaries
   return
 end subroutine etaB_at_open_boundaries
 
-
-
-
-
-
-
 subroutine MEBcoeff
 
 !************************************************************************                                  
@@ -1526,3 +1522,117 @@ subroutine MEBcoeff
 
   return
 end subroutine MEBcoeff
+
+
+
+subroutine MuPhiCoeff 
+
+!************************************************************************                                  
+!     Subroutine MEBcoeff: computes the Mu-Phi coefficients in the same format as                                         
+!     those of the VP model, at the centers (zetaC, etaC) and at the nodes (etaB)                               
+!     of the grid.
+!     
+!     zetaC = (mu_b + mu(I)/2) p_eq/shear     
+!     etaC = (mu(I)/2) (p_eq/shear)                        
+!     where : 
+!        mu(I) = mu_0  + (mu_infinity - mu_0)/(I_0/I + 1) is the internal angle of friction. 
+!        mu_b(I) = constant is the bulk friction coefficient.
+!        
+!
+!     Félix St-Denis, July 10, 2024                                                                         
+!                                                                                                            
+!************************************************************************ 
+
+   use muphi
+   use ellipse 
+
+   implicit none
+
+   include 'parameter.h'
+   include 'CB_DynVariables.h'
+   include 'CB_mask.h'
+   include 'CB_options.h'
+   include 'CB_const.h'
+
+   integer i, j, peri, rheo
+   double precision deno, lowA
+   double precision eta_max
+   
+   lowA = 0d0
+   peri = Periodic_x + Periodic_y
+   rheo = Rheology
+   eta_max = 1d12
+
+   if ( BndyCond .eq. 'freeslip' ) then
+
+      print *, 'WARNING: freeslip option not fully tested yet'
+
+  elseif ( BndyCond .eq. 'noslip' ) then
+
+   
+      do i = 1, nx
+         do j = 1, ny
+               if ( maskC(i, j) .eq. 1) then
+
+                  if (regularization .eq. 'capping') then
+                     zetaC(i, j) = min(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), 2d08*Pp(i, j))
+                     
+
+                  elseif (regularization .eq. 'tanh') then
+                     zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b + mu_I(i, j) / 2 ) / (shear_I(i, j) * 2d08))
+
+                  endif
+
+                  etaC(i, j)  = min((mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), eta_max)
+
+               endif
+               ! etaB(i,j)  = 0d0 
+               ! zetaC(i,j) = 0d0 
+               ! etaC(i, j) = 0d0
+         enddo
+      enddo
+
+      do i = 1, nx+1
+
+        if (maskC(i,0) .eq. 1 .and. Periodic_y .eq. 0) then
+           etaC(i,1)  = 0d0
+           zetaC(i,1) = 0d0
+        endif
+            
+        if (maskC(i,ny+1) .eq. 1 .and. Periodic_y .eq. 0) then
+           etaC(i,ny)  = 0d0
+           zetaC(i,ny) = 0d0
+        endif
+        
+     enddo
+         
+     do j = 1, ny+1
+            
+        if (maskC(0,j) .eq. 1 .and. Periodic_x .eq. 0) then   
+           etaC(1,j)  = 0d0
+           zetaC(1,j) = 0d0
+        endif
+            
+        if (maskC(nx+1,j) .eq. 1 .and. Periodic_x .eq. 0) then  
+           etaC(nx,j)  = 0d0
+           zetaC(nx,j) = 0d0
+        endif
+
+     enddo
+
+      do i = 1, nx+1
+        do j = 1, ny+1
+
+           deno = max ( maskC(i,j) + maskC(i-1,j) + maskC(i,j-1) +   &
+                maskC(i-1,j-1), 1) 
+               
+           etaB(i,j)  = ( etaC(i,j) + etaC(i-1,j) + etaC(i,j-1) +    &
+                etaC(i-1,j-1) ) / deno
+           
+        enddo
+     enddo
+
+
+   endif
+
+end subroutine MuPhiCoeff

@@ -53,19 +53,45 @@ subroutine ini_get (restart, expno_r, restart_date)
                 A(i,j) = 0d0  
              endif
 
+
 !     Uniaxial loading experiment: set bands of open water at the top and sides
 
-             if ((nx == 100) .and. (ny == 250)) then
+            if ((nx == 100) .and. (ny == 250)) then
                 if (i .lt. 21 .or. i .gt. 80) h(i,j) = 0d0
                 if (i .lt. 21 .or. i .gt. 80) A(i,j) = 0d0
                 if (j .gt. 250) h(i,j) = 0d0
                 if (j .gt. 250) A(i,j) = 0d0 
 
+
+            elseif ((nx == 200) .and. (ny == 500)) then
+                if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
+                if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
+                if (j .gt. 500) h(i,j) = 0d0
+                if (j .gt. 500) A(i,j) = 0d0 
+            
+            elseif ((nx == 200) .and. (ny == 1000)) then
+                if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
+                if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
+               !  if (j .gt. 1000) h(i,j) = 0d0
+               !  if (j .gt. 500) A(i,j) = 0d0 
+
+            elseif ((nx == 400) .and. (ny == 1000)) then
+                if (i .lt. 41 .or. i .gt. 360) h(i,j) = 0d0
+                if (i .lt. 41 .or. i .gt. 360 ) A(i,j) = 0d0
+                if (j .gt. 1000) h(i,j) = 0d0
+                if (j .gt. 1000) A(i,j) = 0d0 
+
+            elseif ((nx == 102) .and. (ny == 402)) then
+                if (i .lt. 21 .or. i .gt. 81) h(i,j) = 0d0
+                if (i .lt. 21 .or. i .gt. 81 ) A(i,j) = 0d0
+                if (j .lt. 1) h(i,j) = 0d0
+                if (j .lt. 1) A(i,j) = 0d0 
+
              endif
 
              Pp(i,j) = 0d0
              Pt(i,j) = 0d0 
-             P(i,j)  = 0d0   
+             P(i,j)  = 0d0 
 
              etaC(i,j)= 0d0
              zetaC(i,j) = 0d0
@@ -123,7 +149,18 @@ subroutine ini_get (restart, expno_r, restart_date)
           write (filename,'("output/v",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
                year, month, day, hour, minute, expno_r
           open (19, file = filename, status = 'unknown')
+
+         ! if ( Rheology .eq. 4) then
+         !    write (filename,'("output/p",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+         !          year, month, day, hour, minute, expno_r
+         !    open (20, file = filename, status = 'unknown')
             
+         !    do j = 1, ny+1
+         !       read (20,*) ( P(i,j), i = 1, nx )
+         !    enddo
+
+         ! endif 
+          
           do j = 1, ny
              read (18,*) ( uice(i,j), i = 1, nx+1 )
           enddo
@@ -131,6 +168,8 @@ subroutine ini_get (restart, expno_r, restart_date)
           do j = 1, ny+1
              read (19,*) ( vice(i,j), i = 1, nx )
           enddo
+
+         
             
           do j = 0, ny+1
                
@@ -207,3 +246,80 @@ subroutine ini_get (restart, expno_r, restart_date)
       
   end subroutine ini_get
 
+
+subroutine initial_conditions_muPhi 
+
+   use ellipse 
+
+   implicit none
+
+   include 'parameter.h'
+   include 'CB_options.h'
+   include 'CB_DynVariables.h'
+   include 'CB_mask.h'
+   include 'CB_DynForcing.h'
+   include 'CB_const.h'
+   include 'CB_buoys.h'
+
+   integer i, j 
+
+   do i = 1, nx
+      do j = 1, ny
+         if (maskC(i,j) .eq. 1) then
+            Pp(i,j) = Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ) )
+            ! Phi_I(i,j) = A(i,j)
+         ! else 
+         !    P(i,j) = 0
+         endif
+      enddo
+   enddo
+
+end subroutine initial_conditions_muPhi
+
+
+subroutine initial_conditions_uniaxial 
+
+   use muphi 
+
+   implicit none
+
+   include 'parameter.h'
+   include 'CB_options.h'
+   include 'CB_DynVariables.h'
+   include 'CB_mask.h'
+   include 'CB_DynForcing.h'
+   include 'CB_const.h'
+   include 'CB_buoys.h'
+
+   integer i, j, c
+
+   ! print *, 'here'
+
+   do i = 0, nx+1
+      do j = 0, ny+1
+         ! if (maskC(i,j) .eq. 1) then
+            ! Pp(i, j) = 0d0
+            ! if ((i .lt. 21) .or. (i .gt. 80)) then
+            ! if (h(i, j)+1e-6 > 0 .or. h(i,j)-1e-6 <0) then
+            if (h(i, j) < 1e-6) then
+            ! print *, 'here'
+               c = c + 1
+               mu_I(i, j) = mu_infty
+               Phi_I(i, j) = 0d0
+               inertial(i, j) = 1d0
+            ! if (h(i, j) .eq. 0d0) then 
+               
+            
+            else
+               mu_I(i, j) = mu_0
+               Phi_I(i, j) = 1d0
+               inertial(i, j) = 0d0
+               
+               endif
+            ! else
+
+         ! endif
+      enddo
+   enddo
+   print *, c
+end subroutine initial_conditions_uniaxial

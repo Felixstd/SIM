@@ -1,7 +1,7 @@
 !------------------------------------------------------------------------
 ! Defines the size and position of the domain and num parameters
 !
-! Multi resolution 2008 version 
+! Multi resolution 2008 version (Pan Arctic Simulations)
 !
 ! Resolution [km]      nx        ny
 ! ---------------------------------
@@ -10,6 +10,18 @@
 !         40          128       108
 !         80           63        53
 ! ---------------------------------
+
+! Uniaxial experiment
+! Resolution [km]      nx        ny
+! ---------------------------------
+!         1          518       438
+!         20          258       218
+!         40          128       108
+!         80           63        53
+! ---------------------------------
+
+
+
 !------------------------------------------------------------------------
 
       integer nx, ny, ntot, nbuoy, nvar, img, img1
@@ -17,8 +29,8 @@
       double precision beta, dx_pole, dy_pole, S0
 
       parameter (                             &
-                nx    = 128,                   & ! x-dim of the domain
-                ny    = 108,                   & ! y-dim of the domain
+                nx    = 400,                   & ! x-dim of the domain
+                ny    = 1000,                   & ! y-dim of the domain
                 dx_pole= 2500d3,              & ! tracer point (0,0) x distance from North pole [m] 
                 dy_pole= 2250d3,              & ! tracer point (0,0) y distance from North pole [m] 
                 beta  = 32.0d0,               & ! angle of the dom wr to Greenwich

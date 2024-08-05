@@ -65,6 +65,7 @@
 
       double precision, save :: NLtol
 
+
       year = date%year
       datestr = datetime_str_6(date)
       
@@ -87,7 +88,7 @@
             An2 = An1
          endif
 
-	 if (peri .ne. 0) call periodicBC(uice,vice)
+	      if (peri .ne. 0) call periodicBC(uice,vice)
 	 
          un1 = uice ! previous time step solution
          vn1 = vice ! previous time step solution
@@ -150,6 +151,8 @@
                      damB = damB1
                      !call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam)
                      call stress_strain_MEB(uice, vice, date, kd, expno)
+                  
+
                      
                   else
                   
@@ -193,7 +196,6 @@
          elseif (solver .eq. 2) then ! JFNK solver
 
 !------- Initialize stuff for tolerance and FGMRES its count ------------
-            
             sumtot_its = 0 ! grand total of gmres ite for Newton loop
 
 !------- Beginning of Newton loop ---------------------------------------
@@ -203,7 +205,10 @@
                call transformer (uice,vice,xtp,1)
 
 
-               if ( IMEX .gt. 0 ) then ! IMEX method 1 or 2                     
+               if ( IMEX .gt. 0 ) then ! IMEX method 1 or 2                    
+                  
+               
+                  
                   call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A )
                   
                   if (Rheology .eq. 3) then !calculate the damage factor
@@ -213,6 +218,10 @@
                      damB = damB1
                      !call advection ( un1, vn1, uice, vice, dummy, dummy, dummy,Dam1, dummy, Dam)
                      call stress_strain_MEB(uice, vice, date, kd, expno)
+                  
+                  elseif (Rheology .eq. 4) then
+
+                     call Ice_strength()
                      
                   else
                   
@@ -242,7 +251,7 @@
                   exit
                endif
 
-!               if (k .eq. 499) call failure(xtp,rhs,date,k,expno) !debug
+              if (k .eq. 499) call failure(xtp,rhs,date,k,expno) !debug
                
                call PrepFGMRES_NK (k,res,resk_1,tot_its,xtp,Fu) 
                ! solves J(u^k-1)du^k = -F(u^k-1), du^k = u^k - u^k-1
@@ -252,6 +261,7 @@
                   print *, 'WARNING JFNK DID NOT CONVERGE'
                   nbfail = nbfail + 1
                endif
+      
 
             enddo
 
@@ -259,6 +269,7 @@
          
             if (tstep .eq. -1) then ! change tstep value to output stresses and strain rates
                call stress_strain (uice, vice, date, 9, expno)
+
 !               stop
             endif
                  
@@ -275,7 +286,23 @@
          if ( Rheology .eq. 3) then !update stress history and damage
             kd = 1d0
             call stress_strain_MEB(uice, vice, date, kd, expno)
-         endif        
+                  
+         endif      
+
+         if ( Rheology .eq. 4) then
+!------------------------------------------------------------------------        
+!     If using the mu(I) - Phi(I) rheology, update the shear, inertial number, mu and the dilantancy      
+!------------------------------------------------------------------------    
+
+            call shear(uice, vice)
+            call inertial_number()
+            call angle_friction_mu()
+            call dilatancy() 
+
+         endif
+
+         
+
 !------------------------------------------------------------------------       
 
          call cpu_time(time2)
