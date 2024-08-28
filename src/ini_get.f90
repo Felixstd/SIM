@@ -303,7 +303,7 @@ subroutine initial_conditions_uniaxial
             ! if (h(i, j)+1e-6 > 0 .or. h(i,j)-1e-6 <0) then
             if (h(i, j) < 1e-6) then
             ! print *, 'here'
-               c = c + 1
+
                mu_I(i, j) = mu_infty
                Phi_I(i, j) = 0d0
                inertial(i, j) = 1d0
@@ -313,7 +313,7 @@ subroutine initial_conditions_uniaxial
             else
                mu_I(i, j) = mu_0
                Phi_I(i, j) = 1d0
-               inertial(i, j) = 0d0
+               inertial(i, j) = 1d-12
                
                endif
             ! else
@@ -321,5 +321,5 @@ subroutine initial_conditions_uniaxial
          ! endif
       enddo
    enddo
-   print *, c
+
 end subroutine initial_conditions_uniaxial

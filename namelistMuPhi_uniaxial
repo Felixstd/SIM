@@ -2,19 +2,19 @@
     Dynamic  = .true.
     ThermoDyn  = .false.
     linearization = 'Zhang'
-    regularization = 'tanh'
+    regularization = 'capping'
     ini_guess = 'previous time step'
     adv_scheme = 'upwind'
     Airtemp = 'specified'
     OcnTemp = 'specified'
     Wind = 'specified'
-    RampupWind = .false.
+    RampupWind = .true.
     RampupForcing = .false.
     Current = 'specified'
     Periodic_x = 0
     Periodic_y = 0
     ideal = .true.
-    Rheology = 1
+    Rheology = 4
     IMEX = 1
     BDF = 0
     visc_method = 2
@@ -24,8 +24,8 @@
 /
 
 &numerical_param_nml
-    Deltat  = 0.1
-    gamma_nl = 1d-03
+    Deltat  = 300
+    gamma_nl = 1d-04
     NLmax = 200     
     OLmax = 1000
     Nsub  = 120  

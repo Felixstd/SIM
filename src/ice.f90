@@ -196,7 +196,7 @@ PROGRAM ice
          endif
          if (uniaxial) then
             call initial_conditions_uniaxial
-            call Ice_strength
+            ! call Ice_strength
             call shear(uice, vice)
          endif
          ! else

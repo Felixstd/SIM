@@ -30,23 +30,6 @@ subroutine inertial_number
 
                 inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j), highI)
 
-                
-
-                ! if ((0 > shear_I(i,j)-1d-12 .and. 0 < shear_I(i,j)+1d-12) .or. ( 0 > h(i,j)-eps .and. 0 < h(i,j)+eps )) then 
-                !     inertial(i, j) = 0d0
-                !     ! inertial(i, j) = highI
-
-                ! elseif ((shear_I(i,j) > 1d-15 .and. shear_I(i,j) < -1d-15) .and. (0 > Pp(i,j)-eps .and. 0 < Pp(i,j)+eps)) then
-                !     inertial(i, j) = highI
-
-                ! elseif (0 > Pp(i,j)-eps .and. 0 < Pp(i,j)+eps) then
-                !     inertial(i, j) = highI
-
-                ! ! elseif ( 0 > shear_I(i,j)-1d-12 .and. 0 < shear_I(i,j)+1d-12 ) then 
-                ! !     inertial(i, j) = 0
-                ! else
-                !     inertial(i, j) = SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j)
-                ! endif
 
             endif
         enddo
@@ -117,17 +100,6 @@ subroutine dilatancy
         enddo
     enddo
 
-    ! do j = 1, ny+1 ! periodic in x
-    !     Phi_I(0,j)    = Phi_I(nx,j)
-    !     Phi_I(nx+1,j) = Phi_I(1,j)
-    !     Phi_I(nx+2,j) = Phi_I(2,j)
-    ! enddo
-
-    ! do i = 1, nx+1 ! periodic in y
-    !     Phi_I(i,0)    = Phi_I(i,ny)
-    !     Phi_I(i,ny+1) = Phi_I(i,1)
-    !     Phi_I(i,ny+2) = Phi_I(i,2)
-    ! enddo
 
 
 end subroutine dilatancy
@@ -204,11 +176,11 @@ subroutine shear(utp, vtp)
 
     do i = 1, nx
         do j = 1, ny
-
-        if (A(i, j) .lt. 0.1) then
-        !     shear_I(i, j) = 0d0 
+        ! if (A(i, j) .lt. 0.1) then
+        ! if (h(i, j) .lt. 1d-06) then
+        !     shear_I(i, j) = 0d0
         
-        else
+        ! else
             dudx       = 0d0
             dvdy       = 0d0
             dudy       = 0d0
@@ -277,7 +249,7 @@ subroutine shear(utp, vtp)
                   endif
 
                
-            endif
+            ! endif
         enddo
     enddo
 

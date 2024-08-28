@@ -107,9 +107,9 @@
 
                   Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / ( Phi_I(i, j) - Phi_0 ))**2 
 
-                  Pp(i, j) = max(P_min, min(Peq(i, j), Pmax(i, j)))
-
-                  ! Pp(i, j) = Pmax(i, j)
+                  ! Pp(i, j) = max(P_min, min(Peq(i, j), Pmax(i, j)))
+                  ! Pp(i, j) = min(Peq(i, j), Pmax(i, j))
+                  Pp(i, j) = Pmax(i, j)
 
                endif
             enddo

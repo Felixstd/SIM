@@ -148,16 +148,16 @@
          Deltax     =  80d03           ! Pan-Arctic 80km
       elseif ((nx == 100) .and. (ny == 250)) then
          ! Deltax     =  2.5d01            ! Uniaxial loading (Ringeisen et al., 2019).
-         Deltax     = 1d02
-         ! Deltax     = 1d03
+         ! Deltax     = 1d02
+         Deltax     = 1d03
       elseif ((nx == 200) .and. (ny == 500)) then
          ! Deltax     =  1d03       / 10     ! Uniaxial loading (Ringeisen et al., 2019).
-         Deltax     = 1d03
+         Deltax     = 1d03/2
          ! Deltax     = 25d0
 
       elseif (((nx == 200) .or. (nx == 400)) .and. (ny == 1000)) then
-         ! Deltax     =  1d03           !  Uniaxial loading (Ringeisen et al., 2019).
-
+         ! Deltax     =  2d03           !  Uniaxial loading (Ringeisen et al., 2019).
+         ! Deltax     =  5.0d01
          Deltax     = 2.5d01
          ! Deltax     = 5.5d02
       
@@ -171,20 +171,19 @@
       Deltax2 = Deltax**2d0
 
 ! Mu(I) - Phi(I) rheology (rheology = 4)
-      ! d_average  = Deltax*
       d_average  = 1d03
-      ! mu_0       = 1.3d-01            
-      ! mu_infty   = 4.0d-01      
+      ! mu_0 = TAN(10*pi/180d0)
+      ! mu_infty = TAN(30*pi/180d0)
 
-      mu_0 = TAN(30*pi/180d0)
-      mu_infty = TAN(50*pi/180d0)
-      ! c_phi      = 0.53      
-      c_phi      = 1    
-      I_0        = 6.8d-05                  
-      ! mu_b       = 7.3d-01
-
-      mu_b       = 3.0d-01
+      mu_0 = 1d-01
+      mu_infty = 9d-01
+      ! mu_0 = 1d-01
+      ! mu_infty = 4d-01
+      I_0        = 5d-03
+      ! I_0        = 6.8d-01                 
+      mu_b       = 9d-01
       Phi_0      = 1
+      c_phi      = 1
 
 !------------------------------------------------------------------------
 !     Numerical parameters
@@ -194,8 +193,8 @@
 
       wjac  = 0.575d0
       ! wsor  = 2d0           ! relaxation parameter for SOR precond
-      ! wlsor = 1.40d0           ! relaxation parameter for SOR precond
-      wlsor = 1.4d0
+      wlsor = 1.2d0           ! relaxation parameter for SOR precond
+      ! wlsor = 0.6d0
       wsor  = 0.95d0           ! relaxation parameter for SOR precond
       kjac  = 10               !
       ksor  = 10               ! nb of ite of precond SOR
@@ -455,7 +454,7 @@ subroutine read_namelist
       Cdw        =  rhowater * Cdwater
       Cda        =  rhoair * Cdair
       rhof       =  rhoice * f
-      print *, d_average, mu_0, mu_infty
+
       end subroutine read_namelist
 
       subroutine verify_options

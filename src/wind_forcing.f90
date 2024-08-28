@@ -120,7 +120,9 @@
 
          if (RampupWind) then
             wspeed = 10.0d0
-            Tramp = 6d0*3600d0
+            ! Tramp = 6d0*3600d0
+            ! Tramp = 10
+            Tramp = 2*60*60
             ! Tramp = 20d0
 
             rampfactor=1d0-exp(-1d0*tstep*Deltat/Tramp)

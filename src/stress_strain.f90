@@ -60,15 +60,6 @@
 !      land=0d0
 !      lowA=0d0
 
-      div       = land
-      shear     = land
-      sigI      = land
-      sigII     = land
-      sigInorm  = land
-      sigIInorm = land
-      sig1norm  = land
-      sig2norm  = land
-      zetaCout  = land
 
 ! note: to study the numerical convergence of the stress, zeta and eta should be calculated 
 !       with u^{k-1} and the deformations with u^k. This is why we use here zetaCf and etaCf
@@ -96,56 +87,56 @@
                      sigIInorm(i,j) = lowA
 
                   elseif (A(i,j) .ge. 5.0d-01) then
-                  
-                  dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-                  dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
-                  
-                  if     ( maskC(i+1,j) + maskC(i-1,j) .eq. 2 ) then
                      
-                     dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-                              ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
-                              ( 4d0 * Deltax )
+                     dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                     dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
                      
-                  elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. 1 ) then
-                     
-                     dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-                              3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
+                     if     ( maskC(i+1,j) + maskC(i-1,j) .eq. 2 ) then
+                        
+                        dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                                 ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
+                                 ( 4d0 * Deltax )
+                        
+                     elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. 1 ) then
+                        
+                        dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
+                                 3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
+                                 ( 6d0 * Deltax )
+                        
+                     elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. -1 ) then
+                        
+                        dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
+                                 3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
                               ( 6d0 * Deltax )
-                     
-                  elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. -1 ) then
-                     
-                     dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
-                               3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-                             ( 6d0 * Deltax )
-                     
-                  elseif ( maskC(i+1,j) + maskC(i-1,j) .eq. 0 ) then
-                     
-                     print *, 'WARNING: irregular grid cell case1', i, j
-                     
-                  endif
+                        
+                     elseif ( maskC(i+1,j) + maskC(i-1,j) .eq. 0 ) then
+                        
+                        print *, 'WARNING: irregular grid cell case1', i, j
+                        
+                     endif
 
-               
-                  if     ( maskC(i,j+1) + maskC(i,j-1) .eq. 2 ) then
-                     
-                     dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                               ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
-                               ( 4d0 * Deltax )
-                     
-                  elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
-                     
-                     dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
-                               3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                               ( 6d0 * Deltax )
-                     
-                  elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. -1 ) then
-                     
-                     dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
-                               3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                               ( 6d0 * Deltax )
-                     
-                  elseif ( maskC(i,j+1) + maskC(i,j-1) .eq. 0 ) then
-                     
-                     print *, 'WARNING: irregular grid cell case2',i,j
+                  
+                     if     ( maskC(i,j+1) + maskC(i,j-1) .eq. 2 ) then
+                        
+                        dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                 ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+                                 ( 4d0 * Deltax )
+                        
+                     elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
+                        
+                        dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
+                                 3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                                 ( 6d0 * Deltax )
+                        
+                     elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. -1 ) then
+                        
+                        dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
+                                 3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                                 ( 6d0 * Deltax )
+                        
+                     elseif ( maskC(i,j+1) + maskC(i,j-1) .eq. 0 ) then
+                        
+                        print *, 'WARNING: irregular grid cell case2',i,j
                      
                   endif
                   
@@ -159,7 +150,9 @@
 
 ! watchout p in our code is in fact p/2 in Hibler's equations
 
+
                   sigI(i,j)   = -1d0*( dudx + dvdy )*zetaCf(i,j)+Pf(i,j)
+
 
                   sigII(i,j) = sqrt(( dudx - dvdy )**2d0 &
                        + ( dudy + dvdx )**2d0 )*etaCf(i,j)
@@ -173,7 +166,18 @@
 
                   endif
 
-               endif
+            else 
+               div(i, j)      = land
+               shear(i, j)     = land
+               sigI(i, j)     = land
+               sigII(i, j)     = land
+               sigInorm(i, j)  = land
+               sigIInorm(i, j) = land
+               sig1norm(i, j)  = land
+               sig2norm(i, j)  = land
+               zetaCout(i, j)  = land
+
+            endif
                
                
             enddo
@@ -287,10 +291,10 @@
       open (20, file = filename, status = 'unknown')
 
       do j = 0, ny+1
-         write(12,100) ( sigI(i,j), i = 0, nx+1 )
-         write(13,100) ( sigII(i,j), i = 0, nx+1 )
-         write(14,200) ( sigInorm(i,j), i = 0, nx+1 )
-         write(15,200) ( sigIInorm(i,j), i = 0, nx+1 )
+         write(12,*) ( sigI(i,j), i = 0, nx+1 )
+         write(13,*) ( sigII(i,j), i = 0, nx+1 )
+         write(14,*) ( sigInorm(i,j), i = 0, nx+1 )
+         write(15,*) ( sigIInorm(i,j), i = 0, nx+1 )
          write(16,200) ( sig1norm(i,j), i = 0, nx+1 )
          write(17,200) ( sig2norm(i,j), i = 0, nx+1 )
          write(18,200) ( div(i,j), i = 0, nx+1 )

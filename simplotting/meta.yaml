@@ -1,0 +1,21 @@
+package:
+  name: simplotting
+  version: "0.1.0"
+
+source:
+  path: .
+
+build:
+  script: "{{ PYTHON }} -m pip install ."
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+
+about:
+  home: 
+  license: MIT
+  summary: "Package to read and plot outputs from the McGill-SIM using the mu-phi rheology"
