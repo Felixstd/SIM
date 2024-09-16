@@ -24,15 +24,15 @@
 /
 
 &numerical_param_nml
-    Deltat  = 300
-    gamma_nl = 1d-04
+    Deltat    = 0.1
+    gamma_nl = 1d-03
     NLmax = 200     
     OLmax = 1000
     Nsub  = 120  
 /
 
 &phys_param_nml
-    Pstar  = 27.5d03
+    Pstar  = 27.5d3
     C = 20.0
     k1 = 8.0
     k2 = 15d0

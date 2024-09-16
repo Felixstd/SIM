@@ -147,22 +147,19 @@
       elseif  ((nx == 63) .and. (ny == 53)) then
          Deltax     =  80d03           ! Pan-Arctic 80km
       elseif ((nx == 100) .and. (ny == 250)) then
-         ! Deltax     =  2.5d01            ! Uniaxial loading (Ringeisen et al., 2019).
-         ! Deltax     = 1d02
-         Deltax     = 1d03
-      elseif ((nx == 200) .and. (ny == 500)) then
-         ! Deltax     =  1d03       / 10     ! Uniaxial loading (Ringeisen et al., 2019).
+         Deltax     =  2.5d01            ! Uniaxial loading (Ringeisen et al., 2019).
+
+      elseif (((nx == 200) .and. (ny == 500)) .or. ((nx == 500) .and. (ny == 500))) then
          Deltax     = 1d03/2
-         ! Deltax     = 25d0
+
 
       elseif (((nx == 200) .or. (nx == 400)) .and. (ny == 1000)) then
          ! Deltax     =  2d03           !  Uniaxial loading (Ringeisen et al., 2019).
-         ! Deltax     =  5.0d01
-         Deltax     = 2.5d01
-         ! Deltax     = 5.5d02
+         Deltax = 1d03/2
       
       elseif ((nx == 102) .and. (ny == 402)) then
          Deltax     =  2d03            ! Ideal ice bridge (Plante et al., 2020) 
+
       else
          write(*,*) "Wrong grid size dimensions.", nx, ny
          STOP
@@ -172,15 +169,9 @@
 
 ! Mu(I) - Phi(I) rheology (rheology = 4)
       d_average  = 1d03
-      ! mu_0 = TAN(10*pi/180d0)
-      ! mu_infty = TAN(30*pi/180d0)
-
-      mu_0 = 1d-01
+      mu_0 = 4d-01
       mu_infty = 9d-01
-      ! mu_0 = 1d-01
-      ! mu_infty = 4d-01
-      I_0        = 5d-03
-      ! I_0        = 6.8d-01                 
+      I_0        = 1d-04            
       mu_b       = 9d-01
       Phi_0      = 1
       c_phi      = 1
@@ -645,6 +636,9 @@ subroutine read_namelist
                endif
             enddo
          enddo
+      
+      elseif ((nx == 500) .and. (ny == 500)) then
+         call grid_inclination
          
 ! Ideal ice bridge experiment, 2.0 km resolution.	 
       elseif ((nx == 102) .and. (ny == 402)) then

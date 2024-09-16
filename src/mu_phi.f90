@@ -21,15 +21,19 @@ subroutine inertial_number
     !
     ! Need to look for the eps and see if it is the right thing to do. 
     ! Also, for the value of the High I as P -> 0
-    eps = 1d-12
+    eps = 1d-06
     highI = 1d0
 
     do i = 0, nx+1
         do j = 0, ny+1
             if (maskC(i,j) .eq. 1) then
 
-                inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j), highI)
-
+                if (h(i, j) < eps) then
+                ! force to highI in water when the height is less than eps
+                    inertial(i, j) = highI
+                else
+                    inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j), highI)
+                endif
 
             endif
         enddo

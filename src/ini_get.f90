@@ -76,10 +76,10 @@ subroutine ini_get (restart, expno_r, restart_date)
                !  if (j .gt. 500) A(i,j) = 0d0 
 
             elseif ((nx == 400) .and. (ny == 1000)) then
-                if (i .lt. 41 .or. i .gt. 360) h(i,j) = 0d0
-                if (i .lt. 41 .or. i .gt. 360 ) A(i,j) = 0d0
-                if (j .gt. 1000) h(i,j) = 0d0
-                if (j .gt. 1000) A(i,j) = 0d0 
+                if (i .lt. 101 .or. i .gt. 300) h(i,j) = 0d0
+                if (i .lt. 101 .or. i .gt. 300) A(i,j) = 0d0
+                if (j .gt. 500) h(i,j) = 10d0
+                if (j .gt. 500) A(i,j) = 1d0 
 
             elseif ((nx == 102) .and. (ny == 402)) then
                 if (i .lt. 21 .or. i .gt. 81) h(i,j) = 0d0

@@ -30,7 +30,7 @@
       integer, parameter :: h2sec = 3600
       integer  year, month, day, hour, minute, second, milli
 
-      double precision tauax, tauay, wspeed, rampfactor, Tramp
+      double precision tauax, tauay, wspeed, rampfactor, Tramp, wspeed_goal
       double precision uairmax, uairmean,alpha
       double precision uair1(0:nx+2,0:ny+2),vair1(0:nx+2,0:ny+2)
       double precision uair2(0:nx+2,0:ny+2),vair2(0:nx+2,0:ny+2)
@@ -120,12 +120,33 @@
 
          if (RampupWind) then
             wspeed = 10.0d0
-            ! Tramp = 6d0*3600d0
-            ! Tramp = 10
-            Tramp = 2*60*60
-            ! Tramp = 20d0
+            Tramp = 6d0*3600d0
 
             rampfactor=1d0-exp(-1d0*tstep*Deltat/Tramp)
+
+
+            if (rheology .eq. 4) then
+
+            ! linear ramp up 
+      
+               ! rampfactor = 1d0
+               ! Tramp = 2*60*60
+               ! Tramp = 10
+               ! wspeed_goal = 10d0
+
+               ! wspeed = wspeed_goal * min(1.0d0, (tstep * Deltat) / Tramp)
+               wspeed = 10d0
+               ! Tramp = 60*60*2
+               Tramp = 10
+               rampfactor=1d0-exp(-1d0*tstep*Deltat/Tramp)
+
+            else
+               wspeed = 10.0d0
+               Tramp = 6d0*3600d0
+
+               rampfactor=1d0-exp(-1d0*tstep*Deltat/Tramp)
+
+            endif
 
          elseif (RampupForcing) then
             wspeed = 14.0d0
@@ -145,15 +166,15 @@
          do i = 1, nx+1
             do j = 1, ny+1
                
-               ! uair(i,j) = rampfactor*wspeed
+               ! uair(i,j) = 0d0
                ! vair(i,j) = 0d0
                vair(i, j) = -wspeed*rampfactor
                uair(i, j) = 0d0
                
-               ! if (j .gt. 150) then
-                  ! 
-                  !    uair(i,j) = rampfactor*wspeed
-                  ! vair(i,j) = 0d0
+               ! if (j .gt. 500) then
+               !    ! 
+               !    vair(i, j) = -wspeed*rampfactor
+               !    uair(i, j) = 0d0
                ! endif
                
 !     call random_number(rdnumb)
