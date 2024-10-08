@@ -269,7 +269,7 @@ subroutine initial_conditions_muPhi
             Pp(i,j) = Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ) )
             ! Phi_I(i,j) = A(i,j)
          ! else 
-         !    P(i,j) = 0
+            ! Pp(i,j) = 0
          endif
       enddo
    enddo
@@ -304,16 +304,19 @@ subroutine initial_conditions_uniaxial
             if (h(i, j) < 1e-6) then
             ! print *, 'here'
 
-               mu_I(i, j) = mu_infty
+               ! mu_I(i, j) = mu_infty
+               mu_I(i, j) = 0d0
                Phi_I(i, j) = 0d0
+               ! Phi_I(i, j) = 0.5
                inertial(i, j) = 1d0
             ! if (h(i, j) .eq. 0d0) then 
                
             
             else
-               mu_I(i, j) = mu_0
-               Phi_I(i, j) = 1d0
-               inertial(i, j) = 1d-12
+               mu_I(i, j) = 0d0
+               ! Phi_I(i, j) = 1d0
+               Phi_I(i, j) = 1
+               inertial(i, j) = 1d-16
                
                endif
             ! else

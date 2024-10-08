@@ -28,6 +28,9 @@ def read_data(expno, dates, outputdir, MuPhi = True):
         'p_dates': [],
         'sig_I_dates': [],
         'sig_II_dates': [],
+        'zetaC': [], 
+        'uair_dates':[], 
+        'vair_dates':[]
     }
     
     if MuPhi:
@@ -35,6 +38,9 @@ def read_data(expno, dates, outputdir, MuPhi = True):
             'muI_dates': [],
             'phi_dates': [],
             'I_dates': [],
+            'e_II_dates':[], 
+            'Pmax_dates':[], 
+            'Peq_dates':[]
         })
     
     for k, date in enumerate(dates, start=1):
@@ -46,7 +52,10 @@ def read_data(expno, dates, outputdir, MuPhi = True):
             ('A', 'A_dates'),
             ('p', 'p_dates'),
             ('sigI', 'sig_I_dates'),
-            ('sigII', 'sig_II_dates')
+            ('sigII', 'sig_II_dates'),
+            ('zeta', 'zetaC'), 
+            ('uair', 'uair_dates'), 
+            ('vair', 'vair_dates'), 
         ]
         
         for prefix, key in files_info:
@@ -55,7 +64,7 @@ def read_data(expno, dates, outputdir, MuPhi = True):
             data_dict[key].append(np.loadtxt(filename, dtype=None))
         
         if MuPhi:
-            for prefix, key in [('mu_I', 'muI_dates'), ('I', 'I_dates'), ('phi_I', 'phi_dates')]:
+            for prefix, key in [('mu_I', 'muI_dates'), ('I', 'I_dates'), ('phi_I', 'phi_dates'), ('e_II', 'e_II_dates'), ('Pmax', 'Pmax_dates'), ('Peq', 'Peq_dates')]:
                 filename = f"{outputdir}{prefix}{date}.{expno}"
                 data_dict[key].append(np.loadtxt(filename, dtype=None))
         

@@ -31,6 +31,7 @@ subroutine inertial_number
                 if (h(i, j) < eps) then
                 ! force to highI in water when the height is less than eps
                     inertial(i, j) = highI
+                    ! inertial(i, j) = 0
                 else
                     inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j), highI)
                 endif
@@ -90,12 +91,13 @@ subroutine dilatancy
         do j = 0, ny+1
             if (maskC(i,j) .eq. 1) then
 
-                ! if ( 0 > h(i,j)-eps .and. 0 < h(i,j)+eps ) then 
-                !     Phi_I(i, j) = 0
-                ! else
-                    Phi_I(i, j) = Phi_0 - c_phi * inertial(i, j)
+                if ( h(i, j) < 1d-6 ) then 
+                    Phi_I(i, j) = 0
+                else
+                    ! Phi_I(i, j) = Phi_0 - c_phi * inertial(i, j)
+                    Phi_I(i, j) = 0.5
                 
-                ! endif
+                endif
             ! else 
             !     Phi_I(i, j) = 0
             endif
@@ -138,8 +140,14 @@ subroutine angle_friction_mu
                 ! elseif (I_0/inertial(i, j) < 1d-02) then
                 !     mu_I(i, j) = mu_infty
                 
+                ! ! else
+                ! if (h(i, j) < 1d-6) then
+                !     mu_I(i, j) = 0 
                 ! else
-                    mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/inertial(i, j) + 1)
+                !     ! mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/inertial(i, j) + 1)
+                !     ! mu_I(i, j) = min(mu_0 +  ( mu_infty - mu_0 ) / ( I_0/(1-A(i, j)) + 1 ), mu_infty) 
+                !     mu_I(i, j) = max(mu_0 +  ( mu_infty - mu_0 ) / ( I_0/(1-A(i, j)) + 1 ), mu_0) 
+                mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( I_0/(1-A(i, j)) + 1 )
                 ! endif
             endif
         enddo
@@ -287,3 +295,31 @@ subroutine shear(utp, vtp)
 
     return
 end subroutine shear
+
+
+subroutine div(utp, vtp)
+
+    implicit none
+
+    include 'parameter.h'
+    include 'CB_mask.h'
+    include 'CB_const.h'
+    include 'CB_DynVariables.h'
+
+    integer i, j
+    double precision, intent(in) :: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
+    ! double precision, intent(out):: div(nx,ny)
+
+    do i = 1, nx
+        do j = 1, ny
+
+        if (maskC(i,j) .eq. 1) then
+
+            div_I(i,j)=(utp(i+1,j)-utp(i,j) + vtp(i,j+1)-vtp(i,j))/Deltax 
+
+        endif
+
+        enddo
+    enddo
+
+end subroutine div

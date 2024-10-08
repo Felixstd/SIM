@@ -1,0 +1,54 @@
+1990-01-01:00:00:00  starting date
+1990-01-01:00:00:15  end date
+1990-01-01:01:00:01  posting date
+1990-01-01:01:00:02  posting date
+1990-01-01:01:00:03  posting date
+1990-01-01:01:00:04  posting date
+1990-01-01:01:00:05  posting date
+1990-01-01:01:00:06  posting date
+1990-01-01:01:00:07  posting date
+1990-01-01:01:00:08  posting date
+1990-01-01:01:00:09  posting date
+1990-01-01:01:00:10  posting date
+1990-01-01:01:00:11  posting date
+1990-01-01:01:00:12  posting date
+1990-01-01:01:00:13  posting date
+1990-01-01:01:00:14  posting date
+1990-01-01:01:00:15  posting date
+
+
+
+1                    input namelist
+0                    restart
+15                   exp version
+1990-01-01:00:00:00  starting date
+1990-01-01:02:30:00  end date
+1990-01-01:00:15:00  posting date
+1990-01-01:00:30:00  posting date
+1990-01-01:00:45:00  posting date
+1990-01-01:01:00:00  posting date
+1990-01-01:01:15:00  posting date
+1990-01-01:01:30:00  posting date
+1990-01-01:01:45:00  posting date
+1990-01-01:02:00:00  posting date
+1990-01-01:02:15:00  posting date
+1990-01-01:02:20:00  posting date
+1990-01-01:02:25:00  posting date
+1990-01-01:02:28:00  posting date
+1990-01-01:02:29:00  posting date
+stop                 end of post date string
+
+1990-01-01:00:00:00  starting date
+1990-01-01:02:30:00  end date
+1990-01-01:00:15:00  posting date
+1990-01-01:00:30:00  posting date
+1990-01-01:00:45:00  posting date
+1990-01-01:01:00:00  posting date
+1990-01-01:01:15:00  posting date
+1990-01-01:01:30:00  posting date
+1990-01-01:01:45:00  posting date
+1990-01-01:02:00:00  posting date
+1990-01-01:02:15:00  posting date
+1990-01-01:02:20:00  posting date
+1990-01-01:02:25:00  posting date
+stop                 end of post date string

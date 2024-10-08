@@ -26,6 +26,7 @@
         use numerical_EVP
         use solver_choice
         use basal_param
+        use grid_angle
         
         implicit none
         
@@ -151,11 +152,13 @@
 
       elseif (((nx == 200) .and. (ny == 500)) .or. ((nx == 500) .and. (ny == 500))) then
          Deltax     = 1d03/2
-
+         ! Deltax     = 1d03*10
+         ! Deltax = 25
 
       elseif (((nx == 200) .or. (nx == 400)) .and. (ny == 1000)) then
-         ! Deltax     =  2d03           !  Uniaxial loading (Ringeisen et al., 2019).
-         Deltax = 1d03/2
+         Deltax     =  2d03           !  Uniaxial loading (Ringeisen et al., 2019).
+         ! Deltax = 1d03/2
+         ! Deltax = 10d03
       
       elseif ((nx == 102) .and. (ny == 402)) then
          Deltax     =  2d03            ! Ideal ice bridge (Plante et al., 2020) 
@@ -168,13 +171,16 @@
       Deltax2 = Deltax**2d0
 
 ! Mu(I) - Phi(I) rheology (rheology = 4)
-      d_average  = 1d03
-      mu_0 = 4d-01
-      mu_infty = 9d-01
-      I_0        = 1d-04            
-      mu_b       = 9d-01
+      d_average  = 1d3
+      mu_0 =     TAN(5*pi/36)
+      mu_infty = TAN(13*pi/36)
+      I_0        = 1e-3
+      mu_b       = 0.45
       Phi_0      = 1
       c_phi      = 1
+
+      d = 100
+      theta = 45 * pi / 180
 
 !------------------------------------------------------------------------
 !     Numerical parameters
@@ -184,7 +190,7 @@
 
       wjac  = 0.575d0
       ! wsor  = 2d0           ! relaxation parameter for SOR precond
-      wlsor = 1.2d0           ! relaxation parameter for SOR precond
+      wlsor = 1.3d0           ! relaxation parameter for SOR precond
       ! wlsor = 0.6d0
       wsor  = 0.95d0           ! relaxation parameter for SOR precond
       kjac  = 10               !
@@ -392,7 +398,7 @@ subroutine read_namelist
            adv_scheme, AirTemp, OcnTemp, Wind, RampupWind,      &
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,            &
-           BasalStress, uniaxial
+           BasalStress, uniaxial, inclined
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub
@@ -579,7 +585,13 @@ subroutine read_namelist
 !------------------------------------------------------------------------                                     
 
 ! Uniaxial compression experiment.
-      if ((nx == 100) .and. (ny == 250)) then
+      print*, 'inclined:', inclined
+      if (inclined) then 
+         print *, 'inclined' 
+
+         call grid_inclination
+
+      elseif ((nx == 100) .and. (ny == 250)) then
          !Make mask:
          do i = 0, nx+1
             do j = 0, ny+1
@@ -601,6 +613,7 @@ subroutine read_namelist
             enddo
          enddo
       elseif ((nx == 200) .and. (ny == 500)) then
+         print *, '200, 500' 
          !Make mask:
          do i = 0, nx+1
             do j = 0, ny+1
@@ -636,28 +649,26 @@ subroutine read_namelist
                endif
             enddo
          enddo
-      
-      elseif ((nx == 500) .and. (ny == 500)) then
-         call grid_inclination
          
 ! Ideal ice bridge experiment, 2.0 km resolution.	 
       elseif ((nx == 102) .and. (ny == 402)) then
 
          !Mask:
          do i = 0, nx+1
-         do j = 0, ny+1 
-           maskC(i,j) = 1
-           if (( i .gt. 66 ) .and. ((j .gt. (151)) .and. (j .lt. 252+1)) ) then
-              maskC(i,j) = 0 
-           elseif (( i .lt. (35)+1 ) .and. ((j .gt. (151)) .and. (j .lt. 252+1))) then
-              maskC(i,j) = 0
-           elseif (j .lt.  0) then
-              maskC(i,j) = 0 
-           elseif (j .gt. ny-1) then
-              maskC(i,j) = 0
-           endif 
+            do j = 0, ny+1 
+               maskC(i,j) = 1
+               if (( i .gt. 66 ) .and. ((j .gt. (151)) .and. (j .lt. 252+1)) ) then
+                  maskC(i,j) = 0 
+               elseif (( i .lt. (35)+1 ) .and. ((j .gt. (151)) .and. (j .lt. 252+1))) then
+                  maskC(i,j) = 0
+               elseif (j .lt.  0) then
+                  maskC(i,j) = 0 
+               elseif (j .gt. ny-1) then
+                  maskC(i,j) = 0
+               endif 
+            enddo
          enddo
-         enddo
+      
 ! In pan Arctic simulation, load to mask file corresponding to the resolution 
       else	 
 

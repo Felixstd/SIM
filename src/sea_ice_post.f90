@@ -87,6 +87,14 @@
               year, month, day, hour, minute, second, expno
          open (42, file = filename, status = 'unknown')
 
+          write (filename,'("/storage/fstdenis/output_sim/uair",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
+         open (44, file = filename, status = 'unknown')
+
+         write (filename,'("/storage/fstdenis/output_sim/vair",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
+         open (45, file = filename, status = 'unknown')
+
       endif
 
       if ( Thermodyn ) then
@@ -143,6 +151,11 @@
               year, month, day, hour, minute, second, expno
          open (39, file = filename, status = 'unknown')
 
+         write (filename,'("/storage/fstdenis/output_sim/Pmax",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, second, expno
+         open (43, file = filename, status = 'unknown')
+
+
 
       endif
 
@@ -170,6 +183,8 @@
          do j = 0, ny+1
             write(12,*) ( uice(i,j), i = 1, nx+1 )
             write(13,*) ( vice(i,j), i = 1, nx+1 )
+            write(44,*) (uair(i, j), i = 0, nx+1)
+            write(45,*) (vair(i, j), i = 0, nx+1)
 !            write(17,20) ( uwatnd(i,j), i = 1, nx+1 )
          enddo
 
@@ -236,7 +251,7 @@
             write(40,*) ( Phi_I(i,j), i = 0, nx+1)
             write(38,*) ( mu_I(i,j), i = 0, nx+1)
             write(39,*) ( Peq(i,j), i = 0, nx+1)
-            ! write(14,*) ( Pp(i,j), i = 0, nx+1)
+            write(43,*) ( Pmax(i,j), i = 0, nx+1)
             write(15,*) (shear_I(i, j), i = 0, nx+1)
             write(41,*) (etaC(i, j), i = 0, nx+1)
          enddo

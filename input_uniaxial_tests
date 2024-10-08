@@ -2,7 +2,7 @@
 0                    restart
 99                   exp version
 1990-01-01:00:00:00  starting date
-1990-01-01:00:00:15  posting date
+1990-01-01:00:00:15  end date
 1990-01-01:00:00:01  posting date
 1990-01-01:00:00:02  posting date
 1990-01-01:00:00:03  posting date
@@ -17,4 +17,5 @@
 1990-01-01:00:00:12  posting date
 1990-01-01:00:00:13  posting date
 1990-01-01:00:00:14  posting date
+1990-01-01:00:00:15  posting date
 stop                 end of post date string

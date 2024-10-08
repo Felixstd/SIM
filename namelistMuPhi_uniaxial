@@ -2,7 +2,7 @@
     Dynamic  = .true.
     ThermoDyn  = .false.
     linearization = 'Zhang'
-    regularization = 'capping'
+    regularization = 'tanh'
     ini_guess = 'previous time step'
     adv_scheme = 'upwind'
     Airtemp = 'specified'
@@ -15,19 +15,20 @@
     Periodic_y = 0
     ideal = .true.
     Rheology = 4
-    IMEX = 1
+    IMEX = 0
     BDF = 0
     visc_method = 2
     solver = 1
     BasalStress = .false.
     uniaxial = .true.
+    inclined = .true.
 /
 
 &numerical_param_nml
     Deltat    = 0.1
     gamma_nl = 1d-03
     NLmax = 200     
-    OLmax = 1000
+    OLmax = 1500
     Nsub  = 120  
 /
 

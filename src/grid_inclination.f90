@@ -1,5 +1,8 @@
 subroutine grid_inclination
 
+    use grid_angle
+
+
     implicit none
 
     include 'parameter.h'
@@ -8,31 +11,41 @@ subroutine grid_inclination
     include 'CB_options.h'
     include 'CB_const.h'
 
-    integer i, j, x1, x2, y1, y2, row1, row2, col1, col2
+    integer i, j
     
-    double precision :: slope
+    double precision :: y, x, center_x, center_y
+    double precision :: intercept_1, intercept_2, slope
 
-    slope = 1
+!
+! Here, intercept_2 > intercept_1
+!
+    slope = tan(theta)
 
-    x1 = 0
-    y1 = 50
+    center_x = nx / 2.0
+    center_y = ny / 2.0
 
-    x2 = 100
-    y2 = 0
+    intercept_1 = - d / (2 * cos(theta))
+    intercept_2 =  d / (2 * cos(theta))
+
+    
 
 
-    do i = 0, nx+1
-        row1 = x1 + i 
-        col1 = y1 + i * slope
-        row2 = x2 + i
-        col2 = y2 + i * slope
-        if ((row1 < nx) .and. (col1 < nx) .and. (col2 < nx)) then
-            do j = col1, col2 + 1
-                maskC(i, j) = 1
-            enddo
-        endif
+    do i = 1, nx+1
+        do j = 1, ny+1
 
-    enddo
+            x = i - center_x
+            y = j - center_y
+
+            if (y < -intercept_2 * slope * x / intercept_1 + intercept_2) then
+                maskC(i, j) = 0.0
+            
+            elseif (y >= slope * x + intercept_1 .and. y <= slope * x + intercept_2) then
+                maskC(i, j) = 1.0
+        
+            endif
+        end do
+    end do
+
 
     
 end subroutine grid_inclination

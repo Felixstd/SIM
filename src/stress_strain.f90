@@ -150,8 +150,14 @@
 
 ! watchout p in our code is in fact p/2 in Hibler's equations
 
+                  if (Rheology .eq. 4) then
 
-                  sigI(i,j)   = -1d0*( dudx + dvdy )*zetaCf(i,j)+Pf(i,j)
+                     sigI(i,j)   = -1d0*( dudx + dvdy )*zetaCf(i,j)+Pp(i,j)
+                  
+                  else
+                     sigI(i,j)   = -1d0*( dudx + dvdy )*zetaCf(i,j)+Pf(i,j)
+
+                  endif
 
 
                   sigII(i,j) = sqrt(( dudx - dvdy )**2d0 &

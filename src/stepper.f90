@@ -104,7 +104,16 @@
 !------- Calc ice strength and part of b vector if IMEX=0 -----------------
 
          if ( IMEX .eq. 0 ) then
-            if (Rheology .ne. 3) call Ice_strength()
+            if ((Rheology < 3)) then
+               call Ice_strength()
+            
+            elseif (Rheology .eq. 4) then
+               call angle_friction_mu()
+               ! ! call div(uice, vice)
+               call shear(uice, vice)
+               call Ice_strength()
+            endif
+
             if (solver .le. 2) then ! Picard or JFNK
                call bvect_ind ! function of h ( not directly f(u) )
             endif
@@ -153,7 +162,11 @@
                      call stress_strain_MEB(uice, vice, date, kd, expno)
                   
 
-                     
+                  elseif (Rheology .eq. 4) then
+                     call angle_friction_mu()
+                     ! call div(uice, vice)
+                     call shear(uice, vice)
+                     call Ice_strength()
                   else
                   
                      call Ice_strength()
@@ -220,7 +233,8 @@
                      call stress_strain_MEB(uice, vice, date, kd, expno)
                   
                   elseif (Rheology .eq. 4) then
-
+                     call angle_friction_mu()
+                     call shear(uice, vice)
                      call Ice_strength()
                      
                   else
@@ -289,17 +303,17 @@
                   
          endif      
 
-         if ( Rheology .eq. 4) then
-!------------------------------------------------------------------------        
-!     If using the mu(I) - Phi(I) rheology, update the shear, inertial number, mu and the dilantancy      
-!------------------------------------------------------------------------    
+!          if ( Rheology .eq. 4) then
+! ! !------------------------------------------------------------------------        
+! ! !     If using the mu(I) - Phi(I) rheology, update the shear, inertial number, mu and the dilantancy      
+! ! !------------------------------------------------------------------------    
 
-            call shear(uice, vice)
-            call inertial_number()
-            call angle_friction_mu()
-            call dilatancy() 
+!             call shear(uice, vice)
+!             ! call inertial_number()
+!             call angle_friction_mu()
+!             ! call dilatancy() 
 
-         endif
+!          endif
 
          
 
@@ -324,6 +338,11 @@
 
             !if (Rheology .eq. 3) &
             !     call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam)
+
+            ! if (Rheology .eq. 4) then
+            !     call shear(uice, vice)
+            !     call angle_friction_mu()
+            ! endif
 
          endif
             

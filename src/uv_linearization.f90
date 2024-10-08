@@ -17,6 +17,9 @@
          ul = ( uk2 + uice ) / 2d0 ! these are vectors, uice = u^k-1
          vl = ( vk2 + vice ) / 2d0
 
+         ! vl = ( vk2*0.95 + vice*0.05 )
+         ! ul = ( uk2*0.95 + uice*0.05 )
+
       elseif (linearization .eq. 'Tremblay') then
          
          ul = ( ul + uice ) / 2d0  ! these are vectors, uice = u^k-1

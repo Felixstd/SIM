@@ -1,0 +1,2152 @@
+ Read namelist?
+           1
+ Use restart file for (h,A,u,v)?
+ experiment #?
+          99
+ Starting date?
+ start date : 1990-01-01 00:00:00
+ End date?
+ end date : 1990-01-01 00:00:15
+ Posting date, time?
+ postdate 1990-01-01 00:00:01
+ postdate 1990-01-01 00:00:02
+ postdate 1990-01-01 00:00:03
+ postdate 1990-01-01 00:00:04
+ postdate 1990-01-01 00:00:05
+ postdate 1990-01-01 00:00:06
+ postdate 1990-01-01 00:00:07
+ postdate 1990-01-01 00:00:08
+ postdate 1990-01-01 00:00:09
+ postdate 1990-01-01 00:00:10
+ postdate 1990-01-01 00:00:11
+ postdate 1990-01-01 00:00:12
+ postdate 1990-01-01 00:00:13
+ postdate 1990-01-01 00:00:14
+ postdate 1990-01-01 00:00:15
+ Reading namelist values
+ Reading option_nml
+ Reading other_nml
+ Reading phys_param_nml
+           0
+   0.0000000000000000        0.0000000000000000        0.0000000000000000     
+
+ Rheology      =              4
+ Pstar         =      27500.000000000000     
+ linearization =   Zhang               
+ regularization=   tanh                
+ initial guess =   previous time step  
+ Dynamic       =    T
+ Thermodyn     =    F
+ Current       =   specified           
+ Wind          =   specified           
+ AirTemp       =   specified           
+ OcnTemp       =   specified           
+
+ time step [s] =     0.10000000000000001     
+ Basal F
+ inclined: T
+ inclined
+ Reading ocean currents for the  0 km resolution grid.
+ reading                                                             
+ reading                                                             
+ 1990-01-01 00:00:00           1
+ Specified uair(m/s) =           1   5.5555555555412660E-005
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   9.5219999999995864E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:00           2
+ Specified uair(m/s) =           2   1.1111111110996799E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4779999999998736E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:00           3
+ Specified uair(m/s) =           3   1.6666666666280866E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.9789999999997363E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:00           4
+ Specified uair(m/s) =           4   2.2222222221307729E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.1559999999996080E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:00           5
+ Specified uair(m/s) =           5   2.7777777775991652E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5460000000000527E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:00           6
+ Specified uair(m/s) =           6   3.3333333330246923E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7120000000001632E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:00           7
+ Specified uair(m/s) =           7   3.8888888883987778E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5000000000002842E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:00           8
+ Specified uair(m/s) =           8   4.4444444437128489E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0909999999998483E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:00           9
+ Specified uair(m/s) =           9   4.9999999989583344E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.7839999999999030E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:01          10
+ Specified uair(m/s) =          10   5.5555555541266584E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8570000000000029E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+           1  -- Calling sea-ice_post
+ 1990-01-01 00:00:01          11
+ Specified uair(m/s) =          11   6.1111111092092480E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0359999999997100E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:01          12
+ Specified uair(m/s) =          12   6.6666666641975337E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7109999999995793E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:01          13
+ Specified uair(m/s) =          13   7.2222222190829351E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8800000000001091E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:01          14
+ Specified uair(m/s) =          14   7.7777777738568827E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7690000000005810E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:01          15
+ Specified uair(m/s) =          15   8.3333333285108048E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5849999999997308E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:01          16
+ Specified uair(m/s) =          16   8.8888888830361231E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5960000000003802E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:01          17
+ Specified uair(m/s) =          17   9.4444444374242693E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6520000000002142E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:01          18
+ Specified uair(m/s) =          18   9.9999999916666662E-004
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6200000000001822E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:01          19
+ Specified uair(m/s) =          19   1.0555555545754746E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8180000000003247E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:02          20
+ Specified uair(m/s) =          20   1.1111111099679927E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.3219999999997185E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+           2  -- Calling sea-ice_post
+ 1990-01-01 00:00:02          21
+ Specified uair(m/s) =          21   1.1666666653433644E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.2140000000006097E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:02          22
+ Specified uair(m/s) =          22   1.2222222207007318E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8589999999998383E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:02          23
+ Specified uair(m/s) =          23   1.2777777760392378E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5509999999994193E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:02          24
+ Specified uair(m/s) =          24   1.3333333313580249E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7750000000005315E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:02          25
+ Specified uair(m/s) =          25   1.3888888866562354E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6689999999999259E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:02          26
+ Specified uair(m/s) =          26   1.4444444419330136E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8069999999996753E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:02          27
+ Specified uair(m/s) =          27   1.4999999971875000E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.9669999999989471E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:02          28
+ Specified uair(m/s) =          28   1.5555555524188389E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6999999999998181E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:02          29
+ Specified uair(m/s) =          29   1.6111111076261720E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6629999999990872E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:03          30
+ Specified uair(m/s) =          30   1.6666666628086424E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6039999999988339E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+           3  -- Calling sea-ice_post
+ 1990-01-01 00:00:03          31
+ Specified uair(m/s) =          31   1.7222222179653923E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.4300000000006037E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:03          32
+ Specified uair(m/s) =          32   1.7777777730955649E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6140000000002317E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:03          33
+ Specified uair(m/s) =          33   1.8333333281983027E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4439999999995621E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:03          34
+ Specified uair(m/s) =          34   1.8888888832727482E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8519999999997481E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:03          35
+ Specified uair(m/s) =          35   1.9444444383180442E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4159999999992010E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:03          36
+ Specified uair(m/s) =          36   1.9999999933333337E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8790000000008575E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:03          37
+ Specified uair(m/s) =          37   2.0555555483177590E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7379999999998006E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:03          38
+ Specified uair(m/s) =          38   2.1111111032704622E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7709999999999724E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:03          39
+ Specified uair(m/s) =          39   2.1666666581905869E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.9060000000001907E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:04          40
+ Specified uair(m/s) =          40   2.2222222130772748E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.3179999999997136E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+           4  -- Calling sea-ice_post
+ 1990-01-01 00:00:04          41
+ Specified uair(m/s) =          41   2.2777777679296703E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4100000000001387E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:04          42
+ Specified uair(m/s) =          42   2.3333333227469138E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6520000000002142E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:04          43
+ Specified uair(m/s) =          43   2.3888888775281491E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6480000000014314E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:04          44
+ Specified uair(m/s) =          44   2.4444444322725195E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5420000000008258E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:04          45
+ Specified uair(m/s) =          45   2.4999999869791669E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8790000000008575E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:04          46
+ Specified uair(m/s) =          46   2.5555555416472342E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4800000000010414E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:04          47
+ Specified uair(m/s) =          47   2.6111110962758637E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0399999999993810E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:04          48
+ Specified uair(m/s) =          48   2.6666666508641979E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0030000000004264E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:04          49
+ Specified uair(m/s) =          49   2.7222222054113804E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.3660000000010939E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:05          50
+ Specified uair(m/s) =          50   2.7777777599165528E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.3900000000008959E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+           5  -- Calling sea-ice_post
+ 1990-01-01 00:00:05          51
+ Specified uair(m/s) =          51   2.8333333143788584E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7509999999989532E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:05          52
+ Specified uair(m/s) =          52   2.8888888687974403E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5849999999988427E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:05          53
+ Specified uair(m/s) =          53   2.9444444231714398E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6129999999992037E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:05          54
+ Specified uair(m/s) =          54   2.9999999775000004E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.9050000000009391E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:05          55
+ Specified uair(m/s) =          55   3.0555555317822647E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5919999999989329E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:05          56
+ Specified uair(m/s) =          56   3.1111110860173766E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7099999999994395E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:05          57
+ Specified uair(m/s) =          57   3.1666666402044756E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.9400000000013904E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:05          58
+ Specified uair(m/s) =          58   3.2222221943427076E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   9.0110000000009904E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:05          59
+ Specified uair(m/s) =          59   3.2777777484312132E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.3210000000010211E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:06          60
+ Specified uair(m/s) =          60   3.3333333024691369E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.3579999999999757E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+           6  -- Calling sea-ice_post
+ 1990-01-01 00:00:06          61
+ Specified uair(m/s) =          61   3.3888888564556196E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0790000000021678E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:06          62
+ Specified uair(m/s) =          62   3.4444444103898034E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8130000000022903E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:06          63
+ Specified uair(m/s) =          63   3.4999999642708344E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6350000000005025E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:06          64
+ Specified uair(m/s) =          64   3.5555555180978517E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.3259999999990555E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:06          65
+ Specified uair(m/s) =          65   3.6111110718700002E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   1.0198000000002594E-002
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:06          66
+ Specified uair(m/s) =          66   3.6666666255864211E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   1.0418000000001371E-002
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:06          67
+ Specified uair(m/s) =          67   3.7222221792462575E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   1.0130000000000194E-002
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:06          68
+ Specified uair(m/s) =          68   3.7777777328486519E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7090000000019643E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:06          69
+ Specified uair(m/s) =          69   3.8333332863927476E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.3669999999985691E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:07          70
+ Specified uair(m/s) =          70   3.8888888398776879E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4490000000011491E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+           7  -- Calling sea-ice_post
+ 1990-01-01 00:00:07          71
+ Specified uair(m/s) =          71   3.9444443933026128E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6830000000001064E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:07          72
+ Specified uair(m/s) =          72   3.9999999466666675E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4679999999993640E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:07          73
+ Specified uair(m/s) =          73   4.0555554999689948E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5579999999995096E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:07          74
+ Specified uair(m/s) =          74   4.1111110532087349E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.9589999999996053E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:07          75
+ Specified uair(m/s) =          75   4.1666666063850319E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5040000000008433E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:07          76
+ Specified uair(m/s) =          76   4.2222221594970296E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.3970000000009861E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:07          77
+ Specified uair(m/s) =          77   4.2777777125438685E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4220000000018160E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:07          78
+ Specified uair(m/s) =          78   4.3333332655246925E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4560000000012394E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:07          79
+ Specified uair(m/s) =          79   4.3888888184386446E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6070000000001414E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:08          80
+ Specified uair(m/s) =          80   4.4444443712848671E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0179999999998586E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+           8  -- Calling sea-ice_post
+ 1990-01-01 00:00:08          81
+ Specified uair(m/s) =          81   4.4999999240625012E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.4599999999994679E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:08          82
+ Specified uair(m/s) =          82   4.5555554767706926E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0299999999979832E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:08          83
+ Specified uair(m/s) =          83   4.6111110294085817E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4819999999995446E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:08          84
+ Specified uair(m/s) =          84   4.6666665819753116E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4620000000003017E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:08          85
+ Specified uair(m/s) =          85   4.7222221344700235E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.6730000000017071E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:08          86
+ Specified uair(m/s) =          86   4.7777776868918632E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.6670000000026448E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:08          87
+ Specified uair(m/s) =          87   4.8333332392399720E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.6079999999988388E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:08          88
+ Specified uair(m/s) =          88   4.8888887915134920E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0120000000007963E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:08          89
+ Specified uair(m/s) =          89   4.9444443437115654E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4860000000001037E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:09          90
+ Specified uair(m/s) =          90   4.9999998958333361E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6549999999997453E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+           9  -- Calling sea-ice_post
+ 1990-01-01 00:00:09          91
+ Specified uair(m/s) =          91   5.0555554478779463E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4700000000014199E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:09          92
+ Specified uair(m/s) =          92   5.1111109998445391E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6110000000007005E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:09          93
+ Specified uair(m/s) =          93   5.1666665517322557E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4100000000001387E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:09          94
+ Specified uair(m/s) =          94   5.2222221035402427E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5329999999986796E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:09          95
+ Specified uair(m/s) =          95   5.2777776552676361E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5220000000015830E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:09          96
+ Specified uair(m/s) =          96   5.3333332069135852E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4760000000004823E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:09          97
+ Specified uair(m/s) =          97   5.3888887584772286E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4589999999972179E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:09          98
+ Specified uair(m/s) =          98   5.4444443099577093E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5329999999986796E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:09          99
+ Specified uair(m/s) =          99   5.4999998613541714E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7210000000036416E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:10         100
+ Specified uair(m/s) =         100   5.5555554126657577E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.9190000000011196E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+          10  -- Calling sea-ice_post
+ 1990-01-01 00:00:10         101
+ Specified uair(m/s) =         101   5.6111109638916096E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0969999999993547E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:10         102
+ Specified uair(m/s) =         102   5.6666665150308694E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.9770000000038976E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:10         103
+ Specified uair(m/s) =         103   5.7222220660826818E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6859999999996376E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:10         104
+ Specified uair(m/s) =         104   5.7777776170461880E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6979999999977622E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:10         105
+ Specified uair(m/s) =         105   5.8333331679205312E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6079999999976167E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:10         106
+ Specified uair(m/s) =         106   5.8888887187048544E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.1209999999956040E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:10         107
+ Specified uair(m/s) =         107   5.9444442693982981E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.1810000000004379E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:10         108
+ Specified uair(m/s) =         108   5.9999998200000069E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6899999999966440E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:10         109
+ Specified uair(m/s) =         109   6.0555553705091232E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7209999999965362E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:11         110
+ Specified uair(m/s) =         110   6.1111109209247907E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0820000000016989E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+          11  -- Calling sea-ice_post
+ 1990-01-01 00:00:11         111
+ Specified uair(m/s) =         111   6.1666664712461509E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6639999999983388E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:11         112
+ Specified uair(m/s) =         112   6.2222220214723459E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7799999999967895E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:11         113
+ Specified uair(m/s) =         113   6.2777775716025188E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.9419999999998936E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:11         114
+ Specified uair(m/s) =         114   6.3333331216358117E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8360000000046170E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:11         115
+ Specified uair(m/s) =         115   6.3888886715713676E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.7200000000061664E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:11         116
+ Specified uair(m/s) =         116   6.4444442214083323E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6979999999977622E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:11         117
+ Specified uair(m/s) =         117   6.4999997711458445E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5259999999985894E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:11         118
+ Specified uair(m/s) =         118   6.5555553207830462E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.9229999999981260E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:11         119
+ Specified uair(m/s) =         119   6.6111108703190841E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.2250000000030354E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:12         120
+ Specified uair(m/s) =         120   6.6666664197530985E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0519999999992820E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+          12  -- Calling sea-ice_post
+ 1990-01-01 00:00:12         121
+ Specified uair(m/s) =         121   6.7222219690842317E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.2919999999973015E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:12         122
+ Specified uair(m/s) =         122   6.7777775183116267E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0470000000048003E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:12         123
+ Specified uair(m/s) =         123   6.8333330674344266E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8650000000024534E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:12         124
+ Specified uair(m/s) =         124   6.8888886164517734E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4329999999989127E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:12         125
+ Specified uair(m/s) =         125   6.9444441653628113E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6409999999995648E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:12         126
+ Specified uair(m/s) =         126   6.9999997141666813E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.0000000000026716E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:12         127
+ Specified uair(m/s) =         127   7.0555552628625267E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8280000000034988E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:12         128
+ Specified uair(m/s) =         128   7.1111108114494887E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.9909999999969727E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:12         129
+ Specified uair(m/s) =         129   7.1666663599267129E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6299999999989154E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:13         130
+ Specified uair(m/s) =         130   7.2222219082933407E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6889999999991687E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+          13  -- Calling sea-ice_post
+ 1990-01-01 00:00:13         131
+ Specified uair(m/s) =         131   7.2777774565485152E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.5699999999988563E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:13         132
+ Specified uair(m/s) =         132   7.3333330046913767E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.1509999999980209E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:13         133
+ Specified uair(m/s) =         133   7.3888885527210700E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5810000000018363E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:13         134
+ Specified uair(m/s) =         134   7.4444441006367365E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6350000000005025E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:13         135
+ Specified uair(m/s) =         135   7.4999996484375201E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8390000000041482E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:13         136
+ Specified uair(m/s) =         136   7.5555551961225629E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.1640000000007262E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:13         137
+ Specified uair(m/s) =         137   7.6111107436910080E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5069999999968218E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:13         138
+ Specified uair(m/s) =         138   7.6666662911419985E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6360000000050832E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:13         139
+ Specified uair(m/s) =         139   7.7222218384746756E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6190000000053715E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:14         140
+ Specified uair(m/s) =         140   7.7777773856881824E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6889999999991687E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+          14  -- Calling sea-ice_post
+ 1990-01-01 00:00:14         141
+ Specified uair(m/s) =         141   7.8333329327816611E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.6139999999966790E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:14         142
+ Specified uair(m/s) =         142   7.8888884797542556E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4520000000006803E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:14         143
+ Specified uair(m/s) =         143   7.9444440266051089E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4909999999945853E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:14         144
+ Specified uair(m/s) =         144   7.9999995733333606E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.8710000000015157E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:14         145
+ Specified uair(m/s) =         145   8.0555551199381556E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   8.6730000000017071E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:14         146
+ Specified uair(m/s) =         146   8.1111106664186403E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4429999999949814E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:14         147
+ Specified uair(m/s) =         147   8.1666662127739507E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5849999999988427E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:14         148
+ Specified uair(m/s) =         148   8.2222217590032336E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.4729999999973984E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ 1990-01-01 00:00:14         149
+ Specified uair(m/s) =         149   8.2777773051056283E-003
+ uair max (km/h)=     0.0000000000000000        at             0           0
+ uair mean(km/h)=                         NaN
+ L2norm is           1   0.0000000000000000      (final)
+ nb outer ite, FGMRES ite =           0           0
+ cpu time =   7.5870000000008986E-003
+ Total nb of failures during the simulation =           0
+ havg (m)   =                        NaN
+ hmax (m)   =    0.0000000000000000                0           0
+ umax (m/s) =    0.0000000000000000                0           0
+ vmax (m/s) =    0.0000000000000000                0           0
+ Volume [10^3 km^3]=   0.0000000000000000     
+ 
+ Total execution time 58.00 seconds       

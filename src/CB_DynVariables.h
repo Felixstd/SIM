@@ -50,7 +50,10 @@
                 inertial (0:nx+2,0:ny+2), &
                 shear_I  (0:nx+2,0:ny+2), &
                 Phi_I    (0:nx+2,0:ny+2), &
-                mu_I     (0:nx+2,0:ny+2)
+                mu_I     (0:nx+2,0:ny+2), &
+                Pdep     (0:nx+2,0:ny+2), &
+                div_I    (0:nx+2,0:ny+2)
+
 
 
       common/DynVariables/      &
@@ -98,7 +101,9 @@
                 inertial, &
                 shear_I, &
                 Phi_I, &
-                mu_I
+                mu_I, &
+                Pdep, &
+                div_I
 
 
 

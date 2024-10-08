@@ -129,3 +129,62 @@ Every experiment used:
       Phi_0      = 1
       c_phi      = 1
       P* = 50d3
+
+Now, the experiments are made with a Tramp of 2 hours. Until 2:30. 
+
+## Experiment 16
+    - d_average  = 1d03
+    - mu_0 = 4d-01
+    - mu_infty = 9d-01
+    - I_0        = 1d-05   
+    - mu_b       = 9d-01
+    - Phi_0      = 1
+    - c_phi      = 1
+    - Dt = 300
+    - 
+## Experiment 17 
+        d_average  = 1d03
+      mu_0 = 1d-01
+      mu_infty = 9d-01
+      I_0        = 1d-03            
+      mu_b       = 9d-01
+      Phi_0      = 1
+      c_phi      = 1
+      Dt = 300
+
+## Experiment 18
+    d_average  = 1d03
+      mu_0 = 6d-01
+      mu_infty = 9d-01
+      I_0        = 1d-05           
+      mu_b       = 9d-01
+      Phi_0      = 1
+      c_phi      = 1
+      Dt = 300
+
+## Experiment 20
+    d_average  = 1d3
+    mu_0 = 6d-01
+    mu_infty = 9d-01
+    I_0        = 1d-05           
+    mu_b       = 5
+    Phi_0      = 1
+    c_phi      = 1
+    Dt = 1
+
+## Experiment 21
+    d_average  = 500
+    mu_0 = 6d-01
+    mu_infty = 9d-01
+    I_0        = 1d-05           
+    mu_b       = 5
+    Phi_0      = 1
+    c_phi      = 1
+    Dt = 1
+
+
+
+## Experiment 98
+    WITH VP
+      Dt = 1
+

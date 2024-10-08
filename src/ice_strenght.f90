@@ -100,16 +100,25 @@
             do j = 0, ny+1
                if (maskC(i,j) .eq. 1) then
 
-                  ! Pmax(i, j) = Pstar * h(i,j)
 
-
+                  ! Maximum pressure
                   Pmax(i,j) = Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ))
 
-                  Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / ( Phi_I(i, j) - Phi_0 ))**2 
-                  ! Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / ( A(i, j) - Phi_0 ))**2 
+                  ! Pressure from mu phi 
+                  Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / ( A(i, j) - Phi_0 ))**2          
 
-                  ! Pp(i, j) = max(P_min, min(Peq(i, j), Pmax(i, j)))
+! 
+                  ! if (regularization .eq. 'capping') then 
+                     
                   Pp(i, j) = min(Peq(i, j), Pmax(i, j))
+                  
+                  ! elseif (regularization .eq. 'tanh') then
+
+                  !    Pp(i, j) = Pmax(i, j) * tanh(Peq(i, j) / Pmax(i, j))
+                  
+                  ! endif
+
+
                   ! Pp(i, j) = Pmax(i, j)
                   ! Pp(i, j) = Peq(i, j)
 

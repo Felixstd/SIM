@@ -11,7 +11,8 @@
                 RampupForcing,  &
                 ideal,          &
                 runoff,         &
-                uniaxial
+                uniaxial,       &
+                inclined
 
       character(LEN=20)         &
                 BndyCond,       &

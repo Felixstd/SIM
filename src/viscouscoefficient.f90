@@ -1555,7 +1555,7 @@ subroutine MuPhiCoeff
    include 'CB_const.h'
 
    integer i, j, peri, rheo
-   double precision deno, lowA
+   double precision deno, lowA, p_over_shear
    double precision eta_max
    
    lowA = 0d0
@@ -1574,8 +1574,11 @@ subroutine MuPhiCoeff
          do j = 1, ny
                if ( maskC(i, j) .eq. 1) then
 
+                  ! p_over_shear = rhoice * h(i, j) * shear_I(i, j) * ( d_average / (A(i, j) - Phi_0) )**2
+
                   if (regularization .eq. 'capping') then
                      zetaC(i, j) = min(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), 2d08*Pp(i, j))
+                     ! zetaC(i, j) = min(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), 2d8)
                      
 
                   elseif (regularization .eq. 'tanh') then
@@ -1583,7 +1586,10 @@ subroutine MuPhiCoeff
 
                   endif
 
-                  etaC(i, j)  = min((mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), eta_max)
+                  ! etaC(i, j)  = min((mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), eta_max)
+                  etaC(i, j)  = min((mu_I(i, j) / 2) * Pp(i, j) / shear_I(i, j),&
+                                 eta_max )
+                  ! etaC(i, j)  = min((mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), 1d15)
 
                endif
                ! etaB(i,j)  = 0d0 

@@ -4,6 +4,7 @@
         use datetime, only: delta_init, datetime_str, seconds, time_set_from_datetime
         use io, only: load_geostrophic_wind, RP!, load_climatological_wind
         use solver_choice
+        use grid_angle
 
       implicit none
 
@@ -125,7 +126,7 @@
             rampfactor=1d0-exp(-1d0*tstep*Deltat/Tramp)
 
 
-            if (rheology .eq. 4) then
+            if ((rheology .eq. 4) .or. (rheology .eq. 1)) then
 
             ! linear ramp up 
       
@@ -135,10 +136,12 @@
                ! wspeed_goal = 10d0
 
                ! wspeed = wspeed_goal * min(1.0d0, (tstep * Deltat) / Tramp)
-               wspeed = 10d0
-               ! Tramp = 60*60*2
-               Tramp = 10
-               rampfactor=1d0-exp(-1d0*tstep*Deltat/Tramp)
+               wspeed = 20d0
+               Tramp = 60*60*10
+               ! Tramp = 3600000*2
+               ! Tramp = 10
+               ! rampfactor=1d0-exp(-1d0*tstep*Deltat/Tramp)
+               rampfactor = tanh(tstep*Deltat/Tramp)
 
             else
                wspeed = 10.0d0
@@ -165,14 +168,21 @@
 
          do i = 1, nx+1
             do j = 1, ny+1
+
+               if (inclined) then
+                  vair(i, j) = -wspeed*rampfactor*cos(theta)
+                  uair(i, j) = -wspeed*rampfactor*sin(theta)
+
+               else
                
                ! uair(i,j) = 0d0
                ! vair(i,j) = 0d0
-               vair(i, j) = -wspeed*rampfactor
-               uair(i, j) = 0d0
+                  vair(i, j) = -wspeed*rampfactor
+                  uair(i, j) = 0d0
+               endif
                
                ! if (j .gt. 500) then
-               !    ! 
+               ! !    ! 
                !    vair(i, j) = -wspeed*rampfactor
                !    uair(i, j) = 0d0
                ! endif

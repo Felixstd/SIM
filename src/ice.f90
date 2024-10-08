@@ -199,14 +199,7 @@ PROGRAM ice
             ! call Ice_strength
             call shear(uice, vice)
          endif
-         ! else
-         ! call Ice_strength()
-            ! call shear(uice, vice)
-            ! call inertial_number
-            ! call angle_friction_mu()
-            ! call dilatancy()
-         
-         ! endif
+
       endif
 
       call sea_ice_post(now_date, expno)
