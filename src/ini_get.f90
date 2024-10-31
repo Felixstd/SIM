@@ -56,6 +56,7 @@ subroutine ini_get (restart, expno_r, restart_date)
 
 !     Uniaxial loading experiment: set bands of open water at the top and sides
 
+
             if ((nx == 100) .and. (ny == 250)) then
                 if (i .lt. 21 .or. i .gt. 80) h(i,j) = 0d0
                 if (i .lt. 21 .or. i .gt. 80) A(i,j) = 0d0
@@ -80,6 +81,12 @@ subroutine ini_get (restart, expno_r, restart_date)
                 if (i .lt. 101 .or. i .gt. 300) A(i,j) = 0d0
                 if (j .gt. 500) h(i,j) = 10d0
                 if (j .gt. 500) A(i,j) = 1d0 
+
+            elseif ((nx == 200) .and. (ny == 600)) then
+                if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
+                if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
+                if (j .gt. 300) h(i,j) = 10d0
+                if (j .gt. 300) A(i,j) = 1d0 
 
             elseif ((nx == 102) .and. (ny == 402)) then
                 if (i .lt. 21 .or. i .gt. 81) h(i,j) = 0d0
@@ -112,6 +119,12 @@ subroutine ini_get (restart, expno_r, restart_date)
                
           enddo
        enddo
+       
+      !  print*, inclined
+       if (inclined) then
+         ! print*, 'here'
+         call grid_inclination_init
+      endif
          
        uice = 0d0 
        vice = 0d0
@@ -297,15 +310,11 @@ subroutine initial_conditions_uniaxial
 
    do i = 0, nx+1
       do j = 0, ny+1
-         ! if (maskC(i,j) .eq. 1) then
-            ! Pp(i, j) = 0d0
-            ! if ((i .lt. 21) .or. (i .gt. 80)) then
-            ! if (h(i, j)+1e-6 > 0 .or. h(i,j)-1e-6 <0) then
-            if (h(i, j) < 1e-6) then
-            ! print *, 'here'
 
-               ! mu_I(i, j) = mu_infty
-               mu_I(i, j) = 0d0
+            if (h(i, j) < 1e-6) then
+
+               mu_I(i, j) = mu_infty
+               ! mu_I(i, j) = mu_0
                Phi_I(i, j) = 0d0
                ! Phi_I(i, j) = 0.5
                inertial(i, j) = 1d0
@@ -313,15 +322,14 @@ subroutine initial_conditions_uniaxial
                
             
             else
-               mu_I(i, j) = 0d0
+               ! mu_I(i, j) = 0d0
+                mu_I(i, j) = mu_0
                ! Phi_I(i, j) = 1d0
                Phi_I(i, j) = 1
                inertial(i, j) = 1d-16
                
                endif
-            ! else
 
-         ! endif
       enddo
    enddo
 

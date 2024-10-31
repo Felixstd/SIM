@@ -1,0 +1,60 @@
+# Author: Lekima Yakuden
+# GitHub: LekiYak
+#
+# ----------------------------------
+# [IO]
+#   output_folder:  Absolute path to directory intended to store outputs {str}
+#   netcdf_path:    Absolute path to netCDF file {str}
+#   exp:            label for analysis outputs: folder for figure outputs will have this name
+#
+# [meta]
+#   Satellite_Source:    Name of satellite(s) {str} (S1, RCM, or RCMS1)
+#
+# [options]
+#   start_year:     Start year of analysis {int}
+#   start_month:    Start month of analysis {int}
+#   start_day:      Start day of analysis {int}
+#   start_hour:     Start hour of analysis {int} (0 is default)
+#   end_year:       End year of analysis {int}
+#   end_month:      End month of analysis {int}
+#   end_day:        End day of analysis {int}
+#   end_hour:       End hour of analysis {int} (0 is default)
+#
+# [visualize]  (True to make the figures, False otherwise)
+#   plot_start_end_points:    If True, print tracked feature locations
+#   plot_stacked_pairs:       If True, print the tracked features and pairs in CDF 
+#   plot_triangulated_data:   If True, make zoomed figures showing triangulated data
+#   plot_deformation:         If True, show tripcolor of deformations
+#   show_spatial_scale_dist:  If True, use Statistical object to calculate distributions
+#                                      of a field, as defined by user (i.e. area)
+#   show_spatial_coverage:    If True, calculate and print the frequency of data coverage
+#                                      in panArctic bins of 10x10km. 
+#   show_coverage_tseries:    If True, make a figure show the time series of the data
+#                                      data coverage.
+
+[IO]
+output_folder = /path/to/figure/outputs/
+netcdf_path   = /path/to/netcdf/data/
+exp = experiment/label/
+
+[Metadata]
+Satellite_Source = RCMS1
+
+[Date_options]
+start_year  = 2022
+start_month = 12
+start_day   = 01
+start_hour  = 0
+end_year    = 2022
+end_month   = 12
+end_day     = 31
+end_hour    = 0
+
+[visualize]
+plot_start_end_points   = True
+plot_stacked_pairs      = True
+plot_triangulated_data  = True
+plot_deformation        = True
+show_spatial_scale_dist = True
+show_spatial_coverage   = True
+show_coverage_tseries   = True

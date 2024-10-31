@@ -21,14 +21,16 @@
     solver = 1
     BasalStress = .false.
     uniaxial = .true.
-    inclined = .true.
+    inclined = .false.
+    dilatancy = .false.
+    mu_phi    = .true.
 /
 
 &numerical_param_nml
-    Deltat    = 0.1
-    gamma_nl = 1d-03
-    NLmax = 200     
-    OLmax = 1500
+    Deltat    = 0.2
+    gamma_nl = 1d-15
+    NLmax = 400     
+    OLmax = 2000
     Nsub  = 120  
 /
 

@@ -1556,7 +1556,7 @@ subroutine MuPhiCoeff
 
    integer i, j, peri, rheo
    double precision deno, lowA, p_over_shear
-   double precision eta_max
+   double precision eta_max, shear_max
    
    lowA = 0d0
    peri = Periodic_x + Periodic_y
@@ -1576,25 +1576,54 @@ subroutine MuPhiCoeff
 
                   ! p_over_shear = rhoice * h(i, j) * shear_I(i, j) * ( d_average / (A(i, j) - Phi_0) )**2
 
-                  if (regularization .eq. 'capping') then
-                     zetaC(i, j) = min(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), 2d08*Pp(i, j))
+                  if (regularization .eq. 'tanh') then
+                     
+                     ! zetaC(i, j) = min(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), 2d08*Pp(i, j))
                      ! zetaC(i, j) = min(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), 2d8)
                      
+                     
+                     shear_max = max(1d-20, shear_I(i, j))
+                     ! shear_max = shear_I(i, j)
 
-                  elseif (regularization .eq. 'tanh') then
-                     zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b + mu_I(i, j) / 2 ) / (shear_I(i, j) * 2d08))
+                     ! eta_max = max(1d-20, 2d08*Pp(i, j) - mu_b*Pp(i, j)/shear_max)
+                     ! eta_max = 2d08*Pp(i, j) - mu_b*Pp(i, j)/shear_max
+                     ! etaC(i, j)  = min((mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), eta_max)
+                     ! etaC(i, j)  = eta_max * tanh((mu_I(i, j) / 2) * Pp(i, j)/ (shear_max * eta_max))
+                     
+                     ! zetaC(i, j) = 2d08*Pmu(i, j) * tanh(2*mu_I(i, j) / (shear_max * 2d08))
+                     ! zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b + mu_I(i, j) / 2 ) / (shear_max * 2d08))
 
+                     if (dilatancy) then
+                        ! zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b_I(i, j) + mu_I(i, j) / 2 ) / (shear_max * 2d08))
+                        ! zetaC(i, j) = 0
+                        etaC(i, j) = eta_max * tanh((mu_I(i, j) * Pp(i, j)) / (shear_max * eta_max))
+
+                        ! etaC(i, j) = mu_I(i, j) * Pp(i, j) 
+                        zetaC(i, j) = 2*etaC(i, j)
+                     else
+                        zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b + mu_I(i, j) / 2 ) / (shear_max * 2d08))
+                        etaC(i, j)  = eta_max * tanh((mu_I(i, j) / 2) * Pp(i, j) / (shear_max * eta_max))
+                     endif
+                     
+                     ! zetaC(i, j) = ( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / (shear_max+1d-20)
+                     ! etaC(i, j) = (mu_I(i, j) / 2) * Pp(i, j) / (shear_max+1d-20)
+                     ! etaC(i, j) = zetaC(i, j) - mu_b*Pp(i, j)/shear_max
                   endif
 
-                  ! etaC(i, j)  = min((mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), eta_max)
-                  etaC(i, j)  = min((mu_I(i, j) / 2) * Pp(i, j) / shear_I(i, j),&
-                                 eta_max )
+                  ! etaC(i, j) = 
+                  
+                  ! etaC(i, j) = eta_max * tanh(( Pmu(i, j) * (1 - mu_b * div_I(i, j)/shear_max)**2 / eta_max))
+
+                  P(i,j) = Pp(i, j)
+                  ! P(i, j) = 0d0
+                  ! Pp(i, j) = 0d0
+                  ! Pt(i, j)= 0d0
+                  
+                  
+                  ! etaC(i, j) = min((mu_I(i, j) / 2) * Pp(i, j) / shear_max, eta_max )
                   ! etaC(i, j)  = min((mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), 1d15)
 
                endif
-               ! etaB(i,j)  = 0d0 
-               ! zetaC(i,j) = 0d0 
-               ! etaC(i, j) = 0d0
          enddo
       enddo
 

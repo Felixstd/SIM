@@ -27,7 +27,7 @@ def plot_colormesh(ax, fig, X, Y, Field, cmap, norm, label, xlabel, ylabel):
         ax.set_aspect('equal', adjustable='box')
         pc = ax.pcolormesh(Y, X, Field, cmap = cmap, norm = norm)
         fig.colorbar(pc, ax = ax, label = label)
-        
+        # ax.invert_yaxis()
         if xlabel:
             ax.set_xlabel(xlabel)
         
@@ -52,7 +52,7 @@ def histograms(ax, var, mu0, mu_infty,varname, I = False, I_0 = 0):
         
 
     ax.hist(var.flatten(), bins, color = 'b')
-    ax.set_xlim(mu0-0.05, mu_infty+0.05)
+    ax.set_xlim(mu0-0.05, 0.15)
     ax.set_yscale('log')
     # ax.set_xscale('log')
     ax.set_xlabel(varname)
@@ -61,7 +61,7 @@ def histograms(ax, var, mu0, mu_infty,varname, I = False, I_0 = 0):
     # plt.savefig(figdir+expno+'/'+filename+'{}.png'.format(date))
     
         
-def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty, MuPhi = True):
+def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty, MuPhi = True, log = True):
     
     if MuPhi:
         
@@ -93,13 +93,26 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty, MuPhi = True):
         sigI_norm, sigII_norm = normalize_stresses(sigI, sigII, p)
         
         #----- Deformation Plots -----#
-        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2, figsize=(5, 6))
-        plot_colormesh(ax1, fig, X, Y, 1-A, cmocean.cm.ice, colors.LogNorm(vmin=1e-7, vmax=1e-6), r'$1-A$', None, 'y (km)')
-        plot_colormesh(ax2, fig, X, Y, 1-h, cmocean.cm.ice, colors.LogNorm(vmin=1e-7, vmax=1e-6), r'$1-h$', None, None)
-        plot_colormesh(ax3, fig, X, Y, divergence, cmocean.cm.thermal, colors.LogNorm(vmin=1e-4, vmax=1e-2), 
+        x, y = np.meshgrid(Y, X)
+        # fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2, figsize=(5, 6))
+        quiver_step = max(x.shape[1] // 10, 1)
+        quiver_step_2 = max(x.shape[0] // 10, 1)
+        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2, figsize=(5, 4))
+        plot_colormesh(ax1, fig, X, Y, 1-A, cmocean.cm.ice, colors.Normalize(vmin=0, vmax=1e-7), r'$1-A$', None, 'y (km)')
+        ax1.quiver(x[::quiver_step_2, ::quiver_step], y[::quiver_step_2, ::quiver_step], uair[::quiver_step_2, ::quiver_step], vair[::quiver_step_2, ::quiver_step], color = 'r')
+        plot_colormesh(ax2, fig, X, Y, 1-h, cmocean.cm.ice, colors.Normalize(vmin=0, vmax=1e-7), r'$1-h$', None, None)
+        if log:
+            plot_colormesh(ax3, fig, X, Y, divergence, cmocean.cm.thermal, colors.LogNorm(vmin=1e-4, vmax=1e-1), 
             r'$\dot{\epsilon}_{\mathrm{I}} \text{ (day}^{-1})$', 'x (km)', 'y (km)')
-        plot_colormesh(ax4, fig, X, Y, shear, cmocean.cm.thermal, colors.LogNorm(vmin=1e-4, vmax=1e-2), 
-            r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', 'x (km)', None)       
+            plot_colormesh(ax4, fig, X, Y, shear, cmocean.cm.thermal, colors.LogNorm(vmin=1e-4, vmax=1e-1), 
+            r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', 'x (km)', None) 
+        else:
+            plot_colormesh(ax3, fig, X, Y, divergence, cmocean.cm.thermal, colors.Normalize(vmin=1e-4, vmax=1e-2), 
+                r'$\dot{\epsilon}_{\mathrm{I}} \text{ (day}^{-1})$', 'x (km)', 'y (km)')
+            plot_colormesh(ax4, fig, X, Y, shear, cmocean.cm.thermal, colors.Normalize(vmin=1e-4, vmax=1e-2), 
+                r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', 'x (km)', None) 
+        
+              
         fig.tight_layout()
         plt.savefig(figdir+expno+'/deformations_{}.png'.format(date))
         
@@ -156,8 +169,16 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty, MuPhi = True):
         
         
         
-        
+def plot_single(Nx, Ny, dx, Var, label, figname):
     
+    X = np.arange(0, Nx)*dx/1e3
+    Y = np.arange(0, Ny)*dx/1e3
+    x, y = np.meshgrid(Y, X)
     
-    
+    fig = plt.figure(figsize=(5, 4))
+    ax1 = plt.axes()
+    plot_colormesh(ax1, fig, Y, X, Var, cmocean.cm.ice, colors.LogNorm(vmin=1e-4, vmax=1e-2), label, 'x (km)', 'y (km)')
+    plt.savefig(figname)
+
+
     

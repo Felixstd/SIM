@@ -991,7 +991,7 @@ def lkf_detection(eps_tot, max_kernel, min_kernel, dog_thres, dis_thres, \
 
     lkf_detect = DoG_leads(proc_eps,5,1)
     ### Filter for DoG>0
-    lkf_detect = (lkf_detect > 9).astype('float')
+    lkf_detect = (lkf_detect > dog_thres).astype('float')
     lkf_detect[~np.isfinite(proc_eps)] = np.NaN
     lkf_thin =  skimage.morphology.skeletonize(lkf_detect).astype('float')
 

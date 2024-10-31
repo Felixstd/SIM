@@ -11,6 +11,8 @@
       subroutine Ice_strength ()
       use ellipse
       use muphi
+
+      use, intrinsic :: ieee_arithmetic
       implicit none
 
       include 'parameter.h'
@@ -21,7 +23,7 @@
 
 
       integer i, j
-      double precision eps, P_min
+      double precision eps, P_min, diff_A, weight, A_0, shear, scaled_A
 
       P_min = 1e-3
 
@@ -104,23 +106,40 @@
                   ! Maximum pressure
                   Pmax(i,j) = Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ))
 
+                  diff_A = max(1d-20, 1-A(i, j))
+                  ! scaled_A = 0.1 + (0.8-0.1)*A(i,j)
+                  ! diff_A = max(1d-20, 1-scaled_A)
+
+
+                  ! shear  = max(shear_I(i, j), 1d-20)
                   ! Pressure from mu phi 
-                  Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / ( A(i, j) - Phi_0 ))**2          
-
-! 
-                  ! if (regularization .eq. 'capping') then 
+                  ! shear_I(i, j) = 1d-5
+                  Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / (diff_A))**2
+                  ! Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / (diff_A))**2       
+  
+                  if (regularization .eq. 'capping') then 
                      
-                  Pp(i, j) = min(Peq(i, j), Pmax(i, j))
+                     Pp(i, j) = min(Peq(i, j), Pmax(i, j))
                   
-                  ! elseif (regularization .eq. 'tanh') then
+                  elseif (regularization .eq. 'tanh') then
+                     
+                     if (Pmax(i, j) .lt. 1d-10) then
+                        Pp(i, j) = 0d0
+                        ! Pmu(i, j) = 0d0
+                     else
+                        ! Pp(i, j) = Pmax(i, j) * tanh(Peq(i, j) / Pmax(i, j))
 
-                  !    Pp(i, j) = Pmax(i, j) * tanh(Peq(i, j) / Pmax(i, j))
-                  
-                  ! endif
+                        Pp(i,j) = Pmax(i, j)
+                        ! Pp(i, j) = 0d0
+                        ! Pmu(i, j) = Pmax(i, j) * tanh(Peq(i, j) / Pmax(i, j))
+                     endif
+
+
+                  endif
 
 
                   ! Pp(i, j) = Pmax(i, j)
-                  ! Pp(i, j) = Peq(i, j)
+                  Pt(i, j) = 0d0
 
                endif
             enddo
@@ -136,12 +155,12 @@
 
                if (maskC(i,0) .eq. 1) then             
                   Pp(i,1)  = 0d0
-                  ! Pp(i,1)  = P_min
+                  Pt(i,1)  = 0d0
                endif
 
                if (maskC(i,ny+1) .eq. 1) then             
                   Pp(i,ny)  = 0d0
-                  ! Pp(i,1)  = P_min
+                  Pt(i,1)  = 0d0
                endif
    
             enddo
@@ -152,12 +171,12 @@
 
                if (maskC(0,j) .eq. 1) then             
                   Pp(1,j)  = 0d0
-                  ! Pp(i,1)  = P_min
+                  Pt(i,1)  = 0d0
                endif
 
                if (maskC(nx+1,j) .eq. 1) then             
                   Pp(nx,j)   = 0d0  
-                  ! Pp(i,1)  = P_min
+                  Pt(i,1)  = 0d0
                endif           
 
             enddo

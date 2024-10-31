@@ -12,7 +12,9 @@
                 ideal,          &
                 runoff,         &
                 uniaxial,       &
-                inclined
+                inclined,       &
+                dilatancy,      &
+                mu_phi
 
       character(LEN=20)         &
                 BndyCond,       &
@@ -40,6 +42,9 @@
                 Buoys,          & ! 'Track' or 'Daily'
                 runoff,         & ! River runoff switch
                 uniaxial,       & ! uniaxial experiment (yes or no)
+                inclined,       & ! Inlcined domain
+                dilatancy,      & ! Dilatancy law or not 
+                mu_phi,         & ! Flavor of mu rheology. if true mu(I)-phi(I) if false mu(I)
                 AirTemp,        & ! specified, MonthlyMean
                 OcnTemp,        & ! specified, MonthlyMean
                 Wind,           & ! specified, MonthlyMean

@@ -192,11 +192,13 @@ PROGRAM ice
             call shear(uice, vice)
             call inertial_number
             call angle_friction_mu()
-            call dilatancy()
+            call volumefraction_phi()
          endif
          if (uniaxial) then
             call initial_conditions_uniaxial
+            call initial_conditions_muPhi
             ! call Ice_strength
+            call angle_friction_mu()
             call shear(uice, vice)
          endif
 

@@ -1,10 +1,10 @@
 
       subroutine wind_forcing (date, tstep) 
-        use datetime, only: datetime_type, datetime_delta_type, operator(+), operator(-)
-        use datetime, only: delta_init, datetime_str, seconds, time_set_from_datetime
-        use io, only: load_geostrophic_wind, RP!, load_climatological_wind
-        use solver_choice
-        use grid_angle
+      use datetime, only: datetime_type, datetime_delta_type, operator(+), operator(-)
+      use datetime, only: delta_init, datetime_str, seconds, time_set_from_datetime
+      use io, only: load_geostrophic_wind, RP!, load_climatological_wind
+      use solver_choice
+      use grid_angle
 
       implicit none
 
@@ -136,12 +136,14 @@
                ! wspeed_goal = 10d0
 
                ! wspeed = wspeed_goal * min(1.0d0, (tstep * Deltat) / Tramp)
-               wspeed = 20d0
-               Tramp = 60*60*10
+               wspeed = 10d0
+               ! Tramp = 60*60*10
+               Tramp = 60*60*2
                ! Tramp = 3600000*2
                ! Tramp = 10
                ! rampfactor=1d0-exp(-1d0*tstep*Deltat/Tramp)
                rampfactor = tanh(tstep*Deltat/Tramp)
+               ! rampfactor =  1
 
             else
                wspeed = 10.0d0
@@ -173,19 +175,25 @@
                   vair(i, j) = -wspeed*rampfactor*cos(theta)
                   uair(i, j) = -wspeed*rampfactor*sin(theta)
 
-               else
+               ! else
                
                ! uair(i,j) = 0d0
                ! vair(i,j) = 0d0
+               ! if (i .gt. 100) then
+
+                  ! uair(i,j) = rampfactor*wspeed
+                  ! vair(i,j) = 0d0
+               ! endif
+               elseif (ny == 1000) then
+                  if (j .gt. 500) then
+                  !    ! 
+                     vair(i, j) = -wspeed*rampfactor
+                     uair(i, j) = 0d0
+                  endif
+               else 
                   vair(i, j) = -wspeed*rampfactor
                   uair(i, j) = 0d0
                endif
-               
-               ! if (j .gt. 500) then
-               ! !    ! 
-               !    vair(i, j) = -wspeed*rampfactor
-               !    uair(i, j) = 0d0
-               ! endif
                
 !     call random_number(rdnumb)
 !               uair(i,j) = wm * (rdnumb - 0.5d0)

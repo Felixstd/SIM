@@ -70,7 +70,7 @@ subroutine inertial_number
 
 end subroutine inertial_number
 
-subroutine dilatancy
+subroutine volumefraction_phi
     
     use muphi
 
@@ -91,15 +91,8 @@ subroutine dilatancy
         do j = 0, ny+1
             if (maskC(i,j) .eq. 1) then
 
-                if ( h(i, j) < 1d-6 ) then 
-                    Phi_I(i, j) = 0
-                else
-                    ! Phi_I(i, j) = Phi_0 - c_phi * inertial(i, j)
-                    Phi_I(i, j) = 0.5
-                
-                endif
-            ! else 
-            !     Phi_I(i, j) = 0
+                Phi_I(i, j) = max(0d0, Phi_0 - c_phi * inertial(i, j))
+
             endif
 
 
@@ -108,7 +101,7 @@ subroutine dilatancy
 
 
 
-end subroutine dilatancy
+end subroutine volumefraction_phi
 
 subroutine angle_friction_mu 
 
@@ -123,7 +116,7 @@ subroutine angle_friction_mu
     include 'CB_const.h'
 
     integer i, j
-    double precision eps
+    double precision eps, scaled_A, diff_A, min_inertial
 
     eps = 1d-12
 
@@ -147,8 +140,25 @@ subroutine angle_friction_mu
                 !     ! mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/inertial(i, j) + 1)
                 !     ! mu_I(i, j) = min(mu_0 +  ( mu_infty - mu_0 ) / ( I_0/(1-A(i, j)) + 1 ), mu_infty) 
                 !     mu_I(i, j) = max(mu_0 +  ( mu_infty - mu_0 ) / ( I_0/(1-A(i, j)) + 1 ), mu_0) 
-                mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( I_0/(1-A(i, j)) + 1 )
-                ! endif
+
+
+
+                ! mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( I_0/(1-A(i, j)) + 1 )
+
+
+                ! scaled_A = 0.1 + (0.8-0.1)*A(i,j)
+                if ((dilatancy .eqv. .true.) .or. (mu_phi .eqv. .false.)) then
+                    min_inertial = min(inertial(i, j), 1d-20)
+                    mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1) + tan_psi(i, j)
+
+                    ! mu_b_I(i, j) = 1/(2*mu_I(i,j))
+                    mu_b_I(i, j) = mu_b
+                
+                else
+                    diff_A = max(1d-20, 1-A(i, j))
+                    mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/diff_A + 1 )
+
+                endif
             endif
         enddo
     enddo
@@ -156,6 +166,53 @@ subroutine angle_friction_mu
 ! 
 
 end subroutine angle_friction_mu
+
+
+
+subroutine divergence_muphi()
+
+
+    use datetime, only: datetime_type
+    use ellipse
+    use muphi
+    
+    implicit none
+
+
+    include 'parameter.h'
+    include 'CB_Dyndim.h'
+    include 'CB_DynVariables.h'
+    include 'CB_DynForcing.h'
+    include 'CB_const.h'
+    include 'CB_mask.h'
+    include 'CB_options.h'
+
+
+    integer i, j
+    double precision tan_dilat_angle
+    double precision K
+
+    K = 2
+
+    do i = 0, nx+1
+        do j = 0, ny+1
+
+            if (maskC(i, j) .eq. 1) then
+                tan_psi(i, j) = K * (A(i,j) - Phi_I(i, j))
+
+                div_I(i, j) = shear_I(i, j) * tan_dilat_angle
+
+            endif
+            
+        enddo
+    enddo
+
+
+
+
+
+
+end subroutine divergence_muphi
 
 
 subroutine shear(utp, vtp)
@@ -175,6 +232,7 @@ subroutine shear(utp, vtp)
     include 'CB_options.h'
 
     integer i, j
+    character filename*64
 
     double precision dudx, dvdy, dudy, dvdx, land, lowA
     double precision, intent(in):: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
@@ -186,11 +244,11 @@ subroutine shear(utp, vtp)
     ! lowA = -888d0
     lowA = 0d0
 
-    do i = 1, nx
-        do j = 1, ny
+    do i = 0, nx+1
+        do j = 0, ny+1
         ! if (A(i, j) .lt. 0.1) then
         ! if (h(i, j) .lt. 1d-06) then
-        !     shear_I(i, j) = 0d0
+            ! shear_I(i, j) = 0d0
         
         ! else
             dudx       = 0d0
@@ -255,10 +313,16 @@ subroutine shear(utp, vtp)
 !----- stresses and strain rates at the grid center -------------------------   
 
 
-                    shear_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
+                shear_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
                        + ( dudy + dvdx )**2d0 )
+                ! div_I(i, j) = (dudx + dvdy)
+            
+            else
+                shear_I(i,j) = land
+                ! div_I(i, j) = land
 
-                  endif
+            endif
+
 
                
             ! endif
@@ -269,6 +333,7 @@ subroutine shear(utp, vtp)
     do i = 0, nx+1
         if ( maskC(i,j) .eq. 1 ) then
             shear_I(i,j)     = lowA
+            ! div_I(i, j) = lowA
         endif
     enddo
 
@@ -276,6 +341,7 @@ subroutine shear(utp, vtp)
     do i = 0, nx+1
         if ( maskC(i,j) .eq. 1 ) then
             shear_I(i,j)    = lowA
+            ! div_I(i, j) = lowA
         endif
     enddo
 
@@ -283,6 +349,7 @@ subroutine shear(utp, vtp)
     do j=0,ny+1
         if ( maskC(i,j) .eq. 1 ) then
             shear_I(i,j)     = lowA
+            ! div_I(i, j) = lowA
         endif
     enddo
 
@@ -290,8 +357,15 @@ subroutine shear(utp, vtp)
     do j=0,ny+1
         if ( maskC(i,j) .eq. 1 ) then
             shear_I(i,j)     = lowA
+            ! div_I(i, j) = lowA
         endif
     enddo
+
+    ! write (filename,"('shear_test')")
+    ! open(1,file = filename, status = 'unknown')
+    ! do j = 0, ny+1
+    !     write(1,*) (shear_I(i, j), i = 0, nx+1)
+    ! enddo
 
     return
 end subroutine shear

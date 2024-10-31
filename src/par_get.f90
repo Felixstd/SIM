@@ -134,7 +134,9 @@
       calc_month_mean = .false.      ! to calc monthly mean fields
       runoff     = .false.
       uniaxial   = .false.
-        
+      inclined   = .false.
+      dilatancy  = .false.
+      mu_phi     = .true.
 !------------------------------------------------------------------------
 !     Grid parameters: resolution
 !------------------------------------------------------------------------      
@@ -148,39 +150,47 @@
       elseif  ((nx == 63) .and. (ny == 53)) then
          Deltax     =  80d03           ! Pan-Arctic 80km
       elseif ((nx == 100) .and. (ny == 250)) then
-         Deltax     =  2.5d01            ! Uniaxial loading (Ringeisen et al., 2019).
+         ! Deltax     =  2.5d01            ! Uniaxial loading (Ringeisen et al., 2019).
+         Deltax     =  1d03
 
       elseif (((nx == 200) .and. (ny == 500)) .or. ((nx == 500) .and. (ny == 500))) then
-         Deltax     = 1d03/2
+         Deltax     = 1d03*10
          ! Deltax     = 1d03*10
          ! Deltax = 25
 
-      elseif (((nx == 200) .or. (nx == 400)) .and. (ny == 1000)) then
-         Deltax     =  2d03           !  Uniaxial loading (Ringeisen et al., 2019).
-         ! Deltax = 1d03/2
+      elseif (((nx == 200) .or. (nx == 400)) .and. (ny == 1000) .or. (ny == 600)) then
+         ! Deltax     =  2d03           !  Uniaxial loading (Ringeisen et al., 2019).
+         ! Deltax = 1d03*10
+         Deltax = 2d03
          ! Deltax = 10d03
       
       elseif ((nx == 102) .and. (ny == 402)) then
          Deltax     =  2d03            ! Ideal ice bridge (Plante et al., 2020) 
 
       else
+         Deltax     = 1d03/2
          write(*,*) "Wrong grid size dimensions.", nx, ny
-         STOP
+         ! STOP
       endif
 
       Deltax2 = Deltax**2d0
 
 ! Mu(I) - Phi(I) rheology (rheology = 4)
       d_average  = 1d3
-      mu_0 =     TAN(5*pi/36)
-      mu_infty = TAN(13*pi/36)
+      ! mu_0 =     TAN(5*pi/36)
+      ! mu_infty = TAN(13*pi/36)
       I_0        = 1e-3
-      mu_b       = 0.45
+      ! mu_b       = 0.45
+      mu_0 =     0.1
+      mu_infty = 0.9
+      mu_b       = 1
       Phi_0      = 1
       c_phi      = 1
 
-      d = 100
+      ! d = 200
       theta = 45 * pi / 180
+      intercept_2 = 200
+      d = sqrt(2*intercept_2**2)
 
 !------------------------------------------------------------------------
 !     Numerical parameters
@@ -190,7 +200,7 @@
 
       wjac  = 0.575d0
       ! wsor  = 2d0           ! relaxation parameter for SOR precond
-      wlsor = 1.3d0           ! relaxation parameter for SOR precond
+      wlsor = 1.1d0           ! relaxation parameter for SOR precond
       ! wlsor = 0.6d0
       wsor  = 0.95d0           ! relaxation parameter for SOR precond
       kjac  = 10               !
@@ -398,7 +408,7 @@ subroutine read_namelist
            adv_scheme, AirTemp, OcnTemp, Wind, RampupWind,      &
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,            &
-           BasalStress, uniaxial, inclined
+           BasalStress, uniaxial, inclined, dilatancy, mu_phi
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub
@@ -537,7 +547,7 @@ subroutine read_namelist
       endif
 
       if (1d0*Deltat .gt. Deltax) then
-         ! print *, Deltat, Deltax
+         print *, Deltat, Deltax
          print *, 'CFL condition not respected. Reduce time step'
          stop
       endif
@@ -585,11 +595,10 @@ subroutine read_namelist
 !------------------------------------------------------------------------                                     
 
 ! Uniaxial compression experiment.
-      print*, 'inclined:', inclined
+      ! print*, 'inclined:', inclined
       if (inclined) then 
-         print *, 'inclined' 
-
-         call grid_inclination
+         ! print *, 'inclined'
+         call grid_inclination_mask
 
       elseif ((nx == 100) .and. (ny == 250)) then
          !Make mask:
@@ -612,8 +621,8 @@ subroutine read_namelist
                endif
             enddo
          enddo
+
       elseif ((nx == 200) .and. (ny == 500)) then
-         print *, '200, 500' 
          !Make mask:
          do i = 0, nx+1
             do j = 0, ny+1
@@ -623,6 +632,18 @@ subroutine read_namelist
                endif
             enddo
          enddo
+      
+      elseif ((nx == 200) .and. (ny == 600)) then
+         !Make mask:
+         do i = 0, nx+1
+            do j = 0, ny+1
+               maskC(i,j) = 1
+               if ((j .lt. 1)) then
+                  maskC(i,j) = 0                        
+               endif
+            enddo
+         enddo
+
       elseif ((nx == 200) .and. (ny == 1000)) then
          !Make mask:
          do i = 0, nx+1

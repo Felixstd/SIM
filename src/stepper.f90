@@ -108,10 +108,26 @@
                call Ice_strength()
             
             elseif (Rheology .eq. 4) then
-               call angle_friction_mu()
-               ! ! call div(uice, vice)
-               call shear(uice, vice)
-               call Ice_strength()
+
+               if (dilatancy) then
+                  call shear(uice, vice)                     
+                  call Ice_strength()
+                  call inertial_number()
+                  call divergence_muphi()
+                  call angle_friction_mu()
+                  call volumefraction_phi()
+               
+               else
+                   call angle_friction_mu()
+                  ! ! call div(uice, vice)
+                  call shear(uice, vice)
+
+               
+
+                  if (tstep .gt. 1) then
+                  call Ice_strength()
+                  endif
+               endif
             endif
 
             if (solver .le. 2) then ! Picard or JFNK
@@ -163,10 +179,12 @@
                   
 
                   elseif (Rheology .eq. 4) then
-                     call angle_friction_mu()
-                     ! call div(uice, vice)
-                     call shear(uice, vice)
+                     call shear(uice, vice)                     
                      call Ice_strength()
+                     call inertial_number()
+                     call divergence_muphi()
+                     call angle_friction_mu()
+                     call volumefraction_phi()
                   else
                   
                      call Ice_strength()
@@ -233,9 +251,15 @@
                      call stress_strain_MEB(uice, vice, date, kd, expno)
                   
                   elseif (Rheology .eq. 4) then
-                     call angle_friction_mu()
-                     call shear(uice, vice)
+                     ! call angle_friction_mu()
+                     ! call shear(uice, vice)
+                     ! call Ice_strength()
+                     call shear(uice, vice)                     
                      call Ice_strength()
+                     call inertial_number()
+                     call divergence_muphi()
+                     call angle_friction_mu()
+                     call volumefraction_phi()
                      
                   else
                   
@@ -334,14 +358,20 @@
       if ( Dynamic ) then
 
          if (IMEX .eq. 0) then ! already done with IMEX 1 and 2
-            call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A )
+            call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A ) 
 
             !if (Rheology .eq. 3) &
             !     call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam)
 
             ! if (Rheology .eq. 4) then
-            !     call shear(uice, vice)
-            !     call angle_friction_mu()
+            !    !  call shear(uice, vice)
+            ! !     call angle_friction_mu()
+            ! !     call Ice_strength
+            !          ! call inertial_number()
+            !          ! call angle_friction_mu()
+            !          ! call volumefraction_phi()
+            !    call shear(uice, vice)
+            !    call divergence_muphi()
             ! endif
 
          endif

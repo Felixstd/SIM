@@ -812,12 +812,15 @@
     end subroutine calc_dFy
 
     subroutine calc_div (utp, vtp, div)
+      
+      use muphi
 
       implicit none
 
       include 'parameter.h'
       include 'CB_mask.h'
       include 'CB_const.h'
+      include 'CB_DynVariables.h'
 
       integer i, j
       double precision, intent(in) :: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
@@ -828,7 +831,8 @@
 
             if (maskC(i,j) .eq. 1) then
 
-               div(i,j)=(utp(i+1,j)-utp(i,j) + vtp(i,j+1)-vtp(i,j))/Deltax 
+               ! div(i,j)=(utp(i+1,j)-utp(i,j) + vtp(i,j+1)-vtp(i,j))/Deltax 
+               div(i, j) = div_I(i, j)
 
             endif
 
