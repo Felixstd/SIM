@@ -1,6 +1,6 @@
 1                    input namelist
 0                    restart
-9                    exp version
+12                   exp version
 1990-01-01:00:00:00  starting date
 1990-01-01:00:00:30  end date
 1990-01-01:00:00:01  posting date

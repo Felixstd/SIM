@@ -38,7 +38,7 @@ def histograms(ax, var, mu0, mu_infty,varname, I = False, I_0 = 0):
         
 
     min, max = np.min(var), np.max(var)
-    bins = np.linspace(min, max, 1000)
+    bins = np.linspace(mu0, mu_infty, 100)
         
         
     # fig, ax1 = plt.subplots(1, 1, figsize = (12, 6))
@@ -52,7 +52,7 @@ def histograms(ax, var, mu0, mu_infty,varname, I = False, I_0 = 0):
         
 
     ax.hist(var.flatten(), bins, color = 'b')
-    ax.set_xlim(mu0-0.05, 0.15)
+    ax.set_xlim(mu0-0.05, mu_infty+0.05)
     ax.set_yscale('log')
     # ax.set_xscale('log')
     ax.set_xlabel(varname)

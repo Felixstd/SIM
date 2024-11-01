@@ -1,8 +1,5 @@
 ! Not sure about the P here
-! 
-! 
-! 
-! 
+
 subroutine inertial_number
 
     use muphi
@@ -16,13 +13,15 @@ subroutine inertial_number
     include 'CB_const.h'
 
     integer i, j
-    double precision eps, highI
+    double precision eps, highI, lowI
 
     !
     ! Need to look for the eps and see if it is the right thing to do. 
     ! Also, for the value of the High I as P -> 0
     eps = 1d-06
+    ! highI = 1d0
     highI = 1d0
+    lowI  = 0d0
 
     do i = 0, nx+1
         do j = 0, ny+1
@@ -30,7 +29,7 @@ subroutine inertial_number
 
                 if (h(i, j) < eps) then
                 ! force to highI in water when the height is less than eps
-                    inertial(i, j) = highI
+                    inertial(i, j) = lowI
                     ! inertial(i, j) = 0
                 else
                     inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j), highI)
@@ -44,11 +43,11 @@ subroutine inertial_number
         do i = 0, nx+1
 
             if (maskC(i,0) .eq. 1) then             
-                inertial(i,1)  = highI
+                inertial(i,1)  = lowI
             endif
 
             if (maskC(i,ny+1) .eq. 1) then             
-                inertial(i,ny)  = highI
+                inertial(i,ny)  = lowI
             endif
 
         enddo
@@ -58,11 +57,11 @@ subroutine inertial_number
         do j = 0, ny+1
 
             if (maskC(0,j) .eq. 1) then             
-                inertial(1,j)  = highI
+                inertial(1,j)  = lowI
             endif
 
             if (maskC(nx+1,j) .eq. 1) then             
-                inertial(nx,j)   = highI  
+                inertial(nx,j)   = lowI  
             endif           
 
         enddo
@@ -148,9 +147,16 @@ subroutine angle_friction_mu
 
                 ! scaled_A = 0.1 + (0.8-0.1)*A(i,j)
                 if ((dilatancy .eqv. .true.) .or. (mu_phi .eqv. .false.)) then
-                    min_inertial = min(inertial(i, j), 1d-20)
-                    mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1) + tan_psi(i, j)
+                    min_inertial = max(inertial(i, j), 1d-20)
 
+                    if (h(i,j) < 1e-6) then
+
+                        mu_I(i, j) = 0d0
+
+                    else 
+                        mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1) !+ tan_psi(i, j)
+                    
+                    endif
                     ! mu_b_I(i, j) = 1/(2*mu_I(i,j))
                     mu_b_I(i, j) = mu_b
                 
@@ -163,11 +169,7 @@ subroutine angle_friction_mu
         enddo
     enddo
 
-! 
-
 end subroutine angle_friction_mu
-
-
 
 subroutine divergence_muphi()
 

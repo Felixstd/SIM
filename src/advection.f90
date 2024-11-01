@@ -735,6 +735,198 @@
       
     end subroutine advection
 
+
+   subroutine advection_mu(An_1, hn_1, un, vn, hout, Aout)
+
+
+      !
+      ! Upwind scheme to solve the continuity equation assuming a 
+      ! dilatancy law of the type div u = shear tan psi
+      !
+      !
+      ! Written by Félix St-Denis and based mostly on the subroutine above.
+      ! Here, we have set the An1 of the previous subroutine to An_1 to eliminate conflicts with 
+      !the one defined in CB_Dynvariables
+      ! 
+
+      use muphi
+
+      implicit none
+
+      include 'parameter.h'
+      include 'CB_const.h'
+      include 'CB_mask.h'
+      include 'CB_options.h'
+      include 'CB_semilag.h'
+      include 'CB_DynVariables.h'
+      
+
+
+
+      integer i, j, peri
+      double precision, intent(in)    :: un(0:nx+2,0:ny+2), vn(0:nx+2,0:ny+2)
+      double precision                :: hn_1(0:nx+2,0:ny+2), An_1(0:nx+2,0:ny+2)
+      double precision, intent(out)   :: hout(0:nx+2,0:ny+2), Aout(0:nx+2,0:ny+2)
+      double precision                :: Fx(nx,ny), Fy(nx,ny), div(nx,ny)
+
+  
+
+!------------------------------------------------------------------------ 
+!     make periodic conditions 
+!------------------------------------------------------------------------
+
+      peri = Periodic_x + Periodic_y
+      if (peri .ne. 0) then
+          call periodicBC(hn_1,An_1)     
+          call periodicBC(un,vn)
+      endif
+
+
+!------------------------------------------------------------------------ 
+!     set dhn1/dx, dAn1/dx = 0 at the outside cell when there is an open bc 
+!------------------------------------------------------------------------ 
+
+
+
+      if (Periodic_y .eq. 0) then
+
+         do i = 0, nx+1
+               
+             if (maskC(i,0) .eq. 1) then
+            
+                hn_1(i,0) = ( 4d0 * hn_1(i,1) - hn_1(i,2) )/3d0
+                hn_1(i,0) = max(hn_1(i,0), 0d0)
+                An_1(i,0) = ( 4d0 * An_1(i,1) - An_1(i,2) )/3d0
+                An_1(i,0) = max(An_1(i,0), 0d0)
+                An_1(i,0) = min(An_1(i,0), 1d0)
+                  
+             endif
+
+             if (maskC(i,ny+1) .eq. 1) then
+            
+                hn_1(i,ny+1)= ( 4d0 * hn_1(i,ny) - hn_1(i,ny-1) ) / 3d0
+                hn_1(i,ny+1)= max(hn_1(i,ny+1), 0d0)
+                An_1(i,ny+1)= ( 4d0 * An_1(i,ny) - An_1(i,ny-1) ) / 3d0
+                An_1(i,ny+1)= max(An_1(i,ny+1), 0d0)
+                An_1(i,ny+1)= min(An_1(i,ny+1), 1d0)
+
+             endif
+ 
+          enddo
+                  
+      endif            
+	  
+      if (Periodic_x .eq. 0) then
+	  
+         do j = 0, ny+1
+
+             if (maskC(0,j) .eq. 1) then
+                  
+                 hn_1(0,j)  = ( 4d0 * hn_1(1,j) - hn_1(2,j) ) / 3d0
+                 hn_1(0,j)  = max(hn_1(0,j), 0d0)
+                 An_1(0,j)  = ( 4d0 * An_1(1,j) - An_1(2,j) ) / 3d0
+                 An_1(0,j)  = max(An_1(0,j), 0d0)
+                 An_1(0,j)  = min(An_1(0,j), 1d0)
+
+             endif
+
+             if (maskC(nx+1,j) .eq. 1) then
+                 
+                 hn_1(nx+1,j) = ( 4d0 * hn_1(nx,j) - hn_1(nx-1,j) ) / 3d0
+                 hn_1(nx+1,j) = max(hn_1(nx+1,j), 0d0)
+                 An_1(nx+1,j) = ( 4d0 * An_1(nx,j) - An_1(nx-1,j) ) / 3d0
+                 An_1(nx+1,j) = max(An_1(nx+1,j), 0d0)
+                 An_1(nx+1,j) = min(An_1(nx+1,j), 1d0)
+
+             endif
+
+         enddo
+
+         if ( adv_scheme .eq. 'upwind' ) then
+!------------------------------------------------------------------------
+!     compute the difference of the flux for thickness 
+!------------------------------------------------------------------------
+
+            call calc_Fx_Fy(un, vn, hn_1, Fx, Fy)
+
+            do i = 1, nx
+               do j = 1,ny
+                  
+                  if (maskC(i,j) .eq. 1) then
+
+                     hout(i, j) = hn_1(i, j) - DtoverDx * (Fx(i, j)+Fy(i, j)) - &
+                        Deltat * hn_1(i, j) * shear_I(i, j) * tan_psi(i, j)
+
+                  endif
+               
+               enddo
+            enddo
+
+!------------------------------------------------------------------------
+!     compute the difference of the flux for concentration 
+!------------------------------------------------------------------------
+
+            call calc_Fx_Fy(un, vn, An_1, Fx, Fy)
+
+            do i = 1, nx
+               do j = 1,ny
+                  
+                  if (maskC(i,j) .eq. 1) then
+
+                     Aout(i, j) = An_1(i, j) - DtoverDx * (Fx(i, j)+Fy(i, j)) - &
+                        Deltat * An_1(i, j) * shear_I(i, j) * tan_psi(i, j)
+
+                  endif
+               
+               enddo
+            enddo
+
+
+         endif
+
+     endif
+
+
+
+   end subroutine advection_mu
+
+   subroutine calc_Fx_Fy (utp, vtp, tracertp, Fx, Fy)
+
+      implicit none
+
+      include 'parameter.h'
+      include 'CB_mask.h'
+
+      integer i, j
+      double precision, intent(in) :: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2), tracertp(0:nx+2,0:ny+2)
+      double precision, intent(out):: Fx(nx,ny), Fy(nx, ny)
+      double precision :: F
+
+      do i = 1, nx
+         do j = 1, ny
+            
+            if (maskC(i,j) .eq. 1) then
+
+               if (utp(i, j) .ge. 0) then
+                  Fx(i, j) = utp(i, j) * (tracertp(i, j) - tracertp(i-1, j))
+               else
+                  Fx(i, j) = utp(i, j) * (tracertp(i+1, j) - tracertp(i, j))
+               endif
+
+               if (vtp(i, j) .ge. 0) then
+                  Fy(i, j) = vtp(i, j) * (tracertp(i, j) - tracertp(i, j-1))
+               else
+                  Fy(i, j) = vtp(i, j) * (tracertp(i, j+1) - tracertp(i, j))
+               endif
+
+            endif
+         enddo
+      enddo
+
+
+   end subroutine calc_Fx_Fy
+
+
     subroutine calc_dFx (utp, tracertp, dFx)
 
       implicit none
@@ -812,8 +1004,6 @@
     end subroutine calc_dFy
 
     subroutine calc_div (utp, vtp, div)
-      
-      use muphi
 
       implicit none
 
@@ -831,8 +1021,7 @@
 
             if (maskC(i,j) .eq. 1) then
 
-               ! div(i,j)=(utp(i+1,j)-utp(i,j) + vtp(i,j+1)-vtp(i,j))/Deltax 
-               div(i, j) = div_I(i, j)
+               div(i,j)=(utp(i+1,j)-utp(i,j) + vtp(i,j+1)-vtp(i,j))/Deltax 
 
             endif
 

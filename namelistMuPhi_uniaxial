@@ -22,7 +22,7 @@
     BasalStress = .false.
     uniaxial = .true.
     inclined = .false.
-    dilatancy = .false.
+    dilatancy = .true.
     mu_phi    = .true.
 /
 

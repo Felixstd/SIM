@@ -151,8 +151,36 @@ In all of these abose, the pressure used is the regularized one from mu_phi. I w
 I only use the one in Hibler.
 
 
-# Expriment 9
+# Experiment 9
 Same as all of the other but rather using p_eq I use P_max only.
+
+
+Here, we are not seeing that much differences compared to the regularized mu - phi pressure. 
+
+# Experiment 10
+Here, I'm using the right advection scheme. 
+
+With the upwind scheme, zeta = 2eta = mu(I)p/eII with P being given by Hibler and
+the rest has the same parameters are before. 
+
+
+# Experiment 11
+Here, I'm using the right advection scheme. 
+
+With the upwind scheme, zeta = 2eta = mu(I)p/eII with P being given by mu_phi pressure. 
+the rest has the same parameters are before. 
+
+weird. 
+
+# Experiment 12
+Here, I'm using the right advection scheme.
+
+Again with mu-phi pressure but here I switched the initial conditions and the conditions for mu(I) and I. 
+
+Here, mu_I = 0 if h <  1e-6 and I = 0 also. 
+
+
+Weird when I use the mu phi pressure. I think it's not well posed. Would need to try different parameters. 
 
 
 

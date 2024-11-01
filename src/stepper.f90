@@ -358,8 +358,13 @@
       if ( Dynamic ) then
 
          if (IMEX .eq. 0) then ! already done with IMEX 1 and 2
-            call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A ) 
 
+            if (dilatancy) then
+               call advection_mu(An1, hn1, un1, vn1, h, A)
+            else
+
+               call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A ) 
+            endif
             !if (Rheology .eq. 3) &
             !     call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam)
 

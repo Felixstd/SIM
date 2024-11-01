@@ -313,11 +313,13 @@ subroutine initial_conditions_uniaxial
 
             if (h(i, j) < 1e-6) then
 
-               mu_I(i, j) = mu_infty
-               ! mu_I(i, j) = mu_0
+               ! mu_I(i, j) = mu_infty
+               mu_I(i, j) = mu_0
                Phi_I(i, j) = 0d0
                ! Phi_I(i, j) = 0.5
-               inertial(i, j) = 1d0
+               ! inertial(i, j) = 1d0
+               inertial(i, j) = 0
+
             ! if (h(i, j) .eq. 0d0) then 
                
             
