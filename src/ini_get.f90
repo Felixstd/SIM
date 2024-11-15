@@ -67,12 +67,17 @@ subroutine ini_get (restart, expno_r, restart_date)
             elseif ((nx == 200) .and. (ny == 500)) then
                 if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
                 if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
+               !  if (i .lt. 11 .or. i .gt. 190 ) h(i,j) = 0d0
+               !  if (i .lt. 11 .or. i .gt. 190) A(i,j) = 0d0
                 if (j .gt. 500) h(i,j) = 0d0
                 if (j .gt. 500) A(i,j) = 0d0 
             
             elseif ((nx == 200) .and. (ny == 1000)) then
                 if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
                 if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
+
+               !  if (i .lt. 11 .or. i .gt. 100 ) h(i,j) = 0d0
+               !  if (i .lt. 11 .or. i .gt. 190) A(i,j) = 0d0
                !  if (j .gt. 1000) h(i,j) = 0d0
                !  if (j .gt. 500) A(i,j) = 0d0 
 
@@ -313,12 +318,18 @@ subroutine initial_conditions_uniaxial
 
             if (h(i, j) < 1e-6) then
 
-               ! mu_I(i, j) = mu_infty
+               !BEFORE:
+                  ! mu_I(i, j) = mu_infty
+               
+               !EXPERIMENT 23
+               ! mu_I(i, j) = 0d0
+
                mu_I(i, j) = mu_0
                Phi_I(i, j) = 0d0
                ! Phi_I(i, j) = 0.5
                ! inertial(i, j) = 1d0
-               inertial(i, j) = 0
+               ! inertial(i, j) = 1d0
+               inertial(i, j) = 0d0
 
             ! if (h(i, j) .eq. 0d0) then 
                

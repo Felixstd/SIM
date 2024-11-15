@@ -13,7 +13,7 @@ subroutine inertial_number
     include 'CB_const.h'
 
     integer i, j
-    double precision eps, highI, lowI
+    double precision eps, highI, lowI, Press
 
     !
     ! Need to look for the eps and see if it is the right thing to do. 
@@ -27,13 +27,17 @@ subroutine inertial_number
         do j = 0, ny+1
             if (maskC(i,j) .eq. 1) then
 
-                if (h(i, j) < eps) then
-                ! force to highI in water when the height is less than eps
-                    inertial(i, j) = lowI
-                    ! inertial(i, j) = 0
-                else
-                    inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j), highI)
-                endif
+                ! if (h(i, j) < eps) then
+                ! ! force to highI in water when the height is less than eps
+                !     ! inertial(i, j) = lowI
+                !     inertial(i, j) = highI
+                !     ! inertial(i, j) = 0
+                ! else
+                    Press = max(Pp(i, j), 1d-20)
+                    ! inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j), highI)
+                    inertial(i, j) = SQRT(rhoice * h(i, j)/Press) * d_average*shear_I(i, j)
+                    Ifriction(i, j) = SQRT(rhoice * h(i, j)/max(Pmax(i, j), 1d-20)) * d_average*shear_I(i, j)
+                ! endif
 
             endif
         enddo
@@ -146,17 +150,24 @@ subroutine angle_friction_mu
 
 
                 ! scaled_A = 0.1 + (0.8-0.1)*A(i,j)
-                if ((dilatancy .eqv. .true.) .or. (mu_phi .eqv. .false.)) then
+                if ((dilatancy .eqv. .true.) .and. (mu_phi .eqv. .false.)) then
                     min_inertial = max(inertial(i, j), 1d-20)
 
-                    if (h(i,j) < 1e-6) then
+                    ! if (h(i,j) < 1e-6) then
+                        
+                    !     !BEFORE: (up to 12)
+                    !         ! mu_I(i, j) = mu_infty
 
-                        mu_I(i, j) = 0d0
+                    !     !UNTIL 23
+                    !         ! mu_I(i, j) = 0d0
+                            
+                    !     mu_I(i, j) = mu_0
 
-                    else 
-                        mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1) !+ tan_psi(i, j)
+                    ! else 
+                    ! mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1)
+                    mu_I(i, j) = max(mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1) + tan_psi(i, j), 0d0)
                     
-                    endif
+                    ! endif
                     ! mu_b_I(i, j) = 1/(2*mu_I(i,j))
                     mu_b_I(i, j) = mu_b
                 
@@ -192,15 +203,12 @@ subroutine divergence_muphi()
 
     integer i, j
     double precision tan_dilat_angle
-    double precision K
-
-    K = 2
 
     do i = 0, nx+1
         do j = 0, ny+1
 
             if (maskC(i, j) .eq. 1) then
-                tan_psi(i, j) = K * (A(i,j) - Phi_I(i, j))
+                tan_psi(i, j) = K_div * (A(i,j) - Phi_I(i, j))
 
                 div_I(i, j) = shear_I(i, j) * tan_dilat_angle
 

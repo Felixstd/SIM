@@ -195,11 +195,17 @@ PROGRAM ice
             call volumefraction_phi()
          endif
          if (uniaxial) then
-            call initial_conditions_uniaxial
-            call initial_conditions_muPhi
-            ! call Ice_strength
+            call shear(uice, vice)                     
+            call Ice_strength()
+            call inertial_number()
+            call volumefraction_phi()
+            call divergence_muphi()
             call angle_friction_mu()
-            call shear(uice, vice)
+            ! call initial_conditions_uniaxial
+            ! call initial_conditions_muPhi
+            ! ! call Ice_strength
+            ! call angle_friction_mu()
+            ! call shear(uice, vice)
          endif
 
       endif

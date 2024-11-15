@@ -59,6 +59,7 @@ MODULE muphi
   DOUBLE PRECISION :: d_average
   DOUBLE PRECISION :: Phi_0
   DOUBLE PRECISION :: mu_b
+  DOUBLE PRECISION :: K_div
 
 
 END MODULE muphi

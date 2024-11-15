@@ -154,14 +154,14 @@
          Deltax     =  1d03
 
       elseif (((nx == 200) .and. (ny == 500)) .or. ((nx == 500) .and. (ny == 500))) then
-         Deltax     = 1d03*10
-         ! Deltax     = 1d03*10
+         ! Deltax     = 2d03
+         Deltax     = 1d03*2
          ! Deltax = 25
 
       elseif (((nx == 200) .or. (nx == 400)) .and. (ny == 1000) .or. (ny == 600)) then
-         ! Deltax     =  2d03           !  Uniaxial loading (Ringeisen et al., 2019).
+         Deltax     =  2d03           !  Uniaxial loading (Ringeisen et al., 2019).
          ! Deltax = 1d03*10
-         Deltax = 2d03
+         ! Deltax = 10d03
          ! Deltax = 10d03
       
       elseif ((nx == 102) .and. (ny == 402)) then
@@ -177,12 +177,13 @@
 
 ! Mu(I) - Phi(I) rheology (rheology = 4)
       d_average  = 1d3
-      ! mu_0 =     TAN(5*pi/36)
-      ! mu_infty = TAN(13*pi/36)
+      mu_0 =     TAN(5*pi/36)
+      mu_infty = TAN(13*pi/36)
       I_0        = 1e-3
+      K_div      = 2
       ! mu_b       = 0.45
-      mu_0 =     0.1
-      mu_infty = 0.9
+      ! mu_0 =     0.1
+      ! mu_infty = 0.9
       mu_b       = 1
       Phi_0      = 1
       c_phi      = 1
@@ -571,6 +572,8 @@ subroutine read_namelist
       print *,
       print *, 'time step [s] =   ', Deltat
       print *, 'Basal', BasalStress
+      print *, 'Dilatancy     =   ', dilatancy
+      print *, 'Mu-Phi        =   ', mu_phi
 
     end subroutine verify_options
 

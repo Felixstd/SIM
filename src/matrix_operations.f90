@@ -178,7 +178,8 @@ end subroutine Funk
 
             Ax(k) = Ax(k) + Cbasal1(i,j)*utp(i,j)
 
-         if (mu_phi .eqv. .false.) then
+         if ((mu_phi .eqv. .false.) .and. (rheology .eq. 4) .and. (dilatancy .eqv. .false.)) then
+         ! if ((mu_phi .eqv. .false.) .and. (rheology .eq. 4)) then
 !------------------------------------------------------------------------
 !     d ( eta (du/dx) ) / dx    B1_1  p.899... 
 !------------------------------------------------------------------------
@@ -477,7 +478,7 @@ end subroutine Funk
 
            Ax(k) = Ax(k) + Cbasal2(i,j)*vtp(i,j)
 
-           if (mu_phi .eqv. .false.) then
+           if ((mu_phi .eqv. .false.) .and. (rheology .eq. 4) .and. (dilatancy .eqv. .false.)) then
 !------------------------------------------------------------------------
 !     d [ eta(dv/dy) ] / dy   D2_4, B2_4
 !------------------------------------------------------------------------

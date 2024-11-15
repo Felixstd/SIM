@@ -100,6 +100,88 @@ def invariants(data_dict, N, time, figdir, MuPhi = True):
     
     plt.savefig(figdir+'invariant_time.png')
             
+
+def compute_invariant_stresses(u, v, zeta, eta, maskC, P, nx, ny, deltax):
+    
+    print(np.shape(eta))
+    sig11 = np.zeros((nx, ny))
+    sig22 = np.zeros((nx, ny))
+    sig12 = np.zeros((nx, ny))
+    sig21 = np.zeros((nx, ny))
+    sig1norm = np.zeros((nx, ny))
+    sig2norm = np.zeros((nx, ny))
+    sigI = np.zeros((nx, ny))
+    sigII = np.zeros((nx, ny))
+    sigInorm = np.zeros((nx, ny))
+    sigIInorm = np.zeros((nx, ny))
+
+    print(ny-3)
+    for j in range(0, ny-2):
+        for i in range(0, nx-1):
             
+            dudx = 0
+            dudy = 0
+            dvdx = 0
+            dvdy = 0
+            # print(i, j)
+            #--- dudx ---#
+            dudx = ( u[i+1,j] - u[i,j] ) / deltax
+            
+            #--- dvdy ---#
+            dvdy = ( v[i,j+1] - v[i,j] ) / deltax
+            
+            #--- dvdx ---#
+            if maskC[i + 1, j] + maskC[i - 1, j] == 2:
+                    dvdx = ((v[i + 1, j] + v[i + 1, j + 1]) -
+                            (v[i - 1, j] + v[i - 1, j + 1])) / (4.0 * deltax)
+            
+            elif maskC[i + 1, j] - maskC[i - 1, j] == 1:
+                dvdx = (1.0 * (v[i + 1, j] + v[i + 1, j + 1]) +
+                        3.0 * (v[i, j] + v[i, j + 1])) / (6.0 * deltax)
+            
+            elif maskC[i + 1, j] - maskC[i - 1, j] == -1:
+                dvdx = (-1.0 * (v[i - 1, j] + v[i - 1, j + 1]) -
+                        3.0 * (v[i, j] + v[i, j + 1])) / (6.0 * deltax)
+            
+            #--- dudy ---#
+            if maskC[i, j + 1] + maskC[i, j - 1] == 2:
+                dudy = ((u[i, j + 1] + u[i + 1, j + 1]) -
+                            (u[i, j - 1] + u[i + 1, j - 1])) / (4.0 * deltax)
+            
+            elif maskC[i, j + 1] - maskC[i, j - 1] == 1:
+                dudy = (1.0 * (u[i, j + 1] + u[i + 1, j + 1]) +
+                        3.0 * (u[i, j] + u[i + 1, j])) / (6.0 * deltax)
+            
+            elif maskC[i, j + 1] - maskC[i, j - 1] == -1:
+                dudy = (-1.0 * (u[i, j - 1] + u[i + 1, j - 1]) -
+                        3.0 * (u[i, j] + u[i + 1, j])) / (6.0 * deltax)
+            
+            
+            ep = dudx + dvdy
+            em = dudx - dvdy
+            
+            e12 = 1/2*(dudy + dvdx)
+            e21 = e12
+            
+            sig11[i, j] = zeta[i, j]*ep+eta[i, j]*em-P[i, j]
+            sig22[i, j] = zeta[i, j]*ep-eta[i, j]*em-P[i, j]
+            sig12[i, j] = 2*e21*eta[i, j]
+            sig21[i, j] = 2*e12*eta[i, j]
+            
+            sigp = sig11[i, j]+sig22[i, j]
+            sigm=sig11[i, j]-sig22[i, j]
+
+            sigTmp=np.sqrt(np.abs(sigm**2+4*sig12[i, j]*sig21[i, j]))
+            
+            
+            sig1norm[i, j]=0.5*(sigp+sigTmp)/P[i, j]
+            sig2norm[i, j]=0.5*(sigp-sigTmp)/P[i, j]
+            
+            sigInorm[i,j] = 0.5*(sig1norm[i, j]+sig2norm[i, j])
+            sigIInorm[i,j] = 0.5*(sig1norm[i, j]-sig2norm[i, j])
+            
+    return sigInorm, sigIInorm
+    
+               
             
             

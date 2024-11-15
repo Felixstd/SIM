@@ -113,9 +113,12 @@
                   call shear(uice, vice)                     
                   call Ice_strength()
                   call inertial_number()
+                  call volumefraction_phi()
                   call divergence_muphi()
                   call angle_friction_mu()
-                  call volumefraction_phi()
+                  ! for the pressure sum
+                  call Ice_strength()
+                  
                
                else
                    call angle_friction_mu()

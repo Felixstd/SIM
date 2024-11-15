@@ -65,12 +65,12 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty, MuPhi = True, 
     
     if MuPhi:
         
-        divergence_tot, shear_tot, h_tot, A_tot, p_tot, sigI_tot, sigII_tot, zeta_tot, \
+        divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot, sigI_tot, sigII_tot, zeta_tot,eta_tot, \
             uair_tot, vair_tot, muI_tot, phi_tot, I_tot, shearI_tot, Pmax_tot, Peq_tot = data_dict.values()
     
     else: 
         
-        divergence_tot, shear_tot, h_tot, A_tot, p_tot, sigI_tot, sigII_tot, zeta_tot, uair_tot, vair_tot = \
+        divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
             data_dict.values()
         
     Nx, Ny = np.shape(divergence_tot[0])
@@ -87,8 +87,11 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty, MuPhi = True, 
         divergence, shear = divergence_tot[k], shear_tot[k]
         h, A, p = h_tot[k], A_tot[k], p_tot[k]
         sigI, sigII = sigI_tot[k], sigII_tot[k]
-        zeta = zeta_tot[k]
+        zeta, eta = zeta_tot[k], eta_tot[k]
         uair, vair = uair_tot[k], vair_tot[k]
+        u, v = u_tot[k], v_tot[k]
+        
+        print(np.shape(u))
         
         sigI_norm, sigII_norm = normalize_stresses(sigI, sigII, p)
         
@@ -98,13 +101,13 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty, MuPhi = True, 
         quiver_step = max(x.shape[1] // 10, 1)
         quiver_step_2 = max(x.shape[0] // 10, 1)
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2, figsize=(5, 4))
-        plot_colormesh(ax1, fig, X, Y, 1-A, cmocean.cm.ice, colors.Normalize(vmin=0, vmax=1e-7), r'$1-A$', None, 'y (km)')
+        plot_colormesh(ax1, fig, X, Y, 1-A, cmocean.cm.ice, colors.Normalize(vmin=1e-7, vmax=1e-6), r'$1-A$', None, 'y (km)')
         ax1.quiver(x[::quiver_step_2, ::quiver_step], y[::quiver_step_2, ::quiver_step], uair[::quiver_step_2, ::quiver_step], vair[::quiver_step_2, ::quiver_step], color = 'r')
-        plot_colormesh(ax2, fig, X, Y, 1-h, cmocean.cm.ice, colors.Normalize(vmin=0, vmax=1e-7), r'$1-h$', None, None)
+        plot_colormesh(ax2, fig, X, Y, 1-h, cmocean.cm.ice, colors.Normalize(vmin=1e-7, vmax=1e-6), r'$1-h$', None, None)
         if log:
-            plot_colormesh(ax3, fig, X, Y, divergence, cmocean.cm.thermal, colors.LogNorm(vmin=1e-4, vmax=1e-1), 
+            plot_colormesh(ax3, fig, X, Y, divergence, cmocean.cm.thermal, colors.LogNorm(vmin=1e-4, vmax=1e-0), 
             r'$\dot{\epsilon}_{\mathrm{I}} \text{ (day}^{-1})$', 'x (km)', 'y (km)')
-            plot_colormesh(ax4, fig, X, Y, shear, cmocean.cm.thermal, colors.LogNorm(vmin=1e-4, vmax=1e-1), 
+            plot_colormesh(ax4, fig, X, Y, shear, cmocean.cm.thermal, colors.LogNorm(vmin=1e-4, vmax=1e-0), 
             r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', 'x (km)', None) 
         else:
             plot_colormesh(ax3, fig, X, Y, divergence, cmocean.cm.thermal, colors.Normalize(vmin=1e-4, vmax=1e-2), 
@@ -119,8 +122,10 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty, MuPhi = True, 
         #------ Stresses plots ------#
         
         fig, (ax1, ax2, ax3) = plt.subplots(1,3, figsize=(12, 6))
-        plot_colormesh(ax1, fig, X, Y, sigI_norm, cmocean.cm.ice, colors.Normalize(vmin=-1, vmax=1e-2), r'$\sigma_{\mathrm{I}}/P$', 'x (km)', 'y (km)')
-        plot_colormesh(ax2, fig, X, Y, sigII_norm, cmocean.cm.ice, colors.Normalize(vmin=0, vmax=1e-2), r'$\sigma_{\mathrm{II}}/P$', 'x (km)', None)     
+        # plot_colormesh(ax1, fig, X, Y, sigI_norm, cmocean.cm.ice, colors.Normalize(vmin=-1, vmax=1e-2), r'$\sigma_{\mathrm{I}}/P$', 'x (km)', 'y (km)')
+        # plot_colormesh(ax2, fig, X, Y, sigII_norm, cmocean.cm.ice, colors.Normalize(vmin=0, vmax=1e-2), r'$\sigma_{\mathrm{II}}/P$', 'x (km)', None)   
+        plot_colormesh(ax1, fig, X, Y, sigI, cmocean.cm.ice, colors.Normalize(vmin=-1, vmax=1e-2), r'$\sigma_{\mathrm{I}}/P$', 'x (km)', 'y (km)')
+        plot_colormesh(ax2, fig, X, Y, sigII, cmocean.cm.ice, colors.Normalize(vmin=0, vmax=1e-2), r'$\sigma_{\mathrm{II}}/P$', 'x (km)', None)       
         plot_colormesh(ax3, fig, X, Y, zeta, cmocean.cm.ice, colors.Normalize(vmin=np.min(1e8), vmax=np.max(1e12)), r'$\zeta$', 'x (km)', None)   
         fig.tight_layout()
         plt.savefig(figdir+expno+'/stresses_invariant{}.png'.format(date))
@@ -152,12 +157,23 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty, MuPhi = True, 
             fig.tight_layout()
             
             plt.savefig(figdir+expno+'/pressures_{}.png'.format(date))
-        
             
             fig = plt.figure()
             ax = plt.axes()
-            plt.axis('equal')
-            sc = ax.scatter(sigI_norm.flatten(), sigII_norm.flatten(), s = 2, c = I.flatten(), cmap = plt.cm.magma, norm = colors.LogNorm(vmin=1e-5, vmax=1e-3))
+            if (np.shape(sigI)[0] == 1002):
+
+            # plt.axis('equal')
+            # sc = ax.scatter(sigI_norm.flatten(), sigII_norm.flatten(), s = 2, c = I.flatten(), cmap = plt.cm.magma, norm = colors.LogNorm(vmin=1e-5, vmax=1e-3))
+                sc = ax.scatter(sigI[502:, :].flatten(), sigII[502:, :].flatten(), s = 2, c = 'r', cmap = plt.cm.magma, norm = colors.Normalize(vmin=1e-6, vmax=1e-3))
+                sc = ax.scatter(sigI[:502, :].flatten(), sigII[:502, :].flatten(), s = 2, c = 'b', cmap = plt.cm.magma, norm = colors.Normalize(vmin=1e-6, vmax=1e-3))
+                plt.plot(np.unique(sigI[502:, :]).ravel(), np.abs(np.unique(sigI[502:, :]).ravel()*mu_0))
+                plt.plot(np.unique(sigI[502:, :]).ravel(), np.abs(np.unique(sigI[502:, :]).ravel()*mu_infty))
+            else:
+                sc = ax.scatter(sigI.flatten(), sigII.flatten(), s = 2, c = I.flatten(), cmap = plt.cm.magma, norm = colors.Normalize(vmin=1e-6, vmax=1e-3))
+                # sc = ax.scatter(sigI.flatten(), sigII.flatten(), s = 2, c = 'b', cmap = plt.cm.magma, norm = colors.Normalize(vmin=1e-6, vmax=1e-3))
+                plt.plot(np.unique(sigI).ravel(), np.abs(np.unique(sigI).ravel()*mu_0))
+                plt.plot(np.unique(sigI).ravel(), np.abs(np.unique(sigI).ravel()*mu_infty)) 
+            # print(sigI.flatten())
             plt.grid('--')
             fig.colorbar(sc, label = 'I')
             ax.set_xlabel(r'$\sigma_{I}/P$')

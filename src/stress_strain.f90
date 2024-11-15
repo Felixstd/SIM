@@ -38,11 +38,16 @@
       integer i, j, m, year, month, day, hour, minute, second
 
       double precision dudx, dvdy, dudy, dvdx, land, lowA
+      REAL(8) e11, e22, e12, e21, ep, em, sigp, sigm, sigtmp
+
 
       double precision, intent(in):: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
 
       double precision shear(0:nx+1,0:ny+1), div(0:nx+1,0:ny+1)
       double precision sigI(0:nx+1,0:ny+1), sigII(0:nx+1,0:ny+1)
+      double precision sig11(0:nx+1,0:ny+1), sig22(0:nx+1,0:ny+1)
+      double precision sig21(0:nx+1,0:ny+1), sig12(0:nx+1,0:ny+1)
+      double precision sig1(0:nx+1,0:ny+1), sig2(0:nx+1,0:ny+1)
       double precision sigInorm(0:nx+1,0:ny+1), sigIInorm(0:nx+1,0:ny+1)! stress invariants
       double precision sig1norm(0:nx+1,0:ny+1), sig2norm(0:nx+1,0:ny+1) ! princ stresses
       double precision zetaCout(0:nx+1,0:ny+1)
@@ -152,23 +157,50 @@
 
                   if (Rheology .eq. 4) then
 
-                     sigI(i,j)   = -1d0*( dudx + dvdy )*zetaCf(i,j)+Pp(i,j)
+                     em = dudx - dvdy
+                     ep = dudx + dvdy
+
+                     e12 = (dudy + dvdx) /2 
+                     e21 = (dudy + dvdx) /2
+
+                     sig11(i, j) = zetaC(i, j)*ep + etaC(i, j)*em - Pp(i, j)
+                     sig22(i, j) = zetaC(i, j)*ep - etaC(i, j)*em - Pp(i, j)
+                     sig12(i, j) = 2d0*e21*etaC(i, j)
+                     sig21(i, j) = 2d0*e12*etaC(i, j)
+
+                     sigp = sig11(i,j) + sig22(i,j)
+                     sigm = sig11(i,j) - sig22(i,j)
+                     sigtmp = sqrt(abs(sigm**2 + 4d0*sig12(i,j)*sig21(i,j)))
+                     
+                     sig1(i, j) = (sigp + sigtmp) / 2
+                     sig2(i, j) = (sigp - sigtmp) / 2
+
+                     sig1norm(i, j) = sig1(i,j)/(Pp(i,j)+1e-20)
+                     sig2norm(i, j) = sig2(i,j)/(Pp(i,j)+1e-20)
+
+
+                     sigI(i,j) = (sig1(i,j) + sig2(i,j)) / 2
+                     sigII(i,j) = (sig1(i,j) - sig2(i,j)) / 2
+                     
+                     
+                     sigInorm(i,j) = (sig1norm(i,j) + sig2norm(i,j)) / 2
+                     sigIInorm(i,j) = (sig1norm(i,j) - sig2norm(i,j)) / 2
                   
                   else
                      sigI(i,j)   = -1d0*( dudx + dvdy )*zetaCf(i,j)+Pf(i,j)
 
+
+                     sigII(i,j) = sqrt(( dudx - dvdy )**2d0 &
+                        + ( dudy + dvdx )**2d0 )*etaCf(i,j)
+
+                     sigInorm(i,j)  = sigI(i,j)  / (2d0*max(Pp(i,j),1d-10))
+                     
+                     sigIInorm(i,j) = sigII(i,j) / (2d0*max(Pp(i,j),1d-10))
+
+                     sig1norm(i,j) = -1d0*sigInorm(i,j) + sigIInorm(i,j)
+                     sig2norm(i,j) = -1d0*sigInorm(i,j) - sigIInorm(i,j)
+
                   endif
-
-
-                  sigII(i,j) = sqrt(( dudx - dvdy )**2d0 &
-                       + ( dudy + dvdx )**2d0 )*etaCf(i,j)
-
-                  sigInorm(i,j)  = sigI(i,j)  / (2d0*max(Pp(i,j),1d-10))
-                  
-                  sigIInorm(i,j) = sigII(i,j) / (2d0*max(Pp(i,j),1d-10))
-
-                  sig1norm(i,j) = -1d0*sigInorm(i,j) + sigIInorm(i,j)
-                  sig2norm(i,j) = -1d0*sigInorm(i,j) - sigIInorm(i,j)
 
                   endif
 

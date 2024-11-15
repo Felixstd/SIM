@@ -26,9 +26,12 @@ def read_data(expno, dates, outputdir, MuPhi = True):
         'h_dates': [],
         'A_dates': [],
         'p_dates': [],
+        'u_dates':[], 
+        'v_dates':[],
         'sig_I_dates': [],
         'sig_II_dates': [],
         'zetaC': [], 
+        'etaC':[],
         'uair_dates':[], 
         'vair_dates':[]
     }
@@ -51,9 +54,12 @@ def read_data(expno, dates, outputdir, MuPhi = True):
             ('h', 'h_dates'),
             ('A', 'A_dates'),
             ('p', 'p_dates'),
-            ('sigI', 'sig_I_dates'),
-            ('sigII', 'sig_II_dates'),
+            ('u', 'u_dates'),
+            ('v', 'v_dates'), 
+            ('sigInorm', 'sig_I_dates'),
+            ('sigIInorm', 'sig_II_dates'),
             ('zeta', 'zetaC'), 
+            ('eta', 'etaC'),
             ('uair', 'uair_dates'), 
             ('vair', 'vair_dates'), 
         ]

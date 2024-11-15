@@ -49,13 +49,17 @@
                 Peq      (0:nx+2,0:ny+2), &
                 Pmu      (0:nx+2,0:ny+2), &
                 inertial (0:nx+2,0:ny+2), &
+                Ifriction(0:nx+2,0:ny+2), &
                 shear_I  (0:nx+2,0:ny+2), &
                 Phi_I    (0:nx+2,0:ny+2), &
                 mu_I     (0:nx+2,0:ny+2), &
                 mu_B_I   (0:nx+2,0:ny+2), &
                 Pdep     (0:nx+2,0:ny+2), &
                 div_I    (0:nx+2,0:ny+2), &
-                tan_psi  (0:nx+2,0:ny+2)
+                tan_psi  (0:nx+2,0:ny+2), &
+                P_fric   (0:nx+2,0:ny+2), &
+                P_col    (0:nx+2,0:ny+2)
+
 
 
 
@@ -102,6 +106,7 @@
                 Pmax,           & ! replacement pressure
                 Peq,            &
                 inertial,       &
+                Ifriction,      &
                 shear_I,        &
                 Phi_I,          &
                 mu_I,           &
@@ -109,7 +114,9 @@
                 Pdep,           &
                 div_I,          &
                 Pmu,            &
-                tan_psi 
+                tan_psi,        &
+                P_fric,         &
+                P_col    
 
 
 

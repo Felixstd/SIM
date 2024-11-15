@@ -181,8 +181,10 @@
 
          ! do j = 1, ny
          do j = 0, ny+1
-            write(12,*) ( uice(i,j), i = 1, nx+1 )
-            write(13,*) ( vice(i,j), i = 1, nx+1 )
+          !   write(12,*) ( uice(i,j), i = 1, nx+1 )
+          !   write(13,*) ( vice(i,j), i = 1, nx+1 )
+            write(12,*) ( uice(i,j), i = 0, nx+1 )
+            write(13,*) ( vice(i,j), i = 0, nx+1 )
             write(44,*) (uair(i, j), i = 0, nx+1)
             write(45,*) (vair(i, j), i = 0, nx+1)
 !            write(17,20) ( uwatnd(i,j), i = 1, nx+1 )
@@ -253,7 +255,7 @@
             write(39,*) ( Peq(i,j), i = 0, nx+1)
             write(43,*) ( Pmax(i,j), i = 0, nx+1)
             write(15,*) (shear_I(i, j), i = 0, nx+1)
-            write(41,*) (etaC(i, j), i = 0, nx+1)
+          !   write(41,*) (etaC(i, j), i = 0, nx+1)
          enddo
          
          ! do j = 0, ny+1

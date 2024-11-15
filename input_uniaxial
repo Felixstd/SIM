@@ -1,8 +1,8 @@
 1                    input namelist
 0                    restart
-12                   exp version
+93                   exp version
 1990-01-01:00:00:00  starting date
-1990-01-01:00:00:30  end date
+1990-01-01:00:01:00  end date
 1990-01-01:00:00:01  posting date
 1990-01-01:00:00:02  posting date
 1990-01-01:00:00:03  posting date
@@ -32,4 +32,34 @@
 1990-01-01:00:00:27  posting date
 1990-01-01:00:00:28  posting date
 1990-01-01:00:00:29  posting date
+1990-01-01:00:00:30  posting date
+1990-01-01:00:00:31  posting date
+1990-01-01:00:00:32  posting date
+1990-01-01:00:00:33  posting date
+1990-01-01:00:00:34  posting date
+1990-01-01:00:00:35  posting date
+1990-01-01:00:00:36  posting date
+1990-01-01:00:00:37  posting date
+1990-01-01:00:00:38  posting date
+1990-01-01:00:00:39  posting date
+1990-01-01:00:00:40  posting date
+1990-01-01:00:00:41  posting date
+1990-01-01:00:00:42  posting date
+1990-01-01:00:00:43  posting date
+1990-01-01:00:00:44  posting date
+1990-01-01:00:00:45  posting date
+1990-01-01:00:00:46  posting date
+1990-01-01:00:00:47  posting date
+1990-01-01:00:00:48  posting date
+1990-01-01:00:00:49  posting date
+1990-01-01:00:00:50  posting date
+1990-01-01:00:00:51  posting date
+1990-01-01:00:00:52  posting date
+1990-01-01:00:00:53  posting date
+1990-01-01:00:00:54  posting date
+1990-01-01:00:00:55  posting date
+1990-01-01:00:00:56  posting date
+1990-01-01:00:00:57  posting date
+1990-01-01:00:00:58  posting date
+1990-01-01:00:00:59  posting date
 stop                 end of post date string
