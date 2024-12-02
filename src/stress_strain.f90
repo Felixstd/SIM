@@ -156,17 +156,28 @@
 ! watchout p in our code is in fact p/2 in Hibler's equations
 
                   if (Rheology .eq. 4) then
-
                      em = dudx - dvdy
                      ep = dudx + dvdy
 
                      e12 = (dudy + dvdx) /2 
                      e21 = (dudy + dvdx) /2
 
-                     sig11(i, j) = zetaC(i, j)*ep + etaC(i, j)*em - Pp(i, j)
-                     sig22(i, j) = zetaC(i, j)*ep - etaC(i, j)*em - Pp(i, j)
-                     sig12(i, j) = 2d0*e21*etaC(i, j)
-                     sig21(i, j) = 2d0*e12*etaC(i, j)
+
+                     if (dilatancy) then
+
+                        sig11(i, j) = etaC(i,j)*dudx -(Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
+                        sig22(i, j) = etaC(i,j)*dvdy -(Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
+                        sig12(i, j) = 2d0*e21*etaC(i, j)
+                        sig21(i, j) = 2d0*e12*etaC(i, j)
+
+                     else 
+
+                        sig11(i, j) = zetaC(i, j)*ep + etaC(i, j)*em - Pp(i, j)
+                        sig22(i, j) = zetaC(i, j)*ep - etaC(i, j)*em - Pp(i, j)
+                        sig12(i, j) = 2d0*e21*etaC(i, j)
+                        sig21(i, j) = 2d0*e12*etaC(i, j)
+
+                     endif
 
                      sigp = sig11(i,j) + sig22(i,j)
                      sigm = sig11(i,j) - sig22(i,j)

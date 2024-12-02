@@ -110,14 +110,16 @@
             elseif (Rheology .eq. 4) then
 
                if (dilatancy) then
-                  call shear(uice, vice)                     
-                  call Ice_strength()
-                  call inertial_number()
+                  call shear(uice, vice)   
+                  call Ice_strength()                  
+                  call non_dimensional_shear()
                   call volumefraction_phi()
-                  call divergence_muphi()
                   call angle_friction_mu()
-                  ! for the pressure sum
+                  call divergence_muphi()
                   call Ice_strength()
+                  
+                  ! ! for the pressure sum
+                  
                   
                
                else
@@ -188,6 +190,7 @@
                      call divergence_muphi()
                      call angle_friction_mu()
                      call volumefraction_phi()
+                     call Ice_strength()
                   else
                   
                      call Ice_strength()
@@ -362,12 +365,12 @@
 
          if (IMEX .eq. 0) then ! already done with IMEX 1 and 2
 
-            if (dilatancy) then
-               call advection_mu(An1, hn1, un1, vn1, h, A)
-            else
+            ! if (dilatancy) then
+            !    call advection_mu(An1, hn1, un1, vn1, h, A)
+            ! else
 
                call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A ) 
-            endif
+            ! endif
             !if (Rheology .eq. 3) &
             !     call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam)
 

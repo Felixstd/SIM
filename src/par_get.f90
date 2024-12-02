@@ -151,16 +151,17 @@
          Deltax     =  80d03           ! Pan-Arctic 80km
       elseif ((nx == 100) .and. (ny == 250)) then
          ! Deltax     =  2.5d01            ! Uniaxial loading (Ringeisen et al., 2019).
-         Deltax     =  1d03
+         Deltax     =  100000
 
       elseif (((nx == 200) .and. (ny == 500)) .or. ((nx == 500) .and. (ny == 500))) then
          ! Deltax     = 2d03
-         Deltax     = 1d03*2
+         ! Deltax     = 1d03*2
+         Deltax     = 1d03*10
          ! Deltax = 25
 
       elseif (((nx == 200) .or. (nx == 400)) .and. (ny == 1000) .or. (ny == 600)) then
-         Deltax     =  2d03           !  Uniaxial loading (Ringeisen et al., 2019).
-         ! Deltax = 1d03*10
+         ! Deltax     =  2d03           !  Uniaxial loading (Ringeisen et al., 2019).
+         Deltax = 1d03*10
          ! Deltax = 10d03
          ! Deltax = 10d03
       
@@ -176,17 +177,19 @@
       Deltax2 = Deltax**2d0
 
 ! Mu(I) - Phi(I) rheology (rheology = 4)
-      d_average  = 1d3
-      mu_0 =     TAN(5*pi/36)
-      mu_infty = TAN(13*pi/36)
-      I_0        = 1e-3
+
+      d_average  = 1d4
+      I_0        = 1e-4
       K_div      = 2
-      ! mu_b       = 0.45
-      ! mu_0 =     0.1
-      ! mu_infty = 0.9
+      mu_0 =     0.1
+      mu_infty = 0.9
       mu_b       = 1
       Phi_0      = 1
       c_phi      = 1
+      c_1        = 1d-02
+      c_2        = 1/4
+      Pres_f     = .true.
+      Pres_c     = .false.
 
       ! d = 200
       theta = 45 * pi / 180
@@ -416,8 +419,8 @@ subroutine read_namelist
 
       namelist /phys_param_nml/ &
            Pstar, C, e_ratio, k1, k2, rhoair, rhoice, rhowater, &
-           Cdair, Cdwater, f, d_average, mu_0 , mu_infty, c_phi, &
-            I_0, mu_b , Phi_0    
+           Cdair, Cdwater, f, d_average, mu_0 , mu_infty, mu_b, c_phi, &
+            I_0 , Phi_0, c_1, c_2, Deltax, Pres_f, Pres_c
 
       ! filename ='namelistMuPhi'
       filename ='namelistMuPhi_uniaxial'
@@ -571,9 +574,11 @@ subroutine read_namelist
       print *, 'OcnTemp       =   ', OcnTemp
       print *,
       print *, 'time step [s] =   ', Deltat
+      print *, 'Resolution [m] =   ', Deltax
       print *, 'Basal', BasalStress
       print *, 'Dilatancy     =   ', dilatancy
       print *, 'Mu-Phi        =   ', mu_phi
+      
 
     end subroutine verify_options
 

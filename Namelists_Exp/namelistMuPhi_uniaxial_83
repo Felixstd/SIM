@@ -57,5 +57,5 @@
     c_2       = 0.25
     Deltax    = 1d3*10
     Pres_f    = .true.
-    Pres_c    = .false.
+    Pres_c    = .true.
 /

@@ -3,61 +3,46 @@ from simplotting.data import read_data
 from simplotting.plotting import plot
 from simplotting.analysis import analysis
 import matplotlib.pyplot as plt
-
+from datetime import datetime, timedelta
 import warnings
 
 warnings.filterwarnings("ignore")
 
 
-date_range = np.arange(1, 4)
-dates = []
-for data in date_range:
-        dates.append('1990_01_01_00_00_{:02d}'.format(data))
+minute = 0
+two_hours = 1
+ten_minutes = 0
+
+if minute:
+        
+        start = 1
+        start_k = 61
+        #--- Time for 1 minute run ---#
+        start = datetime(1990, 1, 1, 0, 1, start)
+        intervals = [timedelta(seconds=1)] * 58
+        
+elif ten_minutes:
+        #--- Time for 10 minutes run ---#
+        start = datetime(1990, 1, 1, 0, 0, 30)
+        start_k =1
+        # Time interval (30 seconds initially, then 5-minute steps)
+        intervals = [timedelta(seconds=30)] * int((9*60/30))
+        
+elif two_hours:
+        #--- Time for 2 hours 30 minutes run ---#
+        start = datetime(1990, 1, 1, 0, 00, 30)
+        start_k =1
+        # Time interval (30 seconds initially, then 5-minute steps)
+        intervals = [timedelta(seconds=30)]*1  + [timedelta(minutes=4)]*0 + [timedelta(minutes=5)] *0
+
+dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S') for i in range(len(intervals)+1)]
+print(dates)
 
 
-# dates = ['1990_01_01_00_05_00',
-#         '1990_01_01_00_15_00', 
-#         '1990_01_01_00_20_00',
-#         '1990_01_01_00_30_00', 
-#         '1990_01_01_00_40_00', 
-#         '1990_01_01_00_45_00', 
-#         '1990_01_01_00_50_00',
-#         '1990_01_01_01_00_00',
-#         '1990_01_01_01_10_00',
-#         '1990_01_01_01_15_00']
-        # '1990_01_01_01_25_00',    
-        # '1990_01_01_01_30_00',   
-        # '1990_01_01_01_40_00'] 
-        # '1990_01_01_01_45_00',   
-        # '1990_01_01_02_00_00',   
-        # '1990_01_01_02_15_00',   
-        # '1990_01_01_02_20_00',
-        # '1990_01_01_02_25_00',   
-        # '1990_01_01_02_28_00',   
-        # '1990_01_01_02_29_00']  
 
-dates = ['1990_01_01_00_00_30',
-        '1990_01_01_00_01_00',
-        '1990_01_01_00_01_30',
-        '1990_01_01_00_02_00',
-        '1990_01_01_00_02_30',
-        '1990_01_01_00_03_00',
-        '1990_01_01_00_03_30',
-        '1990_01_01_00_04_00']
-#         '1990_01_01_00_04_30',
-#         '1990_01_01_00_05_00', 
-#         '1990_01_01_00_05_30',
-#         '1990_01_01_00_06_00', 
-#         '1990_01_01_00_06_30',
-#         '1990_01_01_00_07_00',
-#         '1990_01_01_00_07_30',
-#         '1990_01_01_00_08_00', 
-#         '1990_01_01_00_08_30',
-#         '1990_01_01_00_09_00']
-
-expno = '92'
+expno = '81'
 outputdir = "/storage/fstdenis/output_sim/"
-figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_DilatationLaw/'
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_NewP_NewDilat/'
 
 
 Hibler_P = 0
@@ -85,7 +70,7 @@ phi = 0
 
 
 # dx = 1e3/2
-dx = 2e3
+dx = 1e3*10
 # dx = 10e3
 dy = dx
 # Nx = 502
@@ -104,7 +89,7 @@ mask[0, :] = 0
 
 N_transect = 51
 muphi = 1
-log = 1
+log = 0
 time = np.arange(1, 14, 1)
 # time = np.arange(1, 4, 1)
 
@@ -117,7 +102,7 @@ mu_0 = 0.1
 mu_infty = 0.9
 
 #_--------- READING DATA ----------#
-datadict = read_data.read_data(expno, dates, outputdir, MuPhi = muphi)
+datadict = read_data.read_data(expno, start_k, dates, outputdir, MuPhi = muphi)
 if muphi:
     divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot, sigI_tot, sigII_tot, \
         zeta_tot, eta_tot, uair_tot, vair_tot, muI_tot, phi_tot, I_tot, shearI_tot, Pmax_tot, Peq_tot = datadict.values()

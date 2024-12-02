@@ -1,6 +1,6 @@
 import numpy as np
 
-def read_data(expno, dates, outputdir, MuPhi = True):
+def read_data(expno, start, dates, outputdir, MuPhi = True):
     """
     This function reads the ouput, for the specified dates and experiment number (expno) from the McGIll-SIM and puts
     them in a dictionnary. 
@@ -46,7 +46,7 @@ def read_data(expno, dates, outputdir, MuPhi = True):
             'Peq_dates':[]
         })
     
-    for k, date in enumerate(dates, start=1):
+    for k, date in enumerate(dates, start=start):
         # List of file prefixes and associated keys
         files_info = [
             ('div', 'divergence_dates'),

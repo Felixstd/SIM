@@ -58,7 +58,8 @@
                 div_I    (0:nx+2,0:ny+2), &
                 tan_psi  (0:nx+2,0:ny+2), &
                 P_fric   (0:nx+2,0:ny+2), &
-                P_col    (0:nx+2,0:ny+2)
+                P_col    (0:nx+2,0:ny+2), &
+                gamma_I  (0:nx+2,0:ny+2)
 
 
 
@@ -116,7 +117,8 @@
                 Pmu,            &
                 tan_psi,        &
                 P_fric,         &
-                P_col    
+                P_col,          &
+                gamma_I
 
 
 

@@ -844,42 +844,42 @@
 !     compute the difference of the flux for thickness 
 !------------------------------------------------------------------------
 
-         call calc_dFx (un, hn1, dFx)
-         call calc_dFy (vn, hn1, dFy)
+!          call calc_dFx (un, hn1, dFx)
+!          call calc_dFy (vn, hn1, dFy)
 
-!------------------------------------------------------------------------
-!     update the thickness values
-!     (in a separate do-loop to conserve mass)
-!------------------------------------------------------------------------
+! !------------------------------------------------------------------------
+! !     update the thickness values
+! !     (in a separate do-loop to conserve mass)
+! !------------------------------------------------------------------------
             
-         do i = 1, nx
-            do j = 1, ny
+!          do i = 1, nx
+!             do j = 1, ny
 
-               if (maskC(i,j) .eq. 1) then
+!                if (maskC(i,j) .eq. 1) then
 
-                  hout(i,j) = hn1(i,j) - DtoverDx * ( dFx(i,j) + dFy(i,j) )
-                  hout(i,j) = max(hout(i,j), 0d0)
+!                   hout(i,j) = hn1(i,j) - DtoverDx * ( dFx(i,j) + dFy(i,j) )
+!                   hout(i,j) = max(hout(i,j), 0d0)
 
-               endif
+!                endif
                      
-            enddo
-         enddo
+!             enddo
+!          enddo
 
-            ! call calc_Fx_Fy(un, vn, hn_1, Fx, Fy)
+            call calc_Fx_Fy(un, vn, hn_1, Fx, Fy)
 
-            ! do i = 1, nx
-            !    do j = 1,ny
+            do i = 1, nx
+               do j = 1,ny
                   
-            !       if (maskC(i,j) .eq. 1) then
+                  if (maskC(i,j) .eq. 1) then
 
-            !          hout(i, j) = hn_1(i, j) - DtoverDx * (Fx(i, j)+Fy(i, j)) - &
-            !             Deltat * hn_1(i, j) * shear_I(i, j) * tan_psi(i, j)
-            !             hout(i,j) = max(hout(i,j), 0d0)
+                     hout(i, j) = hn_1(i, j) - DtoverDx * (Fx(i, j)+Fy(i, j)) - &
+                        Deltat * hn_1(i, j) * shear_I(i, j) * tan_psi(i, j)
+                        hout(i,j) = max(hout(i,j), 0d0)
 
-            !       endif
+                  endif
                
-            !    enddo
-            ! enddo
+               enddo
+            enddo
 
 !------------------------------------------------------------------------
 !     compute the difference of the flux for concentration 

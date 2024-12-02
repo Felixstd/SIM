@@ -99,19 +99,34 @@
             do i = 0, nx+1
                do j = 0, ny+1
                   if (maskC(i,j) .eq. 1) then
-                  
-                     Pmax(i,j) = Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ))
-                     
-                     if (A(i, j) <= 0.8) then
+
+                     diff_A = max(1d-20, 1-A(i, j))
+                     Pmax(i,j) = max(Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) )), 1d-20)
+
+                     P_col(i, j)  = Pmax(i,j)*tanh((rhoice * h(i, j)* (( d_average * shear_I(i, j) ) / (diff_A))**2) /Pmax(i,j))
+
+                     if (A(i, j) <= 0.5) then
                         P_fric(i, j) = 0d0
-                        diff_A = max(1d-20, 1-A(i, j))
-                        P_col(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / (diff_A))**2
                      else
-                        P_fric(i,j) = Pmax(i, j)*dexp(A(i, j)*C*tan_psi(i, j)*Ifriction(i, j))
-                        P_col(i, j) = 0d0
+                        P_fric(i,j) = Pmax(i, j)*dexp(A(i, j)*C*tan_psi(i, j)*gamma_I(i, j))
+
                      endif
 
-                     Pp(i, j) = P_fric(i, j)+P_col(i,j)
+                     if ((Pres_f .eqv. .true.) .and. (Pres_c .eqv. .false.)) then
+                        Pp(i,j) = P_fric(i,j)
+                     
+                     elseif ((Pres_c .eqv. .true.) .and. (Pres_f .eqv. .false.)) then
+
+                        Pp(i, j) = P_col(i,j)
+
+                     else
+                        Pp(i, j) = P_col(i,j) + P_fric(i,j)
+
+                     endif
+                     
+                     Pt(i, j) = 0d0
+                     ! Pp(i, j) = Pmax(i, j)
+                     
                   endif
                enddo
             enddo
@@ -129,7 +144,6 @@
 
                      ! Maximum pressure
                      Pmax(i,j) = Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ))
-                     ! Pmax(i,j) = Pstar * h(i,j) * dexp(-C * ( 1d0 - Phi_I(i,j) ))
                      diff_A = max(1d-20, 1-A(i, j))
                      diff_phi = max(1d-20, 1-Phi_I(i, j))
                      ! scaled_A = 0.1 + (0.8-0.1)*A(i,j)
@@ -138,9 +152,7 @@
 
                      ! shear  = max(shear_I(i, j), 1d-20)
                      ! Pressure from mu phi 
-                     ! shear_I(i, j) = 1d-5
-                     Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / (diff_A))**2
-                     ! Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / (diff_phi))**2       
+                     Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / (diff_A))**2  
    
                      if (regularization .eq. 'capping') then 
                         
@@ -210,9 +222,6 @@
          endif
 
       endif
-
-
-
 
       return
     end subroutine Ice_strength

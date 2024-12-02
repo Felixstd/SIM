@@ -172,7 +172,7 @@ PROGRAM ice
       endif
       call verify_options        ! verify validity of options
       call get_mask_and_bathy
-
+      print*, 'deltax', Deltax
       ! This is a datetime delta. It can be added to a
       ! datetime object. 
       if (Deltat .ge. 1) then

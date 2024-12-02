@@ -183,9 +183,12 @@
 
                   ! uair(i,j) = rampfactor*wspeed
                   ! vair(i,j) = 0d0
-               ! endif
+               ! ! endif
                elseif (ny == 1000) then
                   if (j .gt. 500) then
+
+               ! elseif (ny == 500) then
+               !    if (j .gt. 250) then
                   !    ! 
                      vair(i, j) = -wspeed*rampfactor
                      uair(i, j) = 0d0

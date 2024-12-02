@@ -51,11 +51,11 @@
     mu_infty  = 0.9 
     mu_b      = 1
     c_phi     = 1
-    I_0       = 1d-3
+    I_0       = 1d-4
     Phi_0     = 1 
     c_1       = 1d-02 
     c_2       = 0.25
     Deltax    = 1d3*10
     Pres_f    = .true.
-    Pres_c    = .false.
+    Pres_c    = .true.
 /

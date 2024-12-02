@@ -179,7 +179,6 @@ end subroutine Funk
             Ax(k) = Ax(k) + Cbasal1(i,j)*utp(i,j)
 
          if ((mu_phi .eqv. .false.) .and. (rheology .eq. 4) .and. (dilatancy .eqv. .false.)) then
-         ! if ((mu_phi .eqv. .false.) .and. (rheology .eq. 4)) then
 !------------------------------------------------------------------------
 !     d ( eta (du/dx) ) / dx    B1_1  p.899... 
 !------------------------------------------------------------------------
@@ -187,27 +186,16 @@ end subroutine Funk
                         (etaC(i, j) * ( utp(i, j) - utp(i+1, j)) &
                          + etaC(i-1, j) *(utp(i, j) - utp(i-1, j))) / Deltax2
 
-!          elseif (dilatancy) then
-
-! !------------------------------------------------------------------------
-! !     d ( eta (du/dx - dv/dy) ) / dx    B1_1  p.899... 
-! !------------------------------------------------------------------------
+         elseif ((dilatancy .eqv. .true.) .and. (mu_phi .eqv. .true.) .and. (rheology .eq. 4)) then
 
 
-!             Ax(k) = Ax(k) + &
-!                         (etaC(i, j) * ( utp(i, j) - utp(i+1, j) &
-!                         + vtp(i, j+1) - vtp(i, j) ) &
-!                         + etaC(i-1, j) *(utp(i, j) - utp(i-1, j) &
-!                         + vtp(i-1, j) - vtp(i-1, j+1) )) / Deltax2
+!------------------------------------------------------------------------
+!     d ( eta (du/dx) ) / dx    B1_1  p.899... 
+!------------------------------------------------------------------------
 
-
-! !------------------------------------------------------------------------
-! !     d ( zeta (div u) ) / dx    B1_1  p.899... 
-! !------------------------------------------------------------------------         
-
-
-!             Ax(k) = Ax(k) - &
-!                         (zetaC(i, j)*div_I(i, j) - zetaC(i-1, j)*div_I(i-1, j)) / (2*Deltax)
+            Ax(k) = Ax(k) + &
+                        (etaC(i, j) * ( utp(i, j) - utp(i+1, j)) &
+                        + etaC(i-1, j) *(utp(i, j) - utp(i-1, j))) / Deltax2
 
          
          else 
@@ -487,20 +475,15 @@ end subroutine Funk
                   - etaC(i,j-1) * (- vtp(i, j) + vtp(i, j-1)) &
                   ) / Deltax2
 
-!            elseif (dilatancy) then
+           elseif ((dilatancy .eqv. .true.) .and. (mu_phi .eqv. .true.) .and. (rheology .eq. 4)) then
 
-! !------------------------------------------------------------------------
-! !     d [ zeta (div u) ] / dy   D2_4, B2_4
-! !------------------------------------------------------------------------
-!             Ax(k) = Ax(k) - &
-!                         (zetaC(i, j)*div_I(i, j) - zetaC(i, j-1)*div_I(i, j-1)) /(2* Deltax)
-! !------------------------------------------------------------------------
-! !     d [ eta(dv/dy -  du/dx) ] / dy   D2_4, B2_4
-! !------------------------------------------------------------------------
-!          Ax(k) = Ax(k) + &
-!                ( etaC(i,j)   * ( utp(i+1,j)   - utp(i,j)  + vtp(i, j) - vtp(i, j+1) ) &
-!                - etaC(i,j-1) * ( utp(i+1,j-1) - utp(i,j-1) - vtp(i, j) + vtp(i, j-1)) &
-!                 ) / Deltax2
+!------------------------------------------------------------------------
+!     d [ eta(dv/dy) ] / dy   D2_4, B2_4
+!------------------------------------------------------------------------
+            Ax(k) = Ax(k) + &
+               ( etaC(i,j)   * ( vtp(i, j) - vtp(i, j+1) ) &
+               - etaC(i,j-1) * ( - vtp(i, j) + vtp(i, j-1)) &
+                ) / Deltax2
 
             else 
 

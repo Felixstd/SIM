@@ -27,17 +27,8 @@ subroutine inertial_number
         do j = 0, ny+1
             if (maskC(i,j) .eq. 1) then
 
-                ! if (h(i, j) < eps) then
-                ! ! force to highI in water when the height is less than eps
-                !     ! inertial(i, j) = lowI
-                !     inertial(i, j) = highI
-                !     ! inertial(i, j) = 0
-                ! else
                     Press = max(Pp(i, j), 1d-20)
-                    ! inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j), highI)
-                    inertial(i, j) = SQRT(rhoice * h(i, j)/Press) * d_average*shear_I(i, j)
-                    Ifriction(i, j) = SQRT(rhoice * h(i, j)/max(Pmax(i, j), 1d-20)) * d_average*shear_I(i, j)
-                ! endif
+                    inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j), highI)
 
             endif
         enddo
@@ -72,6 +63,67 @@ subroutine inertial_number
     endif
 
 end subroutine inertial_number
+
+subroutine non_dimensional_shear
+
+!
+! This is to compute the non-dimensional shear gamma^*.
+!
+
+    use muphi
+
+    implicit none
+
+    include 'parameter.h'
+    include 'CB_DynVariables.h'
+    include 'CB_mask.h'
+    include 'CB_options.h'
+    include 'CB_const.h'
+
+    integer i, j
+    double precision eps, highI, lowI, Press
+
+    do i = 0, nx+1
+        do j = 0, ny+1
+            if (maskC(i,j) .eq. 1) then
+
+                    Press = max(Pmax(i, j), 1d-20)
+                    Ifriction(i, j) = max(SQRT(rhoice * h(i, j)/Press) * d_average*shear_I(i, j), 1d0)
+                    gamma_I(i, j) = c_1*Ifriction(i, j)**c_2
+
+            endif
+        enddo
+    enddo
+
+    if (Periodic_y .eq. 0) then
+        do i = 0, nx+1
+
+            if (maskC(i,0) .eq. 1) then             
+                Ifriction(i,1)  = lowI
+            endif
+
+            if (maskC(i,ny+1) .eq. 1) then             
+                Ifriction(i,ny)  = lowI
+            endif
+
+        enddo
+    endif            
+	  
+    if (Periodic_x .eq. 0) then
+        do j = 0, ny+1
+
+            if (maskC(0,j) .eq. 1) then             
+                Ifriction(1,j)  = lowI
+            endif
+
+            if (maskC(nx+1,j) .eq. 1) then             
+                Ifriction(nx,j)   = lowI  
+            endif           
+
+        enddo
+    endif
+
+end subroutine non_dimensional_shear
 
 subroutine volumefraction_phi
     
@@ -123,59 +175,30 @@ subroutine angle_friction_mu
 
     eps = 1d-12
 
-
-    ! do i = 1, nx
-    !     do j = 1, ny
     do i = 0, nx+1
         do j = 0, ny+1
             if (maskC(i,j) .eq. 1) then
 
-                ! if ( 0 > inertial(i,j)-eps .and. 0 < inertial(i,j)+eps ) then 
-                !     mu_I(i, j) = mu_0
+                ! if ((dilatancy .eqv. .true.) .and. (mu_phi .eqv. .false.)) then
+                !     min_inertial = max(inertial(i, j), 1d-20)
 
-                ! elseif (I_0/inertial(i, j) < 1d-02) then
-                !     mu_I(i, j) = mu_infty
-                
-                ! ! else
-                ! if (h(i, j) < 1d-6) then
-                !     mu_I(i, j) = 0 
-                ! else
-                !     ! mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/inertial(i, j) + 1)
-                !     ! mu_I(i, j) = min(mu_0 +  ( mu_infty - mu_0 ) / ( I_0/(1-A(i, j)) + 1 ), mu_infty) 
-                !     mu_I(i, j) = max(mu_0 +  ( mu_infty - mu_0 ) / ( I_0/(1-A(i, j)) + 1 ), mu_0) 
-
-
-
-                ! mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( I_0/(1-A(i, j)) + 1 )
-
-
-                ! scaled_A = 0.1 + (0.8-0.1)*A(i,j)
-                if ((dilatancy .eqv. .true.) .and. (mu_phi .eqv. .false.)) then
-                    min_inertial = max(inertial(i, j), 1d-20)
-
+                    if (h(i,j) < 1e-2) then
                     ! if (h(i,j) < 1e-6) then
-                        
-                    !     !BEFORE: (up to 12)
-                    !         ! mu_I(i, j) = mu_infty
 
-                    !     !UNTIL 23
-                    !         ! mu_I(i, j) = 0d0
+                !     !     !UNTIL 23
+                            mu_I(i, j) = 0d0
                             
-                    !     mu_I(i, j) = mu_0
 
-                    ! else 
-                    ! mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1)
-                    mu_I(i, j) = max(mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1) + tan_psi(i, j), 0d0)
+                    else 
+                !     ! mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1)
+                !     mu_I(i, j) = max(mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1) + tan_psi(i, j), 0d0)
                     
-                    ! endif
-                    ! mu_b_I(i, j) = 1/(2*mu_I(i,j))
-                    mu_b_I(i, j) = mu_b
                 
-                else
-                    diff_A = max(1d-20, 1-A(i, j))
-                    mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/diff_A + 1 )
+                        diff_A = max(1d-20, 1-A(i, j))
+                        mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/diff_A + 1 )
 
-                endif
+                    endif
+
             endif
         enddo
     enddo
@@ -184,13 +207,11 @@ end subroutine angle_friction_mu
 
 subroutine divergence_muphi()
 
-
     use datetime, only: datetime_type
     use ellipse
     use muphi
     
     implicit none
-
 
     include 'parameter.h'
     include 'CB_Dyndim.h'
@@ -200,27 +221,26 @@ subroutine divergence_muphi()
     include 'CB_mask.h'
     include 'CB_options.h'
 
-
     integer i, j
-    double precision tan_dilat_angle
+    double precision tan_dilat_angle, microscopic, pi
+
+    pi = 4d0 * atan( 1d0 )
+    microscopic = tan(20*pi/180)
 
     do i = 0, nx+1
         do j = 0, ny+1
 
             if (maskC(i, j) .eq. 1) then
-                tan_psi(i, j) = K_div * (A(i,j) - Phi_I(i, j))
 
-                div_I(i, j) = shear_I(i, j) * tan_dilat_angle
+                ! tan_psi(i, j) = (mu_I(i, j) - mu_0) /(1+mu_0*mu_I(i, j))
+                tan_psi(i, j) = (mu_I(i, j) - microscopic) /(1+microscopic*mu_I(i, j))
+
+                div_I(i, j) = shear_I(i, j) * tan_psi(i, j)
 
             endif
             
         enddo
     enddo
-
-
-
-
-
 
 end subroutine divergence_muphi
 
@@ -231,7 +251,6 @@ subroutine shear(utp, vtp)
     use ellipse
     
     implicit none
-
 
     include 'parameter.h'
     include 'CB_Dyndim.h'
@@ -371,11 +390,6 @@ subroutine shear(utp, vtp)
         endif
     enddo
 
-    ! write (filename,"('shear_test')")
-    ! open(1,file = filename, status = 'unknown')
-    ! do j = 0, ny+1
-    !     write(1,*) (shear_I(i, j), i = 0, nx+1)
-    ! enddo
 
     return
 end subroutine shear

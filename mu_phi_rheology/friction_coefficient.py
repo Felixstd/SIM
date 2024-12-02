@@ -1,54 +1,144 @@
+"""
+Code for figure 03 in St-Denis et al. 2025.
+This code plots the friction coefficient in terms of I
+"""
 #%%
 import numpy as np
 import matplotlib.pyplot as plt
 import scienceplots
 
+
 plt.style.use('science')
 
 #%%
-def friction_coefficient_jop(A, mu_infty, mu_0, I_0): 
+def friction_coefficient_jop(I, mu_infty, mu_0, I_0): 
+    """
+    This function computes the friction coefficient as 
+    defined in (MIDI 2004, DaCruz 2005, and Jop. 2006)
+
+    Args:
+        I (array): inertial numbers
+        mu_infty (float): dynamic friction coefficient
+        mu_0 (float): static friction coefficient
+        I_0 (float): regime frontiers 
+
+    Returns:
+        mu (array): friction coefficient for a range of 
+        I. 
+    """
     
+    #compute range of mu
     delta_mu = mu_infty - mu_0
-    I = 1-A
     
-    mu = mu_0 + delta_mu/(I_0/I + 1)
+    #compute mu
+    mu = mu_0 + delta_mu/(I_0/(I+1e-20) + 1)
     
     return mu
 
-def friction_coefficient_barker(A, mu_infty, mu_0, I_0, I_shift, alpha = 1.99): 
-    
-    I = 1-A
-    
-    A_minus = I_shift * np.exp(alpha/friction_coefficient_jop(1-I_shift, mu_infty, mu_0, I_0))
-    
-    mu = np.zeros_like(I)
-    
-    mu[I<=I_shift] = np.sqrt(alpha/np.log(A_minus/I[I<=I_shift]))
-    mu[I>I_shift] = friction_coefficient_jop(1-I[I>I_shift], mu_infty, mu_0, I_0)
-    
-    
-    return mu
+def friction_coefficient_cohesion(I, mu_infty, mu_0, I_0, C, beta, alpha):
+        
+        mu_jop = friction_coefficient_jop(I, mu_infty, mu_0, I_0)
+        mu_c   = 1.31*C/(1-beta*np.log(1-I/(1+alpha*C)**(1/2)))
+
+        return mu_jop + mu_c
+
+def dilatation(mu, mu0):
+        
+        tan_psi = (mu-mu0)/(1+mu*mu0)
+        
+        return tan_psi
 
 #%%
-A = np.linspace(0.97, 1, 10000)
-mu_0 = 0.2
+#--- Constants ---# 
+I = np.linspace(0, 2, 100000)
+mu_0 = 0.1
 mu_infty = 0.9
-I_0 = 0.2
-I_shift = 0.01
+I_0 = 1e-3
+C = 2
+beta = 5
+alpha = 1e-3
 
+#--- Main Computations ---#
 
+#friction coefficient
+mu_jop = friction_coefficient_jop(I, mu_infty, mu_0, I_0)
 
-mu_jop = friction_coefficient_jop(A, mu_infty, mu_0, I_0)
-mu_barker = friction_coefficient_barker(A, mu_infty, mu_0, I_0, I_shift)
+#friction coefficient at I_0
+mu_j_i_0 = friction_coefficient_jop(I_0, mu_0, mu_infty, I_0)
+
+mu_cohesive = friction_coefficient_cohesion(I, mu_infty, mu_0, I_0, C,alpha, beta )
+
+mu_0_dilat = np.tan(20*np.pi/180)
+tan_psi = dilatation(mu_jop, mu_0_dilat)
 
 #%%
+
+#--- Figure ---#
+
+# --  Code to make figure 3 of the paper -- #
+
 plt.figure()
-plt.plot(1-A, mu_jop, label = r'$\mu_J$')
-plt.plot(1-A, mu_barker, label = r'$\mu_B$')
+ax = plt.axes()
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
+plt.axvline(I_0, ymax = mu_j_i_0,
+            color = 'r')
+plt.axvline(5e-5,linestyle = '--',
+            color = 'k')
+plt.axvline(5e-2,linestyle = '--',
+            color = 'k')
+
+plt.plot(I, mu_jop, color = 'k')
+plt.scatter(I_0, mu_j_i_0, color = 'r', zorder = 2)
+
+
+ticks_y = [mu_0, mu_infty]
+ax.set_yticks(ticks_y)
+ax.set_yticklabels([r'$\mu_0$', r'$\mu_\infty$'])
+
+ax.text(0.02, 1.05, 'Quasi-Static', transform=ax.transAxes, fontsize=12,
+        verticalalignment='top')
+
+ax.text(0.37, 1.05, 'Dense-Inertial', transform=ax.transAxes, fontsize=12,
+        verticalalignment='top')
+
+ax.text(0.76, 1.05, 'Collisional', transform=ax.transAxes, fontsize=12,
+        verticalalignment='top')
+
+ax.text(0.5, -0.02, r'$I_0$', transform=ax.transAxes, fontsize=12,
+        verticalalignment='top')
+
+
+plt.xscale('log')
+plt.xlabel('$I$')
+plt.ylabel(r'$\mu$')
+plt.savefig('mu.png')#, dpi = 500, bbox_inches = 'tight')
+
+
+plt.figure()
+ax = plt.axes()
+plt.plot(mu_jop, tan_psi, color = 'r')
 plt.grid()
-plt.xlabel('1-A')
+plt.axvline(mu_0_dilat,
+            color = 'k', label = r'$\mu_0$')
+plt.legend()
+plt.xlabel(r'$\mu$')
+plt.ylabel(r'$\tan \psi$')
+plt.savefig('dilatation.png')
+
+
+#--- Comparaison between cohesion or not ---# 
+
+plt.figure()
+plt.plot(I, mu_jop, label = r'$\mu_j$')
+plt.plot(I, mu_cohesive, label = r'$\mu_c$')
+plt.xlabel('I')
 plt.ylabel(r'$\mu$')
 plt.legend()
-plt.savefig('mu.png')
+plt.grid()
+plt.xscale('log')
+plt.savefig('mu_cohesive.png')
+
 
 # %%
