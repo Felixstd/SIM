@@ -16,15 +16,13 @@ import matplotlib.pyplot as plt
 #------ INPUT by user ---------------------------
 
 
-outputdir = "/aos/home/fstdenis/SIM/output/"
+outputdir = "/storage/fstdenis/output_sim/"
 
 
 
 
-exp = "09"
-listdates=["1993_12_31_00_20", "1994_01_01_00_00", "1994_01_02_00_00", "1994_01_05_00_00", "1994_01_08_00_00"\
-    , "1994_01_10_00_00", "1994_01_12_00_00", "1994_01_16_00_00", "1994_01_20_00_00"]
-
+exp = "69"
+listdates=["1990_01_03_20_00_00"]
 
 Ath=0.15 # threshold for the extent.
 

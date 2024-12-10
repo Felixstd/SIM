@@ -213,8 +213,6 @@
                                  CdwC1(i,j) * ( uwatnd(i,j) * costheta_w - &
                                     vwavg(i,j)  * sintheta_w   )
                   else
-
-               
                      bu(i,j) = bu_ind(i,j) - ( P(i,j) - P(i-1,j) ) / Deltax + & ! P is the replacement pressure 
                        CdwC1(i,j) * ( uwatnd(i,j) * costheta_w - &
                        vwavg(i,j)  * sintheta_w   )
@@ -263,11 +261,6 @@
 
                if (solver .le. 2) then ! Picard or JFNK
                   
-                  
-
-                  ! bv(i,j) = bv_ind(i,j) - ( Pp(i,j) - Pp(i,j-1) ) / Deltax + & ! P is the replacement pressure
-                  !      CdwC2(i,j) * ( vwatnd(i,j) * costheta_w + &
-                  !      uwavg(i,j)  * sintheta_w   )
                   if (dilatancy) then
                      bv(i,j) = bv_ind(i,j) - (P(i,j)-(zetaC(i, j)-etaC(i,j))*shear_I(i,j)*tan_psi(i,j) - &
                               (P(i,j-1)-(zetaC(i,j-1)-etaC(i,j-1))*shear_I(i,j-1)*tan_psi(i,j-1)) ) / Deltax + & ! P is the replacement pressure 

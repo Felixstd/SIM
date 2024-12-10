@@ -36,6 +36,7 @@
         use io, only: daily_air_temp_from_monthly_mean
         use numerical_VP
         use solver_choice
+        use muphi
       implicit none
 
       include 'parameter.h'
@@ -113,25 +114,23 @@
                   call shear(uice, vice)   
                   call Ice_strength()                  
                   call non_dimensional_shear()
-                  call volumefraction_phi()
                   call angle_friction_mu()
-                  call divergence_muphi()
-                  call Ice_strength()
+                  call inertial_number()
+                  call volumefraction_phi()
                   
-                  ! ! for the pressure sum
+                  call Ice_strength()  
                   
-                  
-               
                else
-                   call angle_friction_mu()
-                  ! ! call div(uice, vice)
+                  call angle_friction_mu()
                   call shear(uice, vice)
-
-               
-
-                  if (tstep .gt. 1) then
                   call Ice_strength()
+                  if (Pres_sum) then
+                     call non_dimensional_shear()
+                     call divergence_muphi()
+                     call Ice_strength()
                   endif
+
+ 
                endif
             endif
 
@@ -364,30 +363,27 @@
       if ( Dynamic ) then
 
          if (IMEX .eq. 0) then ! already done with IMEX 1 and 2
+            if ((rheology .eq. 4) .and.  (dilatancy .eqv. .true.) .and. (mu_phi .eqv. .true.) .and. (adv_mu .eqv. .true.)) then
+                  call shear(uice, vice)
+                  call angle_friction_mu
+                  call divergence_muphi
+                  call advection_mu(An1, hn1, uice, vice, h, A)
+                  print*, 'here adv'
 
-            ! if (dilatancy) then
-            !    call advection_mu(An1, hn1, un1, vn1, h, A)
-            ! else
+            elseif (Rheology .eq. 3) then
+                call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam) 
 
-               call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A ) 
-            ! endif
-            !if (Rheology .eq. 3) &
-            !     call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam)
-
-            ! if (Rheology .eq. 4) then
-            !    !  call shear(uice, vice)
-            ! !     call angle_friction_mu()
-            ! !     call Ice_strength
-            !          ! call inertial_number()
-            !          ! call angle_friction_mu()
-            !          ! call volumefraction_phi()
-            !    call shear(uice, vice)
-            !    call divergence_muphi()
-            ! endif
+            else
+               print*, 'here adv2'
+               call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A )
+            
+            endif
 
          endif
             
       endif
+
+      ! print*, A 
 
 ! we should have monthly winds fr thermo forcing...modify load_forcing.f
          

@@ -39,10 +39,10 @@ muphi = 0
 DataDir_RGPS = '/storage/fstdenis/RGPS_Data/'
 DataDir_SIDRR = '/storage/fstdenis/SIDRR_v1.0/'
 
-# nc.Dataset(DataDir_SIDRR + 'SIDRR_20230830.nc' ,"r", format="NETCDF4")
-test = nc.Dataset(DataDir_RGPS + 'w0708n_3dys.nc' ,"r", format="NETCDF4")
+print(nc.Dataset(DataDir_SIDRR + 'SIDRR_20230830.nc' ,"r", format="NETCDF4"))
+# test = nc.Dataset(DataDir_RGPS + 'w0708n_3dys.nc' ,"r", format="NETCDF4")
 print(nc.Dataset(DataDir_RGPS + 'w0708n_3dys.nc' ,"r", format="NETCDF4"))
-print(test.variables['time'][0])
+# print(test.variables['time'][0])
 
     
 #%%

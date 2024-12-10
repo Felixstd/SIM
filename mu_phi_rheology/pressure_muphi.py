@@ -1,3 +1,4 @@
+#%%
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -8,6 +9,7 @@ import matplotlib.lines as mlines
 import scienceplots
 plt.style.use('science')
 
+#%%
 
 def pressure_hibler(phi, h, Pmax = 27.5e3, C = 20):
     """
@@ -99,7 +101,7 @@ shear = np.tile(shear_norm[:, None], (1, len(phi)))
     
 
 
-h = phi
+h = 1
 
 mu0 = 0.1
 mu_infty = 0.8
@@ -151,5 +153,34 @@ ax.legend([dashed_line, dot, full], [r'$p^f$', r'$p^c$', r'$p_H$'], loc='upper r
 plt.savefig('pressure.png')
 
 
+fig = plt.figure()
+ax = plt.axes()
+i=2
+
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
+f = plt.plot(1-phi, press_f[i]/1e3, linestyle = '--', label = r'$p_f$')
+c = plt.plot(1-phi, press_c[i]/1e3, linestyle = ':', label = r'$p_c$')
+h = plt.plot(1-phi, (press_f[i]+press_c[i])/1e3, color = 'r', linestyle = '-', label = r'$p_t$')
+h = plt.plot(1-phi, (press_h)/1e3, color = 'k', linestyle = '-', label = r'$p_t$')
+
+dashed_line = mlines.Line2D([], [], color='black', linestyle='--', label='$p^f$')
+dot = mlines.Line2D([], [], color='black', linestyle=':', label='$p^c$')
+full = mlines.Line2D([], [], color='r', linestyle='-', label='$p_t$')
+# full = mlines.Line2D([], [], color='black', linestyle='.', label='$p_H$')
+
+plt.xlabel(r'$1-\phi$')
+plt.ylabel(r'$P$ (kN/m)')
+# secax = ax.secondary_xaxis('top')
+# secax.set_xlabel('$1-h$ (m)')
+# plt.yscale('log')
+# plt.grid()
+ax.legend([dashed_line, dot, full], [r'$p^f$', r'$p^c$', r'$p_t$'], loc='upper right')
+plt.savefig('pressure_simplified.png')
 
 
+
+
+
+# %%

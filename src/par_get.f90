@@ -188,8 +188,13 @@
       c_phi      = 1
       c_1        = 1d-02
       c_2        = 1/4
+      phi_f_micro = 20
       Pres_f     = .true.
-      Pres_c     = .false.
+      Pres_c     = .true.
+      Pres_sum   = .true.
+      Water_Col  = .true.
+      Phi_eq     = .false.
+      adv_mu     = .true.
 
       ! d = 200
       theta = 45 * pi / 180
@@ -412,7 +417,8 @@ subroutine read_namelist
            adv_scheme, AirTemp, OcnTemp, Wind, RampupWind,      &
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,            &
-           BasalStress, uniaxial, inclined, dilatancy, mu_phi
+           BasalStress, uniaxial, inclined, dilatancy, mu_phi, Water_Col, &
+           Phi_eq, adv_mu
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub
@@ -420,7 +426,7 @@ subroutine read_namelist
       namelist /phys_param_nml/ &
            Pstar, C, e_ratio, k1, k2, rhoair, rhoice, rhowater, &
            Cdair, Cdwater, f, d_average, mu_0 , mu_infty, mu_b, c_phi, &
-            I_0 , Phi_0, c_1, c_2, Deltax, Pres_f, Pres_c
+            I_0 , Phi_0, c_1, c_2, phi_f_micro, Deltax, Pres_f, Pres_c, Pres_sum
 
       ! filename ='namelistMuPhi'
       filename ='namelistMuPhi_uniaxial'

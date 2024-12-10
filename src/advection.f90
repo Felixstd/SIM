@@ -851,19 +851,20 @@
 ! !     update the thickness values
 ! !     (in a separate do-loop to conserve mass)
 ! !------------------------------------------------------------------------
-            
-!          do i = 1, nx
-!             do j = 1, ny
+         
 
-!                if (maskC(i,j) .eq. 1) then
+         ! do i = 1, nx
+         !    do j = 1, ny
 
-!                   hout(i,j) = hn1(i,j) - DtoverDx * ( dFx(i,j) + dFy(i,j) )
-!                   hout(i,j) = max(hout(i,j), 0d0)
+         !       if (maskC(i,j) .eq. 1) then
 
-!                endif
+         !          hout(i,j) = hn1(i,j) - DtoverDx * ( dFx(i,j) + dFy(i,j) )
+         !          hout(i,j) = max(hout(i,j), 0d0)
+
+         !       endif
                      
-!             enddo
-!          enddo
+         !    enddo
+         ! enddo
 
             call calc_Fx_Fy(un, vn, hn_1, Fx, Fy)
 
@@ -874,7 +875,7 @@
 
                      hout(i, j) = hn_1(i, j) - DtoverDx * (Fx(i, j)+Fy(i, j)) - &
                         Deltat * hn_1(i, j) * shear_I(i, j) * tan_psi(i, j)
-                        hout(i,j) = max(hout(i,j), 0d0)
+                     hout(i,j) = max(hout(i,j), 0d0)
 
                   endif
                
@@ -887,6 +888,7 @@
 
             call calc_Fx_Fy(un, vn, An_1, Fx, Fy)
 
+
             do i = 1, nx
                do j = 1,ny
                   
@@ -894,6 +896,7 @@
 
                      Aout(i, j) = An_1(i, j) - DtoverDx * (Fx(i, j)+Fy(i, j)) - &
                         Deltat * An_1(i, j) * shear_I(i, j) * tan_psi(i, j)
+                     
                      Aout(i,j) = max(Aout(i,j), 0d0)
                      Aout(i,j) = min(Aout(i,j), 1d0)
                   endif
@@ -906,7 +909,7 @@
 
      endif
 
-
+   return
 
    end subroutine advection_mu
 

@@ -193,8 +193,8 @@ PROGRAM ice
             call inertial_number
             call angle_friction_mu()
             call volumefraction_phi()
-         endif
-         if (uniaxial) then
+         
+         elseif (uniaxial) then
             call shear(uice, vice)                     
             call Ice_strength()
             call inertial_number()

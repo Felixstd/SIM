@@ -412,7 +412,97 @@ class visualisation:
         plt.close(fig)
 
 
+    def figure_deformation(self, tot, diver, shear, data, datestring, proj, trans):
+    
+        fig_defs = plt.figure(figsize=(5, 9))
 
+        # Initialize subplots
+        ax_tot = fig_defs.add_axes([0.1, 0.62, 0.8, 0.25], projection=proj)
+
+        # Create a list of axes to be iterated over
+        ax_list = [ax_tot]
+        for ax in ax_list:
+            ax.set_extent((-3800000, 2300000, 3000000, -2500000), ccrs.NorthPolarStereo())
+            
+        for j in tqdm(np.unique(data.day_flag)):
+            no_day = data.idpair[np.where(data.day_flag==j)]
+            for i in tqdm(np.unique(no_day)):
+
+                # Get the first and last row of data corresponding to the specific pair of SAR images
+                condi = (data.idpair[:] == i) & (data.day_flag[:] == j)
+                min_index = np.where(condi)[0][0]
+                max_index = np.where(condi)[0][-1]+1
+
+                # Get vertex ids from specific pair, and stack into triangle array, for tripcolor
+                triangles = np.stack((data.ids1[min_index:max_index],
+                                    data.ids2[min_index:max_index],
+                                    data.ids3[min_index:max_index]), axis=-1)
+
+                #Reconstruct the position vectors used for triangulation
+                LatVector, LonVector = data.reconstruct_position_lists(min_index = min_index, max_index = max_index)
+
+                div_colours = data.div[min_index:max_index]
+                shr_colours = data.shr[min_index:max_index]
+                vrt_colours = data.vrt[min_index:max_index]
+
+                # tranform the coordinates already to improve the plot efficiency
+                new_coords = proj.transform_points(trans, np.array(LonVector), np.array(LatVector))
+                tria = tri.Triangulation(new_coords[:,0], new_coords[:,1], triangles=triangles)
+                
+                tot_def = np.sqrt(div_colours**2 + shr_colours**2)   
+                
+                if tot:
+                    if len(triangles) != 0:
+                        cb_tot = ax_tot.tripcolor(tria, facecolors=tot_def, cmap='coolwarm', vmin=0, vmax=0.1)
+                        tot_title = r'$\dot{\epsilon}$ (day$^{-1}$)'
+                        figname = '_totdefs.png'
+                elif diver:
+                    if len(triangles) != 0:
+                        cb_tot = ax_tot.tripcolor(tria, facecolors=div_colours, cmap='coolwarm', vmin=-0.04, vmax=0.04)
+                        tot_title = r'$\dot{\epsilon}_\text{I}$ (day$^{-1}$)'
+                        figname = '_div.png'
+                elif shear:
+                    if len(triangles) != 0:
+                        cb_tot = ax_tot.tripcolor(tria, facecolors=shr_colours, cmap='plasma', vmin=0, vmax=0.04)
+                        tot_title = r'$\dot{\epsilon}_\text{II}$ (day$^{-1}$)'
+                        figname = '_shear.png'
+                    
+                    
+        
+        cb_list = [cb_tot]
+
+        #List of titles and labels
+        title_list = [tot_title]
+        
+
+        for ax, title, cb in zip(ax_list, title_list, cb_list):
+
+            # Add a colorbar
+            clb = plt.colorbar(cb, ax = ax, shrink = 0.9,pad=.04)
+            clb.ax.tick_params(labelsize=8)
+
+            # Add colorbar label
+            plt.text(1.12,1.02,title,ha='center', va='center', transform=ax.transAxes,fontsize=8)
+            plt.title(datestring[:4]+'/'+datestring[4:6]+'/'+datestring[6:])
+            #Panel label
+            # plt.text(-0.1,0.95,lbl,ha='center', va='center', transform=ax.transAxes,fontsize=12)
+
+            #Grid and landmask
+#            ax.gridlines()
+            ax.add_feature(cfeature.LAND, zorder=100, edgecolor='k')
+
+        # Create the figure filenames
+        if datestring is None:
+            prefix = "undefined_date"
+        else:
+            prefix = datestring
+
+        defs_path  = self.figsPath + prefix + figname
+        print("Printing deformation figure at : %s" % defs_path)
+        fig_defs.savefig(defs_path, bbox_inches='tight', dpi=600)
+        plt.close(fig_defs)
+            
+        
 
     def plot_deformations(self, data=None, datestring=None):
         """
@@ -528,81 +618,9 @@ class visualisation:
         fig_defs.savefig(defs_path, bbox_inches='tight', dpi=600)
         plt.close(fig_defs)
         
-        
-        fig_defs = plt.figure(figsize=(5, 9))
-
-        # Initialize subplots
-        ax_tot = fig_defs.add_axes([0.1, 0.62, 0.8, 0.25], projection=proj)
-
-        # Create a list of axes to be iterated over
-        ax_list = [ax_tot]
-        for ax in ax_list:
-            ax.set_extent((-3800000, 2300000, 3000000, -2500000), ccrs.NorthPolarStereo())
-            
-        for j in tqdm(np.unique(data.day_flag)):
-          no_day = data.idpair[np.where(data.day_flag==j)]
-          for i in tqdm(np.unique(no_day)):
-
-            # Get the first and last row of data corresponding to the specific pair of SAR images
-            condi = (data.idpair[:] == i) & (data.day_flag[:] == j)
-            min_index = np.where(condi)[0][0]
-            max_index = np.where(condi)[0][-1]+1
-
-            # Get vertex ids from specific pair, and stack into triangle array, for tripcolor
-            triangles = np.stack((data.ids1[min_index:max_index],
-                                  data.ids2[min_index:max_index],
-                                  data.ids3[min_index:max_index]), axis=-1)
-
-            #Reconstruct the position vectors used for triangulation
-            LatVector, LonVector = data.reconstruct_position_lists(min_index = min_index, max_index = max_index)
-
-            div_colours = data.div[min_index:max_index]
-            shr_colours = data.shr[min_index:max_index]
-            vrt_colours = data.vrt[min_index:max_index]
-
-            # tranform the coordinates already to improve the plot efficiency
-            new_coords = proj.transform_points(trans, np.array(LonVector), np.array(LatVector))
-            tria = tri.Triangulation(new_coords[:,0], new_coords[:,1], triangles=triangles)
-            
-            tot_def = np.sqrt(div_colours**2 + shr_colours**2)   
-
-            if len(triangles) != 0:
-                cb_tot = ax_tot.tripcolor(tria, facecolors=tot_def, cmap='coolwarm', vmin=0, vmax=0.04)
-        
-        cb_list = [cb_tot]
-
-        #List of titles and labels
-        tot_title =r"$\dot{\epsilon}$ (day$^{-1}$)"
-        title_list = [tot_title]
-        
-
-        for ax, title, cb in zip(ax_list, title_list, cb_list):
-
-            # Add a colorbar
-            clb = plt.colorbar(cb, ax = ax, shrink = 0.9,pad=.04)
-            clb.ax.tick_params(labelsize=8)
-
-            # Add colorbar label
-            plt.text(1.12,1.02,title,ha='center', va='center', transform=ax.transAxes,fontsize=8)
-            plt.title(datestring)
-            #Panel label
-            # plt.text(-0.1,0.95,lbl,ha='center', va='center', transform=ax.transAxes,fontsize=12)
-
-            #Grid and landmask
-#            ax.gridlines()
-            ax.add_feature(cfeature.LAND, zorder=100, edgecolor='k')
-
-        # Create the figure filenames
-        if datestring is None:
-            prefix = "undefined_date"
-        else:
-            prefix = datestring
-
-        defs_path  = self.figsPath + prefix + '_totdefs.png'
-        print("Printing deformation figure at : %s" % defs_path)
-        fig_defs.savefig(defs_path, bbox_inches='tight', dpi=600)
-        plt.close(fig_defs)
-        
+        self.figure_deformation(1, 0, 0, data, datestring, proj, trans)
+        self.figure_deformation(0, 1, 0, data, datestring, proj, trans)
+        self.figure_deformation(0, 0, 1, data, datestring, proj, trans)
         
         return
 

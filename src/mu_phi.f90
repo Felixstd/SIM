@@ -225,15 +225,21 @@ subroutine divergence_muphi()
     double precision tan_dilat_angle, microscopic, pi
 
     pi = 4d0 * atan( 1d0 )
-    microscopic = tan(20*pi/180)
+    microscopic = tan(phi_f_micro*pi/180)
 
     do i = 0, nx+1
         do j = 0, ny+1
 
             if (maskC(i, j) .eq. 1) then
 
-                ! tan_psi(i, j) = (mu_I(i, j) - mu_0) /(1+mu_0*mu_I(i, j))
-                tan_psi(i, j) = (mu_I(i, j) - microscopic) /(1+microscopic*mu_I(i, j))
+                if (Phi_eq) then
+                    tan_psi(i,j) = K_div*(A(i,j) - Phi_I(i,j))
+
+                else 
+                
+                    tan_psi(i, j) = (mu_I(i, j) - microscopic) /(1+microscopic*mu_I(i, j))
+
+                endif
 
                 div_I(i, j) = shear_I(i, j) * tan_psi(i, j)
 

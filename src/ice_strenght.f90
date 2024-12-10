@@ -26,7 +26,6 @@
       double precision eps, P_min, diff_A, weight, A_0, shear, scaled_A, diff_phi
 
       P_min = 1e-3
-      pressure_sum = 1
 
       eps = 1d-08
 
@@ -94,7 +93,7 @@
 
       elseif ( Rheology .eq. 4 ) then
 
-         if (pressure_sum .eq. 1) then
+         if (Pres_sum) then
             
             do i = 0, nx+1
                do j = 0, ny+1
@@ -141,16 +140,11 @@
                do j = 0, ny+1
                   if (maskC(i,j) .eq. 1) then
 
-
                      ! Maximum pressure
                      Pmax(i,j) = Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ))
                      diff_A = max(1d-20, 1-A(i, j))
                      diff_phi = max(1d-20, 1-Phi_I(i, j))
-                     ! scaled_A = 0.1 + (0.8-0.1)*A(i,j)
-                     ! diff_A = max(1d-20, 1-scaled_A)
 
-
-                     ! shear  = max(shear_I(i, j), 1d-20)
                      ! Pressure from mu phi 
                      Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / (diff_A))**2  
    
@@ -162,20 +156,13 @@
                         
                         if (Pmax(i, j) .lt. 1d-10) then
                            Pp(i, j) = 0d0
-                           ! Pmu(i, j) = 0d0
                         else
                            Pp(i, j) = Pmax(i, j) * tanh(Peq(i, j) / Pmax(i, j))
-
-                           ! Pp(i,j) = Pmax(i, j)
-                           ! Pp(i, j) = 0d0
-                           ! Pmu(i, j) = Pmax(i, j) * tanh(Peq(i, j) / Pmax(i, j))
                         endif
 
 
                      endif
 
-
-                     ! Pp(i, j) = Pmax(i, j)
                      Pt(i, j) = 0d0
 
                   endif
