@@ -22,13 +22,13 @@
     BasalStress = .false.
     uniaxial = .true.
     inclined = .false.
-    dilatancy = .true.
+    dilatancy = .false.
     mu_phi    = .true.
     adv_mu    = .false.
 /
 
 &numerical_param_nml
-    Deltat    = 300
+    Deltat    = 0.2
     gamma_nl = 1d-7
     NLmax = 400     
     OLmax = 1500
@@ -48,7 +48,7 @@
     Cdwater = 5.5d-03
     f = 1.46d-04
     d_average = 1d3
-    mu_0      = 0.1
+    mu_0      = 0.2
     mu_infty  = 0.9 
     mu_b      = 0.5
     c_phi     = 1
@@ -57,7 +57,8 @@
     c_1       = 1d-02 
     c_2       = 0.25
     Deltax    = 1d3*10
-    Pres_f    = .false.
-    Pres_c    = .false.
-    Pres_sum  = .false.
+    phi_f_micro = 10
+    Pres_f    = .true.
+    Pres_c    = .true.
+    Pres_sum  = .true.
 /

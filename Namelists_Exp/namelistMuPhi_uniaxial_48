@@ -50,7 +50,7 @@
     d_average = 1d3
     mu_0      = 0.1
     mu_infty  = 0.9 
-    mu_b      = 0.5
+    mu_b      = 5
     c_phi     = 1
     I_0       = 1d-3
     Phi_0     = 1 

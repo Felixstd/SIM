@@ -31,18 +31,18 @@ elif ten_minutes:
         
 elif two_hours:
         #--- Time for 2 hours 30 minutes run ---#
-        start = datetime(1990, 1, 1, 0, 0, 30)
+        start = datetime(1990, 1, 1, 0, 5, 00)
         start_k = 1
         # Time interval (30 seconds initially, then 5-minute steps)
-        intervals = [timedelta(seconds=30)]*1  + [timedelta(minutes=4)]*1 + [timedelta(minutes=5)]*23 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+        intervals = [timedelta(seconds=30)]*0  + [timedelta(minutes=4)]*0 + [timedelta(minutes=5)]*15 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
 
 dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S') for i in range(len(intervals)+1)]
 
-
-expno = '01'
+print(dates)
+# expno = '33'
 outputdir = "/storage/fstdenis/output_sim/"
 figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_Runs/'
-for i in range(16, 17):
+for i in range(49, 50):
     expno = "{:02d}".format(i)
 
     if not os.path.isdir(figdir+expno):
@@ -58,7 +58,7 @@ for i in range(16, 17):
     #     mu_0 = 0.1
     # else:
     #     mu_0 = 0.36
-    mu_0 = 0.2
+    mu_0 = 0.1
     mu_infty = 0.9
     angle_phi = 10*np.pi/180
 
@@ -92,5 +92,5 @@ for i in range(16, 17):
     # #---------- Plotting ----------#
     plot.uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
     
-#     plot.totdef_uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
+    # plot.totdef_uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
     

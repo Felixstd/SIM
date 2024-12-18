@@ -97,6 +97,11 @@ ax = plt.axes()
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 
+fill_y = np.linspace(0.1, 0.9,1000 )
+
+plt.fill_betweenx(fill_y, 0, 5e-4, color = (0.584, 0.584, 1.0), alpha = 0.5)
+plt.fill_betweenx(fill_y, 5e-4, 1,  color = (0.580, 1.0, 1.0), alpha = 0.5)
+
 plt.axvline(I_0, ymax = mu_j_i_0,
             color = 'r')
 plt.axvline(5e-5,linestyle = '--',
@@ -137,7 +142,11 @@ ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 
 plt.plot(I, phi, color = 'k')
+fill_y = np.linspace(0, 1,1000 )
+plt.fill_betweenx(fill_y, 0, 5e-4, color = (0.584, 0.584, 1.0), alpha = 0.5)
+plt.fill_betweenx(fill_y, 5e-4, 1,  color = (0.580, 1.0, 1.0), alpha = 0.5)
 # plt.grid()
+plt.xscale('log')
 plt.xlabel(r'I')
 plt.ylabel(r'$\phi$')
 plt.savefig('conc.png')

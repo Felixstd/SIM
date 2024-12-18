@@ -52,7 +52,7 @@ def pressure_friction(phi, h, tan_psi, Ishear, c_1 = 1e-2, c_2 = 1/4):
     
     return press_fric
 
-def press_collision(phi, h, shear, d = 1e3, rhoi = 910, Pmax = 27.5e3) : 
+def press_collision(phi, h, shear, d = 1e4, rhoi = 910, Pmax = 27.5e3) : 
     
     """
     Collisional pressure
@@ -68,11 +68,13 @@ def press_collision(phi, h, shear, d = 1e3, rhoi = 910, Pmax = 27.5e3) :
         _type_: _description_
     """
 
-    # P_max = pressure_hibler(phi, h)
+    P_max = pressure_hibler(phi, h)
     
-    P_max = Pmax*h
+    # P_max = Pmax*h
     
     press_c = P_max * np.tanh(rhoi*h*(d*shear/(1-phi+1e-20))**2/(P_max+1e-20))
+    
+    # press_c= np.minimum(5e3, rhoi*h*(d*shear/(1-phi+1e-20))**2)
     # press_c[h == 0] = 0
     # 
     press_c_phi = P_max* np.tanh(rhoi*h*(d*shear/(1-phi+1e-20))**2/(P_max+1e-20))
@@ -155,19 +157,45 @@ plt.savefig('pressure.png')
 
 fig = plt.figure()
 ax = plt.axes()
-i=2
+i=1
 
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 
-f = plt.plot(1-phi, press_f[i]/1e3, linestyle = '--', label = r'$p_f$')
-c = plt.plot(1-phi, press_c[i]/1e3, linestyle = ':', label = r'$p_c$')
-h = plt.plot(1-phi, (press_f[i]+press_c[i])/1e3, color = 'r', linestyle = '-', label = r'$p_t$')
-h = plt.plot(1-phi, (press_h)/1e3, color = 'k', linestyle = '-', label = r'$p_t$')
-
-dashed_line = mlines.Line2D([], [], color='black', linestyle='--', label='$p^f$')
+# f = plt.plot(1-phi, press_f[i]/1e3, color = 'g', linestyle = '--', label = r'$p_f$')
+h = plt.plot(1-phi, (press_h)/1e3, color = 'k', linestyle = '-', label = r'$p_H$')
+for i in range(len(shear)):
+    c = plt.plot(1-phi, press_c[i]/1e3, linestyle = ':', label = r'$p_c$')
+    
+full = mlines.Line2D([], [], color='black', linestyle='-', label='$p^H$')
 dot = mlines.Line2D([], [], color='black', linestyle=':', label='$p^c$')
-full = mlines.Line2D([], [], color='r', linestyle='-', label='$p_t$')
+# full = mlines.Line2D([], [], color='r', linestyle='-', label='$p_t$')
+# full = mlines.Line2D([], [], color='black', linestyle='.', label='$p_H$')
+
+ax.legend([dot, full], [ r'$p^c$', r'$p_H$'], loc='upper right')
+plt.xlabel(r'$1-\phi$')
+plt.ylabel(r'$P$ (kN/m)')
+plt.xlim(0, 0.3)
+# plt.legend()
+
+plt.savefig('pressure_simplified.png')
+
+
+fig = plt.figure()
+ax = plt.axes()
+i=1
+
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
+# f = plt.plot(1-phi, press_f[i]/1e3, linestyle = '--', label = r'$p_f$')
+c = plt.plot(1-phi,  press_c[i]*(press_h)/1e3, linestyle = ':', label = r'$p_c p_h$')
+# h = plt.plot(1-phi, (press_f[i]+press_c[i])/1e3, color = 'r', linestyle = '-', label = r'$p_t$')
+# h = plt.plot(1-phi, (press_h)/1e3, color = 'k', linestyle = '-', label = r'$p_t$')
+
+# dashed_line = mlines.Line2D([], [], color='black', linestyle='--', label='$p^f$')
+# dot = mlines.Line2D([], [], color='black', linestyle=':', label='$p^c$')
+# full = mlines.Line2D([], [], color='r', linestyle='-', label='$p_t$')
 # full = mlines.Line2D([], [], color='black', linestyle='.', label='$p_H$')
 
 plt.xlabel(r'$1-\phi$')
@@ -176,8 +204,8 @@ plt.ylabel(r'$P$ (kN/m)')
 # secax.set_xlabel('$1-h$ (m)')
 # plt.yscale('log')
 # plt.grid()
-ax.legend([dashed_line, dot, full], [r'$p^f$', r'$p^c$', r'$p_t$'], loc='upper right')
-plt.savefig('pressure_simplified.png')
+# ax.legend([dashed_line, dot, full], [r'$p^f$', r'$p^c$', r'$p_t$'], loc='upper right')
+plt.savefig('pressure_multiplied.png')
 
 
 

@@ -158,6 +158,8 @@
                            Pp(i, j) = 0d0
                         else
                            Pp(i, j) = Pmax(i, j) * tanh(Peq(i, j) / Pmax(i, j))
+                           ! Pp(i, j) = Pmax(i, j)
+                        
                         endif
 
 

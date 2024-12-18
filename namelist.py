@@ -31,7 +31,7 @@ def generate_namelist(expno, start_str, start_time, end_str, restart, endmin, ti
 
     return "\n".join(output)
 
-expno = 74
+expno = 40
 
 output = generate_namelist(expno, '1990-01-01:00:00:00', [1990, 1, 1, 0, 0, 0], '1990-01-10:00:00:00', 0, 10*(24*60), 120)
 

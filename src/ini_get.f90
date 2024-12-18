@@ -21,6 +21,7 @@ subroutine ini_get (restart, expno_r, restart_date)
 
     integer, intent(in) :: restart, expno_r
     integer :: i, j, k, year, month, day, hour, minute
+    double precision :: Length
     TYPE(datetime_type), intent(in) :: restart_date
 
     year = restart_date%year
@@ -58,48 +59,68 @@ subroutine ini_get (restart, expno_r, restart_date)
 !     Uniaxial loading experiment: set bands of open water at the top and sides
             if (Water_Col) then
 
-               if ((nx == 100) .and. (ny == 250)) then
-                  if (i .lt. 21 .or. i .gt. 80) h(i,j) = 0d0
-                  if (i .lt. 21 .or. i .gt. 80) A(i,j) = 0d0
-                  if (j .gt. 250) h(i,j) = 0d0
-                  if (j .gt. 250) A(i,j) = 0d0 
+               if (step_water) then
+
+                  if ((nx == 100) .and. (ny == 250)) then
+                     if (i .lt. 21 .or. i .gt. 80) h(i,j) = 0d0
+                     if (i .lt. 21 .or. i .gt. 80) A(i,j) = 0d0
+                     if (j .gt. 250) h(i,j) = 0d0
+                     if (j .gt. 250) A(i,j) = 0d0 
 
 
-               elseif ((nx == 200) .and. (ny == 500)) then
-                  if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
-                  if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
-                  if (j .gt. 500) h(i,j) = 0d0
-                  if (j .gt. 500) A(i,j) = 0d0 
+                  elseif ((nx == 200) .and. (ny == 500)) then
+                     if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
+                     if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
+                     if (j .gt. 500) h(i,j) = 0d0
+                     if (j .gt. 500) A(i,j) = 0d0 
 
+                  
+                  elseif ((nx == 200) .and. (ny == 1000)) then
+                     if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
+                     if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
+
+                     !  if (i .lt. 11 .or. i .gt. 100 ) h(i,j) = 0d0
+                     !  if (i .lt. 11 .or. i .gt. 190) A(i,j) = 0d0
+                     !  if (j .gt. 1000) h(i,j) = 0d0
+                     !  if (j .gt. 500) A(i,j) = 0d0 
+
+                  elseif ((nx == 400) .and. (ny == 1000)) then
+                     if (i .lt. 101 .or. i .gt. 300) h(i,j) = 0d0
+                     if (i .lt. 101 .or. i .gt. 300) A(i,j) = 0d0
+                     if (j .gt. 500) h(i,j) = 10d0
+                     if (j .gt. 500) A(i,j) = 1d0 
+
+                  elseif ((nx == 200) .and. (ny == 600)) then
+                     if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
+                     if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
+                     if (j .gt. 300) h(i,j) = 10d0
+                     if (j .gt. 300) A(i,j) = 1d0 
+
+                  elseif ((nx == 102) .and. (ny == 402)) then
+                     if (i .lt. 21 .or. i .gt. 81) h(i,j) = 0d0
+                     if (i .lt. 21 .or. i .gt. 81 ) A(i,j) = 0d0
+                     if (j .lt. 1) h(i,j) = 0d0
+                     if (j .lt. 1) A(i,j) = 0d0 
+
+                  endif
                
-               elseif ((nx == 200) .and. (ny == 1000)) then
-                  if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
-                  if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
+               else 
 
-                  !  if (i .lt. 11 .or. i .gt. 100 ) h(i,j) = 0d0
-                  !  if (i .lt. 11 .or. i .gt. 190) A(i,j) = 0d0
-                  !  if (j .gt. 1000) h(i,j) = 0d0
-                  !  if (j .gt. 500) A(i,j) = 0d0 
+                  if ((nx == 200) .and. (ny == 500)) then
 
-               elseif ((nx == 400) .and. (ny == 1000)) then
-                  if (i .lt. 101 .or. i .gt. 300) h(i,j) = 0d0
-                  if (i .lt. 101 .or. i .gt. 300) A(i,j) = 0d0
-                  if (j .gt. 500) h(i,j) = 10d0
-                  if (j .gt. 500) A(i,j) = 1d0 
+                     Length = nx * Deltax / 3
+                     A(i, j) = dexp(-(abs(i - nx/2)*Deltax/Length)**6)
+                     h(i, j) = dexp(-(abs(i - nx/2)*Deltax/Length)**6)
+                     ! if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
+                     ! if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
+                     if (j .gt. 500) h(i,j) = 0d0
+                     if (j .gt. 500) A(i,j) = 0d0 
 
-               elseif ((nx == 200) .and. (ny == 600)) then
-                  if (i .lt. 21 .or. i .gt. 180 ) h(i,j) = 0d0
-                  if (i .lt. 21 .or. i .gt. 180) A(i,j) = 0d0
-                  if (j .gt. 300) h(i,j) = 10d0
-                  if (j .gt. 300) A(i,j) = 1d0 
-
-               elseif ((nx == 102) .and. (ny == 402)) then
-                  if (i .lt. 21 .or. i .gt. 81) h(i,j) = 0d0
-                  if (i .lt. 21 .or. i .gt. 81 ) A(i,j) = 0d0
-                  if (j .lt. 1) h(i,j) = 0d0
-                  if (j .lt. 1) A(i,j) = 0d0 
-
+                  endif
+               
                endif
+
+
             
             endif
 

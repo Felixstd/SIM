@@ -195,6 +195,8 @@
       Water_Col  = .true.
       Phi_eq     = .false.
       adv_mu     = .true.
+      step_water = .true.
+      correction = .false.
 
       ! d = 200
       theta = 45 * pi / 180
@@ -418,7 +420,7 @@ subroutine read_namelist
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,            &
            BasalStress, uniaxial, inclined, dilatancy, mu_phi, Water_Col, &
-           Phi_eq, adv_mu
+           Phi_eq, adv_mu, step_water
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub

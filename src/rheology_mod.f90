@@ -54,7 +54,7 @@ MODULE muphi
   IMPLICIT NONE
 
   LOGICAL :: Pres_f, Pres_c, Pres_sum, Water_Col
-  LOGICAL :: Phi_eq, adv_mu
+  LOGICAL :: Phi_eq, adv_mu, step_water, correction
   DOUBLE PRECISION :: mu_0, mu_infty 
   DOUBLE PRECISION :: c_phi
   DOUBLE PRECISION :: I_0
