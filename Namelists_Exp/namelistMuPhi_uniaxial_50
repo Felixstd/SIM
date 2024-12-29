@@ -24,12 +24,12 @@
     inclined = .false.
     dilatancy = .true.
     mu_phi    = .true.
-    Water_Col = .false.
+    adv_mu    = .false.
 /
 
 &numerical_param_nml
-    Deltat    = 0.2
-    gamma_nl = 1d-5
+    Deltat    = 300
+    gamma_nl = 1d-7
     NLmax = 400     
     OLmax = 1500
     Nsub  = 120  
@@ -47,18 +47,17 @@
     Cdair = 1.2d-03
     Cdwater = 5.5d-03
     f = 1.46d-04
-    d_average = 1d4
-    mu_0      = 0.36
+    d_average = 1d3
+    mu_0      = 0.1
     mu_infty  = 0.9 
-    mu_b      = 1
+    mu_b      = 10
     c_phi     = 1
-    I_0       = 1d-4
+    I_0       = 1d-3
     Phi_0     = 1 
     c_1       = 1d-02 
     c_2       = 0.25
-    phi_f_micro = 10
     Deltax    = 1d3*10
-    Pres_f    = .true.
-    Pres_c    = .true.
-    Pres_sum  = .true.
+    Pres_f    = .false.
+    Pres_c    = .false.
+    Pres_sum  = .false.
 /

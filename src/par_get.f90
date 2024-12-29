@@ -185,6 +185,9 @@
       mu_infty = 0.9
       mu_b       = 1
       Phi_0      = 1
+      Phi_max    = 0.9
+      Phi_min    = 0
+      tau        = 1/2
       c_phi      = 1
       c_1        = 1d-02
       c_2        = 1/4
@@ -420,7 +423,7 @@ subroutine read_namelist
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,            &
            BasalStress, uniaxial, inclined, dilatancy, mu_phi, Water_Col, &
-           Phi_eq, adv_mu, step_water
+           Phi_eq, adv_mu, step_water, correction
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub

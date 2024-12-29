@@ -19,6 +19,7 @@ def generate_namelist(expno, start_str, start_time, end_str, restart, endmin, ti
     output.append(format_line(start_str, "starting date"))
     output.append(format_line(end_str, "end date"))
     
+    test   
     
     start = datetime(*start_time)
     

@@ -1,7 +1,23 @@
-! Not sure about the P here
+! This collection of subroutines is used for the 
+! mu-phi rheology. It contains all of the necessary 
+! subroutines to compute phi, I, shear, mu, psi. 
+!
+! Written by Félix St-Denis, 2024-2025
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!               Subroutine for computing different                         !
+!                  quantities at one time step.                            !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 subroutine inertial_number
 
+!------------------------------------------------!
+!--- SUBROUTINE COMPUTING THE INERTIAL NUMBER ---!
+!------------------------------------------------!
+
+    !-- Modules to include --!
     use muphi
 
     implicit none
@@ -12,27 +28,37 @@ subroutine inertial_number
     include 'CB_options.h'
     include 'CB_const.h'
 
-    integer i, j
-    double precision eps, highI, lowI, Press
+    !-- Local variables --!
 
-    !
+    integer i, j ! indexes
+    double precision highI, lowI, Press ! Max I, min I, Pressure(i, j)
+
     ! Need to look for the eps and see if it is the right thing to do. 
     ! Also, for the value of the High I as P -> 0
-    eps = 1d-06
+
+    !-- Setting values --!
     ! highI = 1d0
     highI = 1d0
     lowI  = 0d0
 
+    !-- Loop through all the grid cells --!
     do i = 0, nx+1
         do j = 0, ny+1
+
+            ! if ocean 
             if (maskC(i,j) .eq. 1) then
 
+                    ! Capping the pressure to eliminate singularities
                     Press = max(Pp(i, j), 1d-20)
+
+                    ! Computing inertial number
                     inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j), highI)
 
             endif
         enddo
     enddo
+
+    !-- Boundary Conditions --!
 
     if (Periodic_y .eq. 0) then
         do i = 0, nx+1
@@ -66,10 +92,12 @@ end subroutine inertial_number
 
 subroutine non_dimensional_shear
 
-!
-! This is to compute the non-dimensional shear gamma^*.
-!
+!----------------------------------------------------------!
+!--- SUBROUTINE COMPUTING THE NON DIMENSIONAL SHEAR FOR ---!
+!---              THE FRICTIONAL PRESSURE               ---!
+!----------------------------------------------------------!
 
+    !- Loading modules -!
     use muphi
 
     implicit none
@@ -79,21 +107,32 @@ subroutine non_dimensional_shear
     include 'CB_mask.h'
     include 'CB_options.h'
     include 'CB_const.h'
-
+    
+    !- Local Variables -!
     integer i, j
     double precision eps, highI, lowI, Press
 
+    !-- Looping though the domain --!
     do i = 0, nx+1
         do j = 0, ny+1
+
+            !-- If Ocean at i, j
             if (maskC(i,j) .eq. 1) then
 
+                    ! Capping Pressure 
                     Press = max(Pmax(i, j), 1d-20)
+
+                    !-- Computing I from Pmax --!
                     Ifriction(i, j) = max(SQRT(rhoice * h(i, j)/Press) * d_average*shear_I(i, j), 1d0)
+
+                    !-- Computing shear rate --!
                     gamma_I(i, j) = c_1*Ifriction(i, j)**c_2
 
             endif
         enddo
     enddo
+
+    !--- Boundary conditions ---!
 
     if (Periodic_y .eq. 0) then
         do i = 0, nx+1
@@ -126,7 +165,15 @@ subroutine non_dimensional_shear
 end subroutine non_dimensional_shear
 
 subroutine volumefraction_phi
+
+!----------------------------------------------------------!
+!--- SUBROUTINE USED TO COMPUTE THE VOLUME FRACTION PHI ---!  
+!---   FROM THE EMPIRICAL LAW DERIVED FROM EXPERIMENTS  ---!    
+!----------------------------------------------------------!
+
+!--- Needs to be run after calling inertial_I() ---!
     
+    !-- Loading modules --!
     use muphi
 
     implicit none
@@ -137,26 +184,64 @@ subroutine volumefraction_phi
     include 'CB_options.h'
     include 'CB_const.h'
 
+    !-- Local Variables --!
     integer i, j
     double precision eps
 
     eps = 1d-08
-
+    
+    !-- Looping through the domain --!
     do i = 0, nx+1
         do j = 0, ny+1
+            !-- If Ocean --!
             if (maskC(i,j) .eq. 1) then
 
+                !-- Computing the volume fraction --!
                 Phi_I(i, j) = max(0d0, Phi_0 - c_phi * inertial(i, j))
 
             endif
-
-
         enddo
     enddo
 
-
-
 end subroutine volumefraction_phi
+
+
+subroutine SIC_2_PHI
+
+!----------------------------------------------------------!
+!--- SUBROUTINE USED TO COMPUTE THE VOLUME FRACTION PHI ---!  
+!---              FROM THE EMPIRICAL LAW                ---!    
+!----------------------------------------------------------!
+
+    use muphi
+
+    implicit none 
+
+    include 'parameter.h'
+    include 'CB_DynVariables.h'
+    include 'CB_mask.h'
+    include 'CB_options.h'
+    include 'CB_const.h'
+
+    !-- Local Variables --!
+    integer i, j
+    
+
+    !-- Looping through the domain --!
+    do i = 0, nx+1
+        do j = 0, ny+1
+            !-- If Ocean --!
+            if (maskC(i,j) .eq. 1) then
+
+                Phi_S(i, j) = (1-Phi_min) * A(i,j) + Phi_min
+                Phi_G(i, j) = -(1-Phi_max) * tanh((A(i,j)-1)/tau) + (Phi_max)
+                Phi_A(i, j) = Phi_S(i, j) * Phi_G(i,j)
+
+            endif
+        enddo
+    enddo
+
+end subroutine SIC_2_PHI
 
 subroutine angle_friction_mu 
 

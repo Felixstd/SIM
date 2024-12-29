@@ -59,7 +59,10 @@
                 tan_psi  (0:nx+2,0:ny+2), &
                 P_fric   (0:nx+2,0:ny+2), &
                 P_col    (0:nx+2,0:ny+2), &
-                gamma_I  (0:nx+2,0:ny+2)
+                gamma_I  (0:nx+2,0:ny+2), &
+                Phi_S    (0:nx+2,0:ny+2), &
+                Phi_G    (0:nx+2,0:ny+2), &
+                Phi_A     (0:nx+2,0:ny+2)
 
 
 
@@ -104,21 +107,24 @@
                 sigyy,  & ! normal stress at center
 
 
-                Pmax,           & ! replacement pressure
-                Peq,            &
-                inertial,       &
-                Ifriction,      &
-                shear_I,        &
-                Phi_I,          &
-                mu_I,           &
-                mu_B_I,         &
+                Pmax,           & ! Hibler Pressure
+                Peq,            & ! mu-phi pressure, comes from I
+                inertial,       & ! Inertial number I
+                Ifriction,      & ! Frictional I for frictional pressure
+                shear_I,        & ! Max shear strain rate
+                Phi_I,          & ! Volume fraction from 1-I
+                mu_I,           & ! Friction coefficient mu
+                mu_B_I,         & ! bulk friction coefficient (non constant)
                 Pdep,           &
-                div_I,          &
+                div_I,          & ! Divergence from I
                 Pmu,            &
-                tan_psi,        &
-                P_fric,         &
-                P_col,          &
-                gamma_I
+                tan_psi,        & ! Dilatancy angle
+                P_fric,         & ! Friction coefficient
+                P_col,          & ! 
+                gamma_I,        & ! Shear rate from I friction
+                Phi_S,          & ! A2Phi linear 
+                Phi_G,          & ! A2Phi correction
+                Phi_A             ! A2Phi = Phi_S*Phi_G
 
 
 

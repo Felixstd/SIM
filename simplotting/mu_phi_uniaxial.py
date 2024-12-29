@@ -31,10 +31,10 @@ elif ten_minutes:
         
 elif two_hours:
         #--- Time for 2 hours 30 minutes run ---#
-        start = datetime(1990, 1, 1, 0, 5, 00)
-        start_k = 1
+        start = datetime(1990, 1, 1, 8, 00, 00)
+        start_k = 48
         # Time interval (30 seconds initially, then 5-minute steps)
-        intervals = [timedelta(seconds=30)]*0  + [timedelta(minutes=4)]*0 + [timedelta(minutes=5)]*15 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+        intervals = [timedelta(seconds=30)]*0  + [timedelta(minutes=4)]*0 + [timedelta(minutes=10)]*11 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
 
 dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S') for i in range(len(intervals)+1)]
 
@@ -42,7 +42,7 @@ print(dates)
 # expno = '33'
 outputdir = "/storage/fstdenis/output_sim/"
 figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_Runs/'
-for i in range(49, 50):
+for i in range(66, 67):
     expno = "{:02d}".format(i)
 
     if not os.path.isdir(figdir+expno):
