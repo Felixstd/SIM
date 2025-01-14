@@ -6,15 +6,20 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import os
 import warnings
+import argparse
 
 warnings.filterwarnings("ignore")
+ 
+parser = argparse.ArgumentParser(description="For analysis",
+                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("-t", "--time", type=int, help = "1 for min, 2 for 10 min, 3 for 2hours and 4 for 10 hours simulation")
+parser.add_argument("-e", "--expno", type=int, help = "Experiment number ")
+args = vars(parser.parse_args())
 
+time = args['time']
+expno = args['expno']
 
-minute = 0
-two_hours = 1
-ten_minutes = 0
-
-if minute:
+if time == 1:
         
         start = 1
         start_k = 61
@@ -22,19 +27,26 @@ if minute:
         start = datetime(1990, 1, 1, 0, 1, start)
         intervals = [timedelta(seconds=1)] * 58
         
-elif ten_minutes:
+elif time == 2:
         #--- Time for 10 minutes run ---#
         start = datetime(1990, 1, 1, 0, 0, 30)
         start_k =1
         # Time interval (30 seconds initially, then 5-minute steps)
         intervals = [timedelta(seconds=30)] * int((9*60/30))
         
-elif two_hours:
-        #--- Time for 2 hours 30 minutes run ---#
-        start = datetime(1990, 1, 1, 8, 00, 00)
-        start_k = 48
+elif time == 3:
+        # --- Time for 2 hours 30 minutes run ---#
+        start = datetime(1990, 1, 1, 0, 5, 00)
+        start_k = 1
         # Time interval (30 seconds initially, then 5-minute steps)
+        intervals = [timedelta(seconds=30)]*0  + [timedelta(minutes=4)]*0 + [timedelta(minutes=5)]*24 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+       
+elif time == 4:
+        #--- Time for 2 hours 30 minutes run ---#
+        start = datetime(1990, 1, 1, 8, 0, 00)
+        start_k = 48
         intervals = [timedelta(seconds=30)]*0  + [timedelta(minutes=4)]*0 + [timedelta(minutes=10)]*11 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+
 
 dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S') for i in range(len(intervals)+1)]
 
@@ -42,7 +54,8 @@ print(dates)
 # expno = '33'
 outputdir = "/storage/fstdenis/output_sim/"
 figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_Runs/'
-for i in range(66, 67):
+# outputdir =  "/storage/fstdenis/RHEOLOGY/output_sim_MuPhi_Runs/"
+for i in range(expno, expno+1):
     expno = "{:02d}".format(i)
 
     if not os.path.isdir(figdir+expno):
@@ -74,8 +87,6 @@ for i in range(66, 67):
     muphi = 1
     log = 0
     time = np.arange(1, 14, 1)
-
-
 
     #_--------- READING DATA ----------#
     datadict = read_data.read_data(expno, start_k, dates, outputdir, MuPhi = muphi)

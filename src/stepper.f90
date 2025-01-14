@@ -114,10 +114,14 @@
                   call shear(uice, vice)   
                   call Ice_strength()                  
                   call non_dimensional_shear()
+
+                  if (A2Phi) then
+                     call SIC_2_PHI()
+                  endif
+
                   call angle_friction_mu()
                   call inertial_number()
                   call volumefraction_phi()
-                  
                   call Ice_strength()  
                   
                else

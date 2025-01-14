@@ -200,6 +200,7 @@
       adv_mu     = .true.
       step_water = .true.
       correction = .false.
+      A2Phi      = .false.
 
       ! d = 200
       theta = 45 * pi / 180
@@ -423,7 +424,7 @@ subroutine read_namelist
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,            &
            BasalStress, uniaxial, inclined, dilatancy, mu_phi, Water_Col, &
-           Phi_eq, adv_mu, step_water, correction
+           Phi_eq, adv_mu, step_water, correction, A2Phi, mu_phi_form, Pres_f, Pres_c, Pres_sum
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub
@@ -431,7 +432,7 @@ subroutine read_namelist
       namelist /phys_param_nml/ &
            Pstar, C, e_ratio, k1, k2, rhoair, rhoice, rhowater, &
            Cdair, Cdwater, f, d_average, mu_0 , mu_infty, mu_b, c_phi, &
-            I_0 , Phi_0, c_1, c_2, phi_f_micro, Deltax, Pres_f, Pres_c, Pres_sum
+            I_0 , Phi_0, c_1, c_2, phi_f_micro, Deltax
 
       ! filename ='namelistMuPhi'
       filename ='namelistMuPhi_uniaxial'

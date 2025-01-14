@@ -90,6 +90,7 @@ PROGRAM ice
     USE datetime, ONLY: datetime_init, datetime_str, datetime_type, delta_init
     USE datetime, ONLY: datetime_delta_type, OPERATOR(+), OPERATOR(<), OPERATOR(==), OPERATOR(-)
     USE datetime, ONLY: str2dt, datetime_str_6, now, delta_str
+    use muphi
 
       implicit none
 
@@ -180,6 +181,11 @@ PROGRAM ice
       else
 	      date_step = delta_init(millis=int(Deltat*1000))
       endif
+
+      print*, 'adv_mu', adv_mu
+      print*, 'P_sum, P_f, P_c', Pres_sum, Pres_f, Pres_c
+      print*, 'Correction', correction
+      print*, 'mu_phi, dilatation', mu_phi, dilatancy
 
          
       call ocn_current               ! load current data

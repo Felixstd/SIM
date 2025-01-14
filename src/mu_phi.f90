@@ -267,10 +267,16 @@ subroutine angle_friction_mu
                 ! if ((dilatancy .eqv. .true.) .and. (mu_phi .eqv. .false.)) then
                 !     min_inertial = max(inertial(i, j), 1d-20)
 
-                    if (h(i,j) < 1e-2) then
-                    ! if (h(i,j) < 1e-6) then
+                !------- TODO ----------------------!
+                !-- Add a condition --!
+                !-- for the use of  --!
+                !-- The boundary condition for mu --!
 
-                !     !     !UNTIL 23
+                
+                    if (h(i,j) < 1e-2) then
+                !     ! if (h(i,j) < 1e-6) then
+
+                ! !     !     !UNTIL 23
                             mu_I(i, j) = 0d0
                             
 
@@ -278,8 +284,15 @@ subroutine angle_friction_mu
                 !     ! mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1)
                 !     mu_I(i, j) = max(mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1) + tan_psi(i, j), 0d0)
                     
-                
-                        diff_A = max(1d-20, 1-A(i, j))
+                        if (A2Phi) then 
+
+                            diff_A = max(1d-20, 1-Phi_A(i, j))
+
+                        else 
+                            diff_A = max(1d-20, 1-A(i, j))
+
+                        endif
+
                         mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/diff_A + 1 )
 
                     endif

@@ -191,9 +191,11 @@ end subroutine Funk
                     (etaC(i, j) * ( utp(i, j) - utp(i+1, j)) &
                     + etaC(i-1, j) *(utp(i, j) - utp(i-1, j))) / Deltax2
 
-        elseif ((dilatancy .eqv. .true.) .and. (correction .eqv. .false.) .and. &
-            (mu_phi .eqv. .true.) .and. (rheology .eq. 4)) then
+      !   elseif ((dilatancy .eqv. .true.) .and. (correction .eqv. .false.) .and. &
+            ! (mu_phi .eqv. .true.) .and. (rheology .eq. 4)) then
 
+        elseif ((dilatancy .eqv. .true.) .and. (correction .eqv. .false.) .and. &
+             (rheology .eq. 4)) then
             !--- FOR MU(I)-PHI(I) RHEOLOGY WITH DILATATION---!
 
 
@@ -205,8 +207,11 @@ end subroutine Funk
                         (etaC(i, j) * ( utp(i, j) - utp(i+1, j)) &
                         + etaC(i-1, j) *(utp(i, j) - utp(i-1, j))) / Deltax2
 
+      !   elseif ((dilatancy .eqv. .true.) .and. (correction .eqv. .true.) .and. &
+      !       (mu_phi .eqv. .true.) .and. (rheology .eq. 4)) then
+
         elseif ((dilatancy .eqv. .true.) .and. (correction .eqv. .true.) .and. &
-            (mu_phi .eqv. .true.) .and. (rheology .eq. 4)) then
+             (rheology .eq. 4)) then
 
             !--- FOR MU(I)-PHI(I) RHEOLOGY WITH DILATATION AND CORRECTION---!
 
@@ -520,8 +525,10 @@ end subroutine Funk
                     - etaC(i,j-1) * (- vtp(i, j) + vtp(i, j-1)) &
                     ) / Deltax2
 
+            ! elseif ((dilatancy .eqv. .true.) .and. (correction .eqv. .false.) .and. &
+            !     (mu_phi .eqv. .true.) .and. (rheology .eq. 4)) then
             elseif ((dilatancy .eqv. .true.) .and. (correction .eqv. .false.) .and. &
-                (mu_phi .eqv. .true.) .and. (rheology .eq. 4)) then
+                 (rheology .eq. 4)) then
             !---- FOR MU(I)-PHI(I) RHEOLOGY WITH DILATANCY ----!
 
                 !------------------------------------------------------------------------
@@ -532,8 +539,10 @@ end subroutine Funk
                 - etaC(i,j-1) * ( - vtp(i, j) + vtp(i, j-1)) &
                     ) / Deltax2
 
+            ! elseif ((dilatancy .eqv. .true.) .and. (correction .eqv. .true.) .and. &
+            !     (mu_phi .eqv. .true.) .and. (rheology .eq. 4)) then
             elseif ((dilatancy .eqv. .true.) .and. (correction .eqv. .true.) .and. &
-                (mu_phi .eqv. .true.) .and. (rheology .eq. 4)) then
+                 (rheology .eq. 4)) then
             
                 !---- FOR MU(I)-PHI(I) RHEOLOGY WITH DILATANCY AND CORRECTION----!
 

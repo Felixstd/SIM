@@ -102,7 +102,7 @@
                      diff_A = max(1d-20, 1-A(i, j))
                      Pmax(i,j) = max(Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) )), 1d-20)
 
-                     P_col(i, j)  = Pmax(i,j)*tanh((rhoice * h(i, j)* (( d_average * shear_I(i, j) ) / (diff_A))**2) /Pmax(i,j))
+                     P_col(i, j)  = Pmax(i,j)*tanh((rhoice * h(i, j)* (( d_average * shear_I(i, j) ) / (diff_A))**2) / Pmax(i,j))
 
                      if (A(i, j) <= 0.5) then
                         P_fric(i, j) = 0d0
@@ -140,11 +140,20 @@
                do j = 0, ny+1
                   if (maskC(i,j) .eq. 1) then
 
-                     ! Maximum pressure
-                     Pmax(i,j) = Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ))
-                     diff_A = max(1d-20, 1-A(i, j))
+                  
+                     if (A2Phi) then
+                        diff_A = max(1d-20, 1-Phi_A(i, j))
+
+                     else 
+                        diff_A = max(1d-20, 1-A(i, j))
+                     
+                     endif
+
                      diff_phi = max(1d-20, 1-Phi_I(i, j))
 
+                     !-- I'm not sure about the Capping on Pmax --!
+                     ! Maximum pressure
+                     Pmax(i,j) = Pstar * h(i,j) * dexp(-C * ( diff_A ))
                      ! Pressure from mu phi 
                      Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / (diff_A))**2  
    
@@ -161,6 +170,9 @@
                            ! Pp(i, j) = Pmax(i, j)
                         
                         endif
+                     
+                     else 
+                        Pp(i, j) = Pmax(i, j)
 
 
                      endif
