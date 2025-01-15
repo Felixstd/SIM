@@ -43,6 +43,7 @@ subroutine ini_get (restart, expno_r, restart_date)
 
              h(i,j)   =  1d0 * maskC(i,j) ! initial ice thick
              A(i,j)   =  1d0 * maskC(i,j) ! initial ice conc
+            !  A(i,j)   =  0.90 * maskC(i,j) ! initial ice conc
 
 !     h and A set to zero on open boundaries
 

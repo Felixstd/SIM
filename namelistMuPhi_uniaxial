@@ -24,10 +24,11 @@
     inclined = .false.
     dilatancy = .true.
     mu_phi    = .true.
-    adv_mu    = .false.
+    adv_mu    = .true.
     mu_phi_form = .true.
     correction  = .true.
-    A2Phi       = .true.
+    step_water = .true.
+    A2Phi       = .false.
     Pres_f    = .false.
     Pres_c    = .false.
     Pres_sum  = .false.
@@ -42,7 +43,7 @@
 /
 
 &phys_param_nml
-    Pstar  = 55d3
+    Pstar  = 27.5d3
     C = 20.0
     k1 = 8.0
     k2 = 15d0

@@ -114,14 +114,21 @@
                   call shear(uice, vice)   
                   call Ice_strength()                  
                   call non_dimensional_shear()
+                  
 
                   if (A2Phi) then
                      call SIC_2_PHI()
                   endif
 
+                  if (Phi_eq) then
+                     call inertial_number()
+                     call volumefraction_phi()
+                  endif
+
                   call angle_friction_mu()
-                  call inertial_number()
-                  call volumefraction_phi()
+                  
+                  ! Added here the divergence call
+                  call divergence_muphi()
                   call Ice_strength()  
                   
                else

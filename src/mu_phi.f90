@@ -445,7 +445,6 @@ subroutine shear(utp, vtp)
                   
 !----- stresses and strain rates at the grid center -------------------------   
 
-
                 shear_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
                        + ( dudy + dvdx )**2d0 )
                 ! div_I(i, j) = (dudx + dvdy)

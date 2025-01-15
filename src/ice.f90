@@ -192,29 +192,29 @@ PROGRAM ice
       call ocn_Tclim                 ! load monthly clim ocean T
       call ini_get (restart, expno_r,restart_date)! ini conds
 
-      if ( Rheology .eq. 4 ) then
-         if (restart .eq. 1) then
-            call initial_conditions_muPhi
-            call shear(uice, vice)
-            call inertial_number
-            call angle_friction_mu()
-            call volumefraction_phi()
+      ! if ( Rheology .eq. 4 ) then
+      !    if (restart .eq. 1) then
+      !       call initial_conditions_muPhi
+      !       call shear(uice, vice)
+      !       call inertial_number
+      !       call angle_friction_mu()
+      !       call volumefraction_phi()
          
-         elseif (uniaxial) then
-            call shear(uice, vice)                     
-            call Ice_strength()
-            call inertial_number()
-            call volumefraction_phi()
-            call divergence_muphi()
-            call angle_friction_mu()
-            ! call initial_conditions_uniaxial
-            ! call initial_conditions_muPhi
-            ! ! call Ice_strength
-            ! call angle_friction_mu()
-            ! call shear(uice, vice)
-         endif
+      !    elseif (uniaxial) then
+      !       call shear(uice, vice)                     
+      !       call Ice_strength()
+      !       call inertial_number()
+      !       call volumefraction_phi()
+      !       call divergence_muphi()
+      !       call angle_friction_mu()
+      !       ! call initial_conditions_uniaxial
+      !       ! call initial_conditions_muPhi
+      !       ! ! call Ice_strength
+      !       ! call angle_friction_mu()
+      !       ! call shear(uice, vice)
+      !    endif
 
-      endif
+      ! endif
 
       call sea_ice_post(now_date, expno)
       call stress_strain(uice, vice, now_date, k, expno)

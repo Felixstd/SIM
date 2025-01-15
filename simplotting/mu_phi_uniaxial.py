@@ -45,7 +45,7 @@ elif time == 4:
         #--- Time for 2 hours 30 minutes run ---#
         start = datetime(1990, 1, 1, 8, 0, 00)
         start_k = 48
-        intervals = [timedelta(seconds=30)]*0  + [timedelta(minutes=4)]*0 + [timedelta(minutes=10)]*11 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+        intervals = [timedelta(minutes=10)]*10 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
 
 
 dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S') for i in range(len(intervals)+1)]
