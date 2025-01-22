@@ -139,6 +139,7 @@
                wspeed = 10d0
                ! Tramp = 60*60*10
                Tramp = 60*60*2
+               ! Tramp = 60*60*10
                ! Tramp = 3600000*2
                ! Tramp = 10
                ! rampfactor=1d0-exp(-1d0*tstep*Deltat/Tramp)

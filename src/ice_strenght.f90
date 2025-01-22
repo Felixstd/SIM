@@ -154,31 +154,40 @@
                      !-- I'm not sure about the Capping on Pmax --!
                      ! Maximum pressure
                      Pmax(i,j) = Pstar * h(i,j) * dexp(-C * ( diff_A ))
-                     ! Pressure from mu phi 
+                     Pdilat(i, j) = Pmax(i, j) * tanh(tan_psi(i, j)*h(i, j))
                      Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / (diff_A))**2  
-   
-                     if (regularization .eq. 'capping') then 
-                        
-                        Pp(i, j) = min(Peq(i, j), Pmax(i, j))
                      
-                     elseif (regularization .eq. 'tanh') then
-                        
-                        if (Pmax(i, j) .lt. 1d-10) then
-                           Pp(i, j) = 0d0
-                        else
-                           Pp(i, j) = Pmax(i, j) * tanh(Peq(i, j) / Pmax(i, j))
-                           ! Pp(i, j) = Pmax(i, j)
-                        
-                        endif
+                     if (P_dilat) then 
+                        Pp(i, j) =  Pdilat(i, j)
+                     ! Pressure from mu phi 
+
+                     elseif (A2Phi) then
+
+                        ! Pp(i, j) = Pstar*tanh(Peq(i, j)/Pstar)
+                        Pp(i,j) = Peq(i ,j)
                      
                      else 
-                        Pp(i, j) = Pmax(i, j)
 
+                        if (regularization .eq. 'capping') then 
+                           
+                           Pp(i, j) = min(Peq(i, j), Pmax(i, j))
+                        
+                        elseif (regularization .eq. 'tanh') then
+                           
+                           if (Pmax(i, j) .lt. 1d-10) then
+                              Pp(i, j) = 0d0
+                           else
+                              Pp(i, j) = Pmax(i, j) * tanh(Peq(i, j) / Pmax(i, j))
+                              ! Pp(i, j) = Pmax(i, j)
+
+                           endif
+
+                        endif
+
+                        Pt(i, j) = 0d0
+                        ! Pp(i,j) = Pmax(i, j)
 
                      endif
-
-                     Pt(i, j) = 0d0
-
                   endif
                enddo
             enddo

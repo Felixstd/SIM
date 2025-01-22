@@ -148,7 +148,7 @@ plt.fill_betweenx(fill_y, 5e-4, 1,  color = (0.580, 1.0, 1.0), alpha = 0.5)
 # plt.grid()
 plt.xscale('log')
 plt.xlabel(r'I')
-plt.ylabel(r'$\phi$')
+plt.ylabel(r'$A$')
 plt.savefig('conc.png')
 
 

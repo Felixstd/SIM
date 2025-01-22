@@ -1,12 +1,14 @@
 PROGRAM PrecisionExample
     ! Use REAL(8) or DOUBLE PRECISION for double precision variables
-    REAL(8) :: x, y, sum
+    double precision :: x, y, sum
     
-    x = 1.0D-11  ! Double precision constant
+    x = 1d0-1d0 ! Double precision constant
     y = 2.0D-11
     sum = (x + y)*1/2
 
     PRINT *, "Sum with double precision (REAL(8)):", sum
+
+    print*, tanh(x/(1d0/2d0))
 
     ! Using SELECTED_REAL_KIND for even higher precision (if available)
 !    INTEGER, PARAMETER :: high_precision = SELECTED_REAL_KIND(15, 307)

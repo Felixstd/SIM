@@ -14,10 +14,14 @@ parser = argparse.ArgumentParser(description="For analysis",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("-t", "--time", type=int, help = "1 for min, 2 for 10 min, 3 for 2hours and 4 for 10 hours simulation")
 parser.add_argument("-e", "--expno", type=int, help = "Experiment number ")
+parser.add_argument("-mu0", "--mu0", type=float, help = "Lower bound for mu ")
+parser.add_argument("-muinf", "--muinfty", type=float, help = "higher bound for mu ")
 args = vars(parser.parse_args())
 
 time = args['time']
 expno = args['expno']
+mu_0 = args['mu0']
+mu_infty = args['muinfty']
 
 if time == 1:
         
@@ -43,9 +47,11 @@ elif time == 3:
        
 elif time == 4:
         #--- Time for 2 hours 30 minutes run ---#
-        start = datetime(1990, 1, 1, 8, 0, 00)
-        start_k = 48
-        intervals = [timedelta(minutes=10)]*10 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+        # start = datetime(1990, 1, 1, 8, 0, 00)
+        # start_k = 48
+        start = datetime(1990, 1, 1, 0,10 , 00)
+        start_k = 1
+        intervals = [timedelta(minutes=10)]*11 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
 
 
 dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S') for i in range(len(intervals)+1)]
@@ -53,7 +59,7 @@ dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S')
 print(dates)
 # expno = '33'
 outputdir = "/storage/fstdenis/output_sim/"
-figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_Runs/'
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_Runs_Tests_Dilat/'
 # outputdir =  "/storage/fstdenis/RHEOLOGY/output_sim_MuPhi_Runs/"
 for i in range(expno, expno+1):
     expno = "{:02d}".format(i)
@@ -66,14 +72,7 @@ for i in range(expno, expno+1):
     dx = 1e3*10
     dy = dx
 
-    # mu_0 = 0.1
-    # if i < 8:
-    #     mu_0 = 0.1
-    # else:
-    #     mu_0 = 0.36
-    mu_0 = 0.1
-    mu_infty = 0.9
-    angle_phi = 10*np.pi/180
+    angle_phi = 20*np.pi/180
 
 
     Ny = 502
@@ -82,6 +81,9 @@ for i in range(expno, expno+1):
     # if (Ny == 252 and Nx == 102):
     mask = np.ones((Ny, Nx))
     mask[0, :] = 0
+    
+    filemask=outputdir+"mask.dat"
+    maskC = np.genfromtxt(filemask, dtype=None)
 
     N_transect = 51
     muphi = 1
@@ -98,10 +100,10 @@ for i in range(expno, expno+1):
     # analysis.wind_forcing(datadict, N_transect, dy, Ny, time, figdir+expno+'/', muphi)
 
     # # #---------- Analysing Invariants ----------#
-    # analysis.invariants(datadict, N_transect, time, figdir+expno+'/', muphi)
+    # analysis.invariants(dates, expno, datadict, Ny, Nx, dx, maskC, figdir, mu_0, mu_infty)
 
     # #---------- Plotting ----------#
     plot.uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
     
-    # plot.totdef_uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
+#     plot.totdef_uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
     

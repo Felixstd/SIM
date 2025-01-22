@@ -110,39 +110,61 @@
             
             elseif (Rheology .eq. 4) then
 
+               if (A2Phi) then
+                  call SIC_2_PHI()
+               endif
+
+               call shear(uice, vice)
+               call angle_friction_mu()
+               
                if (dilatancy) then
-                  call shear(uice, vice)   
-                  call Ice_strength()                  
-                  call non_dimensional_shear()
+                  call divergence_muphi
+               endif
+
+
+               call Ice_strength()
+
+
+               ! if (dilatancy) then
+               !    call shear(uice, vice)   
+               !    call Ice_strength()                  
+               !    call non_dimensional_shear()
                   
 
-                  if (A2Phi) then
-                     call SIC_2_PHI()
-                  endif
+               
+               !    if (Phi_eq) then
+               !       call inertial_number()
+               !       call volumefraction_phi()
+               !    endif
 
-                  if (Phi_eq) then
-                     call inertial_number()
-                     call volumefraction_phi()
-                  endif
+               !    call angle_friction_mu()
+                  
+               !    ! Added here the divergence call
+               !    call divergence_muphi()
 
-                  call angle_friction_mu()
+               !    if (Pres_sum) then
+               !       call non_dimensional_shear()
+               !    endif
+
+               !    call Ice_strength()  
                   
-                  ! Added here the divergence call
-                  call divergence_muphi()
-                  call Ice_strength()  
-                  
-               else
-                  call angle_friction_mu()
-                  call shear(uice, vice)
-                  call Ice_strength()
-                  if (Pres_sum) then
-                     call non_dimensional_shear()
-                     call divergence_muphi()
-                     call Ice_strength()
-                  endif
+               ! else
+               !    call angle_friction_mu()
+               !    call shear(uice, vice)
+
+               !    if (A2Phi) then
+               !       call SIC_2_PHI()
+               !    endif
+
+               !    call Ice_strength()
+               !    if (Pres_sum) then
+               !       call non_dimensional_shear()
+               !       call divergence_muphi()
+               !       call Ice_strength()
+               !    endif
 
  
-               endif
+               ! endif
             endif
 
             if (solver .le. 2) then ! Picard or JFNK
@@ -375,10 +397,10 @@
 
          if (IMEX .eq. 0) then ! already done with IMEX 1 and 2
             if ((rheology .eq. 4) .and.  (dilatancy .eqv. .true.) .and. (mu_phi .eqv. .true.) .and. (adv_mu .eqv. .true.)) then
-                  call shear(uice, vice)
-                  call angle_friction_mu
-                  call divergence_muphi
-                  call advection_mu(An1, hn1, uice, vice, h, A)
+                  ! call shear(uice, vice)
+                  ! call angle_friction_mu
+                  ! call divergence_muphi
+                  ! call advection_mu(An1, hn1, uice, vice, h, A)
                   print*, 'here adv'
 
             elseif (Rheology .eq. 3) then

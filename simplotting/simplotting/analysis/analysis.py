@@ -1,6 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 import scipy.integrate as inte
+import cmocean
+import scienceplots
+plt.style.use('science')
 
 def wind_forcing(data_dict, N, dy, Ny, time, figdir, MuPhi = True):
     """
@@ -58,66 +62,83 @@ def wind_forcing(data_dict, N, dy, Ny, time, figdir, MuPhi = True):
     
     plt.savefig(figdir+'wind.png') 
     
-def invariants(data_dict, N, time, figdir, MuPhi = True):
-    
-    if MuPhi:
+def invariants(dates, expno, data_dict, nx, ny, deltax, maskC, figdir, mu_0, mu_infty):
         
-        divergence_tot, shear_tot, h_tot, A_tot, p_tot, sigI_tot, sigII_tot, zeta_tot, \
-            uair_tot, vair_tot, muI_tot, phi_tot, I_tot, shearI_tot, Pmax_tot, Peq_tot = data_dict.values()
+    divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot, sigI_tot, sigII_tot, zeta_tot,eta_tot, \
+        uair_tot, vair_tot, muI_tot, phi_tot, I_tot, shearI_tot, Pmax_tot, Peq_tot = data_dict.values()
     
-    else: 
+    
+    
+    for k, date in enumerate(dates):
         
-        divergence_tot, shear_tot, h_tot, A_tot, p_tot, sigI_tot, sigII_tot, zeta_tot, uair_tot, vair_tot = \
-            data_dict.values()
+        
+        print('Plotting stresses: ', date)
+        u, v = u_tot[k], v_tot[k]
+        zeta, eta = zeta_tot[k], eta_tot[k]
+        shear, mu = shearI_tot[k], muI_tot[k]
+        P = p_tot[k]
+        I = I_tot[k]
+        
+        
+        sigI_norm, sigII_norm = compute_invariant_stresses(u, v, zeta, eta, shear, mu, maskC, P, nx, ny, deltax, mu0 = np.tan(20*np.pi/180))
+        
+        
+        fig, (ax) = plt.subplots(1, 1)
+        
+        sc = ax.scatter(sigI_norm.flatten(), sigII_norm.flatten(), s = 2, c = I.flatten(), cmap = plt.cm.magma, norm = colors.Normalize(vmin=1e-6, vmax=1e-3))
+        # sc = ax.scatter(sigI.flatten(), sigII.flatten(), s = 2, c = 'b', cmap = plt.cm.magma, norm = colors.Normalize(vmin=1e-6, vmax=1e-3))
+        plt.plot(np.unique(sigI_norm).ravel(), np.abs(np.unique(sigI_norm).ravel()*mu_0))
+        plt.plot(np.unique(sigI_norm).ravel(), np.abs(np.unique(sigI_norm).ravel()*mu_infty)) 
+    # print(sigI.flatten())
+        plt.grid('--')
+        fig.colorbar(sc, label = 'I')
+        # ax.set_xscale('symlog')
+        # ax.set_yscale('symlog')
+        ax.set_xlabel(r'$\sigma_{I}/P$')
+        ax.set_ylabel(r'$\sigma_{II}/P$')
+        plt.savefig(figdir+expno+'/stress_space_2_{}.png'.format(date))
+        plt.close()
+        
+        # ax1.scatter(time, sigI_mean, color = 'r')
+        # # ax1.scatter(time, sigII_mean, color = 'k', label = r'$\sigma_{II}/P$')
+        # ax1.set_xlabel('Time (s)')
+        # ax1.set_ylabel(r'$\overline{\sigma_{I}/P}$')
+        # # ax1.legend()
+        # ax1.grid()
+        # ax1.set_box_aspect(aspect=1)
+        
+        # ax2.scatter(time, sigII_mean, color = 'k')
+        # ax2.set_xlabel('Time (s)')
+        # ax2.set_ylabel(r'$\overline{\sigma_{II}/P}$')
+        # # ax2.legend()
+        # ax2.grid()
+        # ax1.set_xlabel('Time (s)')
+        # ax2.set_box_aspect(aspect=1)
+        
+        plt.savefig(figdir+'invariant_time.png')
     
-    sigI_tot_norm  = np.array(sigI_tot)/np.array(p_tot)
-    sigII_tot_norm = np.array(sigII_tot)/np.array(p_tot)
-    
-    
-    sigI_transect  =  sigI_tot_norm[:, :, N]
-    sigII_transect =  sigII_tot_norm[:, :, N]
-    
-    sigI_mean = np.nanmean(sigI_transect, axis = 1)
-    sigII_mean = np.nanmean(sigII_transect, axis = 1)
-    
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize = (11, 5))
-    
-    ax1.scatter(time, sigI_mean, color = 'r')
-    # ax1.scatter(time, sigII_mean, color = 'k', label = r'$\sigma_{II}/P$')
-    ax1.set_xlabel('Time (s)')
-    ax1.set_ylabel(r'$\overline{\sigma_{I}/P}$')
-    # ax1.legend()
-    ax1.grid()
-    ax1.set_box_aspect(aspect=1)
-    
-    ax2.scatter(time, sigII_mean, color = 'k')
-    ax2.set_xlabel('Time (s)')
-    ax2.set_ylabel(r'$\overline{\sigma_{II}/P}$')
-    # ax2.legend()
-    ax2.grid()
-    ax1.set_xlabel('Time (s)')
-    ax2.set_box_aspect(aspect=1)
-    
-    plt.savefig(figdir+'invariant_time.png')
+def dilatation(mu, mu0):
+        
+        tan_psi = (mu-mu0)/(1+mu*mu0)
+        
+        return tan_psi
             
 
-def compute_invariant_stresses(u, v, zeta, eta, maskC, P, nx, ny, deltax):
+def compute_invariant_stresses(u, v, zeta, eta, shear, mu, maskC, P, nx, ny, deltax, mu0 = np.tan(20*np.pi/180)):
     
-    print(np.shape(eta))
     sig11 = np.zeros((nx, ny))
     sig22 = np.zeros((nx, ny))
     sig12 = np.zeros((nx, ny))
     sig21 = np.zeros((nx, ny))
     sig1norm = np.zeros((nx, ny))
     sig2norm = np.zeros((nx, ny))
-    sigI = np.zeros((nx, ny))
-    sigII = np.zeros((nx, ny))
     sigInorm = np.zeros((nx, ny))
     sigIInorm = np.zeros((nx, ny))
+    
+    tan_psi = dilatation(mu, mu0)
 
-    print(ny-3)
     for j in range(0, ny-2):
-        for i in range(0, nx-1):
+        for i in range(0, nx-2):
             
             dudx = 0
             dudy = 0
@@ -158,13 +179,12 @@ def compute_invariant_stresses(u, v, zeta, eta, maskC, P, nx, ny, deltax):
             
             
             ep = dudx + dvdy
-            em = dudx - dvdy
             
             e12 = 1/2*(dudy + dvdx)
             e21 = e12
             
-            sig11[i, j] = zeta[i, j]*ep+eta[i, j]*em-P[i, j]
-            sig22[i, j] = zeta[i, j]*ep-eta[i, j]*em-P[i, j]
+            sig11[i, j] = zeta[i, j]*ep+eta[i, j]*dvdx-(P[i, j]+zeta[i, j]*shear[i, j]*tan_psi[i,j])
+            sig22[i, j] = zeta[i, j]*ep+eta[i, j]*dvdy-(P[i, j]+zeta[i, j]*shear[i, j]*tan_psi[i,j])
             sig12[i, j] = 2*e21*eta[i, j]
             sig21[i, j] = 2*e12*eta[i, j]
             

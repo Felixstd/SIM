@@ -1,0 +1,70 @@
+Same as 9 but small mub
+
+&option_nml
+    Dynamic  = .true.
+    ThermoDyn  = .false.
+    linearization = 'Zhang'
+    regularization = 'tanh'
+    ini_guess = 'previous time step'
+    adv_scheme = 'upwind'
+    Airtemp = 'specified'
+    OcnTemp = 'specified'
+    Wind = 'specified'
+    RampupWind = .true.
+    RampupForcing = .false.
+    Current = 'specified'
+    Periodic_x = 0
+    Periodic_y = 0
+    ideal = .true.
+    Rheology = 4
+    IMEX = 0
+    BDF = 0
+    visc_method = 2
+    solver = 1
+    BasalStress = .false.
+    uniaxial = .true.
+    inclined = .false.
+    dilatancy = .false.
+    mu_phi    = .true.
+    adv_mu    = .false.
+    mu_phi_form = .false.
+    correction  = .false.
+    step_water = .true.
+    Water_Col  = .true.
+    A2Phi       = .false.
+    Pres_f    = .false.
+    Pres_c    = .false.
+    Pres_sum  = .false.
+/
+
+&numerical_param_nml
+    Deltat    = 300
+    gamma_nl = 1d-7
+    NLmax = 400     
+    OLmax = 1500
+    Nsub  = 120  
+/
+
+&phys_param_nml
+    Pstar  = 27.5d3
+    C = 20.0
+    k1 = 8.0
+    k2 = 15d0
+    e_ratio = 2.0
+    rhoair   =  1.3d0      
+    rhoice   =  9d02               
+    rhowater =  1026d0 
+    Cdair = 1.2d-03
+    Cdwater = 5.5d-03
+    f = 1.46d-04
+    d_average = 1d3
+    mu_0      = 0.4
+    mu_infty  = 0.4
+    mu_b      = 0.1
+    c_phi     = 1
+    I_0       = 1d-3
+    Phi_0     = 1 
+    c_1       = 1d-02 
+    c_2       = 0.25
+    Deltax    = 1d3*10
+/

@@ -866,6 +866,8 @@
          !    enddo
          ! enddo
 
+            call calc_div(un, vn, div)
+
             call calc_Fx_Fy(un, vn, hn_1, Fx, Fy)
 
             do i = 1, nx
@@ -874,7 +876,7 @@
                   if (maskC(i,j) .eq. 1) then
 
                      hout(i, j) = hn_1(i, j) - DtoverDx * (Fx(i, j)+Fy(i, j)) - &
-                        Deltat * hn_1(i, j) * shear_I(i, j) * tan_psi(i, j)
+                        Deltat * hn_1(i, j) * (div(i, j) +  shear_I(i, j) * tan_psi(i, j))
                      hout(i,j) = max(hout(i,j), 0d0)
 
                   endif
@@ -895,7 +897,7 @@
                   if (maskC(i,j) .eq. 1) then
 
                      Aout(i, j) = An_1(i, j) - DtoverDx * (Fx(i, j)+Fy(i, j)) - &
-                        Deltat * An_1(i, j) * shear_I(i, j) * tan_psi(i, j)
+                        Deltat * An_1(i, j) * (div(i, j) +  shear_I(i, j) * tan_psi(i, j))
                      
                      Aout(i,j) = max(Aout(i,j), 0d0)
                      Aout(i,j) = min(Aout(i,j), 1d0)

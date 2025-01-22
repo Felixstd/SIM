@@ -93,6 +93,15 @@ def friction_coefficient(phi, mu0, mu_infty, I_0 = 1e-3):
     
     return mu0 + delta_mu/(I_0/(1-phi+1e-20) + 1)
 
+# def pressure_sutherland(A, h, dilat, gamma = 1/2, Pstar = 27.5e3, C = 20):
+
+    
+#     return Pstar*h*np.tanh(dilat*h)*np.exp(-C*(1-A))
+
+def pressure_sutherland(A, h, dilat, gamma = 5, Pstar = 27.5e3, C = 20):
+
+    
+    return Pstar*h*np.exp(-C*(1-A))*(gamma*dilat)**2
 
 
 #--- Constants ---# 
@@ -105,7 +114,7 @@ shear = np.tile(shear_norm[:, None], (1, len(phi)))
 
 h = 1
 
-mu0 = 0.1
+mu0 = 0.4
 mu_infty = 0.8
 
 
@@ -116,12 +125,15 @@ mu_infty = 0.8
 press_h = pressure_hibler(phi, h)
 
 
+
 #-- Friction --#
 mu = friction_coefficient(phi, mu0, mu_infty)
-tan_psi = dilatancy(mu, 0.36)
+tan_psi = dilatancy(mu, np.tan(20*np.pi/180))
 Ishear = I_shear(press_h, shear, h)
 press_f = pressure_friction(phi, h, tan_psi, Ishear, c_1 = 1)
 
+press_suth = pressure_sutherland(phi, h, tan_psi , Pstar= 27.5e3)
+print(tan_psi, press_suth)
 #-- Collisional --#
 press_c, press_c_phi = press_collision(phi, h, shear)
 
@@ -166,14 +178,15 @@ ax.spines['right'].set_visible(False)
 h = plt.plot(1-phi, (press_h)/1e3, color = 'k', linestyle = '-', label = r'$p_H$')
 for i in range(len(shear)):
     c = plt.plot(1-phi, press_c[i]/1e3, linestyle = ':', label = r'$p_c$')
-    
-full = mlines.Line2D([], [], color='black', linestyle='-', label='$p^H$')
-dot = mlines.Line2D([], [], color='black', linestyle=':', label='$p^c$')
-# full = mlines.Line2D([], [], color='r', linestyle='-', label='$p_t$')
+
+plt.plot(1-phi, press_suth/1e3, color = 'orange', label = 'p_s')
+full = mlines.Line2D([], [], color='black', linestyle='-', label='$p_H$')
+dot = mlines.Line2D([], [], color='black', linestyle=':', label='$p_\mu$')
+full2 = mlines.Line2D([], [], color='orange', linestyle='-', label='$p_s$')
 # full = mlines.Line2D([], [], color='black', linestyle='.', label='$p_H$')
 
-ax.legend([dot, full], [ r'$p^c$', r'$p_H$'], loc='upper right')
-plt.xlabel(r'$1-\phi$')
+ax.legend([dot, full, full2], [ r'$p^c$', r'$p_H$', r'$p_s$'], loc='upper right')
+plt.xlabel(r'$1-A$')
 plt.ylabel(r'$P$ (kN/m)')
 plt.xlim(0, 0.3)
 # plt.legend()
@@ -198,7 +211,7 @@ c = plt.plot(1-phi,  press_c[i]*(press_h)/1e3, linestyle = ':', label = r'$p_c p
 # full = mlines.Line2D([], [], color='r', linestyle='-', label='$p_t$')
 # full = mlines.Line2D([], [], color='black', linestyle='.', label='$p_H$')
 
-plt.xlabel(r'$1-\phi$')
+plt.xlabel(r'$1-A$')
 plt.ylabel(r'$P$ (kN/m)')
 # secax = ax.secondary_xaxis('top')
 # secax.set_xlabel('$1-h$ (m)')

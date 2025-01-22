@@ -123,7 +123,7 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
             plot_colormesh(ax4, dx, fig, X, Y, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-4, vmax=1e-0), 
             r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', 'x (km)', None) 
         else:
-            plot_colormesh(ax3, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.Normalize(vmin=-1e-2, vmax=1e-2), 
+            plot_colormesh(ax3, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-3, vmin=-1e-2, vmax=1e-2), 
                 r'$\dot{\epsilon}_{\mathrm{I}} \text{ (day}^{-1})$', 'x (km)', 'y (km)')
             plot_colormesh(ax4, dx, fig, X, Y, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-5, vmax=1e-1), 
                 r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', 'x (km)', None) 
@@ -152,17 +152,17 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
             p_VP, p_muphi = Pmax_tot[k], Peq_tot[k]
             
             
-            fig, (ax1, ax2, ax3) = plt.subplots(1,3, figsize=(12, 6))
+            # fig, (ax1, ax2, ax3) = plt.subplots(1,3, figsize=(12, 6))
             
-            # plot_colormesh(ax1, fig, X, Y, I, cmocean.cm.amp, colors.LogNorm(vmin=1e-5, vmax=1), r'$I$', 'x (km)', 'y (km)')
-            # plot_colormesh(ax1, fig, X, Y, 1-phi, cmocean.cm.ice, colors.Normalize(vmin=1e-7, vmax=1e-6), r'$1-\Phi(I)$', 'x (km)', None)
-            plot_colormesh(ax1, dx, fig, X, Y, muI, cmocean.cm.ice, colors.LogNorm(vmin=mu_0, vmax=mu_infty), r'$\mu(I)$ ', 'x (km)', None)
-            plot_colormesh(ax2, dx, fig, X, Y, dilatation(muI, angle_phi), cmocean.cm.ice, colors.Normalize(vmin=dilatation(mu_0, angle_phi), 
-                            vmax=dilatation(mu_infty, angle_phi)), r'$\tan \psi$ ', 'x (km)', None)
-            histograms(ax3, muI, mu_0, mu_infty, r'$\mu(I)$', I = False, I_0 = 1e-3)
-            fig.tight_layout()
+            # # plot_colormesh(ax1, fig, X, Y, I, cmocean.cm.amp, colors.LogNorm(vmin=1e-5, vmax=1), r'$I$', 'x (km)', 'y (km)')
+            # # plot_colormesh(ax1, fig, X, Y, 1-phi, cmocean.cm.ice, colors.Normalize(vmin=1e-7, vmax=1e-6), r'$1-\Phi(I)$', 'x (km)', None)
+            # plot_colormesh(ax1, dx, fig, X, Y, muI, cmocean.cm.ice, colors.LogNorm(vmin=mu_0, vmax=mu_infty), r'$\mu(I)$ ', 'x (km)', None)
+            # plot_colormesh(ax2, dx, fig, X, Y, dilatation(muI, angle_phi), cmocean.cm.ice, colors.SymLogNorm(linthresh = 1e-3, vmin=dilatation(mu_0, angle_phi), 
+            #                 vmax=dilatation(mu_infty, angle_phi)), r'$\tan \psi$ ', 'x (km)', None)
+            # histograms(ax3, muI, mu_0, mu_infty, r'$\mu(I)$', I = False, I_0 = 1e-3)
+            # fig.tight_layout()
             
-            plt.savefig(figdir+expno+'/mu_phi{}.png'.format(date))
+            # plt.savefig(figdir+expno+'/mu_phi{}.png'.format(date))
             
             
             fig, (ax1, ax2, ax3) = plt.subplots(1,3, figsize=(12, 6))
@@ -235,6 +235,15 @@ def totdef_uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_ph
         plt.subplots_adjust(hspace = 0.1)
         # fig.tight_layout()
         plt.savefig(figdir+expno+'/tot_def_{}.png'.format(date))
+        
+        fig = plt.figure()
+        ax = plt.axes()
+        plot_colormesh(ax, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.SymLogNorm(linthresh=1e-3, vmin=-1e-2, vmax=1e-2), 
+        r'$\dot{\epsilon}_\mathrm{I} \text{ (day}^{-1})$', 'x (km)', 'y (km)')
+        
+        plt.subplots_adjust(hspace = 0.1)
+        # fig.tight_layout()
+        plt.savefig(figdir+expno+'/div_{}.png'.format(date))
         
         fig = plt.figure()
         ax = plt.axes()

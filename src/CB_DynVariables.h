@@ -59,6 +59,7 @@
                 tan_psi  (0:nx+2,0:ny+2), &
                 P_fric   (0:nx+2,0:ny+2), &
                 P_col    (0:nx+2,0:ny+2), &
+                Pdilat   (0:nx+2,0:ny+2), &
                 gamma_I  (0:nx+2,0:ny+2), &
                 Phi_S    (0:nx+2,0:ny+2), &
                 Phi_G    (0:nx+2,0:ny+2), &

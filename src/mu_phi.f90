@@ -225,6 +225,7 @@ subroutine SIC_2_PHI
 
     !-- Local Variables --!
     integer i, j
+    double precision :: diff_A
     
 
     !-- Looping through the domain --!
@@ -232,11 +233,13 @@ subroutine SIC_2_PHI
         do j = 0, ny+1
             !-- If Ocean --!
             if (maskC(i,j) .eq. 1) then
-
-                Phi_S(i, j) = (1-Phi_min) * A(i,j) + Phi_min
-                Phi_G(i, j) = -(1-Phi_max) * tanh((A(i,j)-1)/tau) + (Phi_max)
+                print*, 'phi_min', Phi_min
+                print*, 'phi_max', Phi_max
+                print*, 'a', A(i,j)
+                diff_A = A(i ,j)-1d0
+                Phi_S(i, j) = (1+Phi_min) * A(i,j) + Phi_min
+                Phi_G(i, j) = -(1-Phi_max) * tanh((diff_A)/(1d0/2d0)) + (Phi_max)
                 Phi_A(i, j) = Phi_S(i, j) * Phi_G(i,j)
-
             endif
         enddo
     enddo
@@ -286,7 +289,7 @@ subroutine angle_friction_mu
                     
                         if (A2Phi) then 
 
-                            diff_A = max(1d-20, 1-Phi_A(i, j))
+                            diff_A = max(1d-20, 0.90-Phi_A(i, j))
 
                         else 
                             diff_A = max(1d-20, 1-A(i, j))
@@ -294,6 +297,8 @@ subroutine angle_friction_mu
                         endif
 
                         mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/diff_A + 1 )
+
+                        
 
                     endif
 

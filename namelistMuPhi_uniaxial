@@ -1,3 +1,5 @@
+Same as 8 but added back advection
+
 &option_nml
     Dynamic  = .true.
     ThermoDyn  = .false.
@@ -24,18 +26,21 @@
     inclined = .false.
     dilatancy = .true.
     mu_phi    = .true.
-    adv_mu    = .true.
+    adv_mu    = .false.
     mu_phi_form = .true.
     correction  = .true.
     step_water = .true.
+    Water_Col  = .true.
     A2Phi       = .false.
     Pres_f    = .false.
     Pres_c    = .false.
     Pres_sum  = .false.
+    correction_plus = .false.
+    correction_minus = .true.
 /
 
 &numerical_param_nml
-    Deltat    = 300
+    Deltat    = 0.2
     gamma_nl = 1d-7
     NLmax = 400     
     OLmax = 1500
@@ -55,8 +60,8 @@
     Cdwater = 5.5d-03
     f = 1.46d-04
     d_average = 1d3
-    mu_0      = 0.1
-    mu_infty  = 0.9 
+    mu_0      = 0.4
+    mu_infty  = 0.4
     mu_b      = 1
     c_phi     = 1
     I_0       = 1d-3

@@ -201,7 +201,9 @@
       step_water = .true.
       correction = .false.
       A2Phi      = .false.
-
+      P_dilat    = .false.
+      correction_plus = .true.
+      correction_minus = .false.
       ! d = 200
       theta = 45 * pi / 180
       intercept_2 = 200
@@ -422,9 +424,11 @@ subroutine read_namelist
            linearization, regularization, ini_guess,            &
            adv_scheme, AirTemp, OcnTemp, Wind, RampupWind,      &
            RampupForcing, Current, Periodic_x, Periodic_y,      &
-           ideal, Rheology, IMEX, BDF, visc_method, solver,            &
-           BasalStress, uniaxial, inclined, dilatancy, mu_phi, Water_Col, &
-           Phi_eq, adv_mu, step_water, correction, A2Phi, mu_phi_form, Pres_f, Pres_c, Pres_sum
+           ideal, Rheology, IMEX, BDF, visc_method, solver,     &
+           BasalStress, uniaxial, inclined, dilatancy, mu_phi,  &
+           Water_Col, Phi_eq, adv_mu, step_water, correction,   &
+           A2Phi, mu_phi_form, Pres_f, Pres_c, Pres_sum, P_dilat,&
+           correction_plus, correction_minus
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub
@@ -609,7 +613,7 @@ subroutine read_namelist
 
       integer :: i,j
       character(len=2) :: cdelta
-
+      character filename*64
 !------------------------------------------------------------------------                                     
 !     Grid parameter: land mask (grid center), velocity mask (node)                                           
 !------------------------------------------------------------------------                                     
@@ -644,6 +648,7 @@ subroutine read_namelist
 
       elseif ((nx == 200) .and. (ny == 500)) then
          !Make mask:
+         print*, 'HERE2'
          do i = 0, nx+1
             do j = 0, ny+1
                maskC(i,j) = 1
@@ -652,6 +657,12 @@ subroutine read_namelist
                endif
             enddo
          enddo
+         write (filename,'("/storage/fstdenis/output_sim/mask.dat")') 
+         open (1, file = filename, status = 'unknown')
+         do j = 0, ny+1               ! land mask                                                                
+         write (1, *) ( maskC(i,j), i = 0, nx+1 )
+         enddo
+         close(1)
       
       elseif ((nx == 200) .and. (ny == 600)) then
          !Make mask:
@@ -709,9 +720,12 @@ subroutine read_namelist
                endif 
             enddo
          enddo
+      print *, 'HERE'
       
-! In pan Arctic simulation, load to mask file corresponding to the resolution 
-      else	 
+
+      else
+
+! In pan Arctic simulation, load to mask file corresponding to the resolution 	 
 
           write(cdelta, '(I2)') int(Deltax)/1000
           open (unit = 20, file = 'src/mask'//cdelta//'.dat', status = 'old')

@@ -19,6 +19,7 @@
       subroutine stress_strain(utp, vtp, date, k, expno)
         use datetime, only: datetime_type
         use ellipse
+        use muphi
       implicit none
 
       include 'parameter.h'
@@ -165,19 +166,34 @@
 
                      if (dilatancy) then
 
-                        sig11(i, j) = etaC(i,j)*dudx -(Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
-                        sig22(i, j) = etaC(i,j)*dvdy -(Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
-                        sig12(i, j) = 2d0*e21*etaC(i, j)
-                        sig21(i, j) = 2d0*e12*etaC(i, j)
+                        if (correction_minus) then
+
+                           sig11(i, j) = etaC(i,j)*dudx + zetaC(i, j)*ep - (Pp(i, j) + zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
+                           sig22(i, j) = etaC(i,j)*dvdy + zetaC(i, j)*ep - (Pp(i, j) + zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
+                          
+
+                        elseif ( correction_plus ) then
+                           sig11(i, j) = etaC(i,j)*dudx + zetaC(i, j)*ep - (Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
+                           sig22(i, j) = etaC(i,j)*dvdy + zetaC(i, j)*ep - (Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
+                           
+
+                        else 
+                           sig11(i, j) = etaC(i,j)*dudx -(Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
+                           sig22(i, j) = etaC(i,j)*dvdy -(Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
+
+                        endif
 
                      else 
 
                         sig11(i, j) = zetaC(i, j)*ep + etaC(i, j)*em - Pp(i, j)
                         sig22(i, j) = zetaC(i, j)*ep - etaC(i, j)*em - Pp(i, j)
-                        sig12(i, j) = 2d0*e21*etaC(i, j)
-                        sig21(i, j) = 2d0*e12*etaC(i, j)
+
 
                      endif
+
+                     sig12(i, j) = 2d0*e21*etaC(i, j)
+                     sig21(i, j) = 2d0*e12*etaC(i, j)
+                           
 
                      sigp = sig11(i,j) + sig22(i,j)
                      sigm = sig11(i,j) - sig22(i,j)
