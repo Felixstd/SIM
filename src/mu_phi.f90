@@ -233,9 +233,6 @@ subroutine SIC_2_PHI
         do j = 0, ny+1
             !-- If Ocean --!
             if (maskC(i,j) .eq. 1) then
-                print*, 'phi_min', Phi_min
-                print*, 'phi_max', Phi_max
-                print*, 'a', A(i,j)
                 diff_A = A(i ,j)-1d0
                 Phi_S(i, j) = (1+Phi_min) * A(i,j) + Phi_min
                 Phi_G(i, j) = -(1-Phi_max) * tanh((diff_A)/(1d0/2d0)) + (Phi_max)

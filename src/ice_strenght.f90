@@ -154,17 +154,19 @@
                      !-- I'm not sure about the Capping on Pmax --!
                      ! Maximum pressure
                      Pmax(i,j) = Pstar * h(i,j) * dexp(-C * ( diff_A ))
-                     Pdilat(i, j) = Pmax(i, j) * tanh(tan_psi(i, j)*h(i, j))
+                     ! Pdilat(i, j) = Pmax(i, j) * tanh(tan_psi(i, j)*h(i, j))
+
                      Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / (diff_A))**2  
                      
                      if (P_dilat) then 
-                        Pp(i, j) =  Pdilat(i, j)
+                        Pp(i, j) =  Pstar * h(i,j) * dexp(-C * ( diff_A )-tan_psi(i ,j))
+                        ! Pp(i, j) =  Pstar * h(i,j) * dexp(-C * ( diff_A )+an_psi(i ,j))
                      ! Pressure from mu phi 
 
                      elseif (A2Phi) then
 
-                        ! Pp(i, j) = Pstar*tanh(Peq(i, j)/Pstar)
-                        Pp(i,j) = Peq(i ,j)
+                        Pp(i, j) = Pstar*tanh(Peq(i, j)/Pstar)
+                        ! Pp(i,j) = Peq(i ,j)
                      
                      else 
 

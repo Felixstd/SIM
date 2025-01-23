@@ -101,7 +101,7 @@ def friction_coefficient(phi, mu0, mu_infty, I_0 = 1e-3):
 def pressure_sutherland(A, h, dilat, gamma = 5, Pstar = 27.5e3, C = 20):
 
     
-    return Pstar*h*np.exp(-C*(1-A))*(gamma*dilat)**2
+    return Pstar*h*np.exp(-(C)*(1-A))*np.exp(dilat)
 
 
 #--- Constants ---# 
@@ -114,8 +114,8 @@ shear = np.tile(shear_norm[:, None], (1, len(phi)))
 
 h = 1
 
-mu0 = 0.4
-mu_infty = 0.8
+mu0 = 0.1
+mu_infty = 0.9
 
 
 #--- Compute pressure ---#
@@ -127,7 +127,7 @@ press_h = pressure_hibler(phi, h)
 
 
 #-- Friction --#
-mu = friction_coefficient(phi, mu0, mu_infty)
+mu = friction_coefficient(phi, mu0, mu_infty, I_0=1e-3)
 tan_psi = dilatancy(mu, np.tan(20*np.pi/180))
 Ishear = I_shear(press_h, shear, h)
 press_f = pressure_friction(phi, h, tan_psi, Ishear, c_1 = 1)
@@ -192,6 +192,12 @@ plt.xlim(0, 0.3)
 # plt.legend()
 
 plt.savefig('pressure_simplified.png')
+
+plt.figure()
+plt.plot(1-phi, press_suth/1e3)
+plt.xlabel('dilat')
+plt.ylabel('p')
+plt.savefig('press_dilat.png')
 
 
 fig = plt.figure()

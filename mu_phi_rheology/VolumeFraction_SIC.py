@@ -188,7 +188,7 @@ def plot_circles(circles, R, W, H):
     plt.savefig('circles.png')
 
 # Parameters
-R = 100  # Radius of circles
+R = 10  # Radius of circles
 W = 5000  # Width of domain
 H = 1000  # Height of domain
 
