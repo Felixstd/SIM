@@ -736,6 +736,118 @@
       
     end subroutine advection
 
+   subroutine advection_thickness(un, vn, hn1, hout)
+      
+      implicit none
+
+      include 'parameter.h'
+      include 'CB_const.h'
+      include 'CB_mask.h'
+      include 'CB_options.h'
+      include 'CB_semilag.h'
+
+      integer i, j, peri
+      double precision, intent(in)    :: un(0:nx+2,0:ny+2), vn(0:nx+2,0:ny+2)
+      double precision                :: hn1(0:nx+2,0:ny+2)
+      double precision, intent(out)   :: hout(0:nx+2,0:ny+2)
+      double precision                :: dFx(nx,ny), dFy(nx,ny), div(nx,ny)
+
+!------------------------------------------------------------------------ 
+!     make periodic conditions 
+!------------------------------------------------------------------------
+
+      peri = Periodic_x + Periodic_y
+      if (peri .ne. 0) then 
+          call periodicBC2(hn1)
+          call periodicBC(un,vn)
+      endif
+
+!------------------------------------------------------------------------ 
+!     set dhn1/dx, dAn1/dx = 0 at the outside cell when there is an open bc 
+!------------------------------------------------------------------------ 
+
+
+
+      if (Periodic_y .eq. 0) then
+
+         do i = 0, nx+1
+               
+             if (maskC(i,0) .eq. 1) then
+            
+                hn1(i,0) = ( 4d0 * hn1(i,1) - hn1(i,2) )/3d0
+                hn1(i,0) = max(hn1(i,0), 0d0)
+                  
+             endif
+
+             if (maskC(i,ny+1) .eq. 1) then
+            
+                hn1(i,ny+1)= ( 4d0 * hn1(i,ny) - hn1(i,ny-1) ) / 3d0
+                hn1(i,ny+1)= max(hn1(i,ny+1), 0d0)
+
+             endif
+ 
+          enddo
+                  
+      endif            
+	  
+      if (Periodic_x .eq. 0) then
+	  
+         do j = 0, ny+1
+
+             if (maskC(0,j) .eq. 1) then
+                  
+                 hn1(0,j)  = ( 4d0 * hn1(1,j) - hn1(2,j) ) / 3d0
+                 hn1(0,j)  = max(hn1(0,j), 0d0)
+
+             endif
+
+             if (maskC(nx+1,j) .eq. 1) then
+                 
+                 hn1(nx+1,j) = ( 4d0 * hn1(nx,j) - hn1(nx-1,j) ) / 3d0
+                 hn1(nx+1,j) = max(hn1(nx+1,j), 0d0)
+
+             endif
+
+         enddo
+
+            
+     endif
+	  
+     if ( adv_scheme .eq. 'upwind' ) then
+
+!------------------------------------------------------------------------
+!     compute the difference of the flux for thickness 
+!------------------------------------------------------------------------
+
+         call calc_dFx (un, hn1, dFx)
+         call calc_dFy (vn, hn1, dFy)
+
+!------------------------------------------------------------------------
+!     update the thickness values
+!     (in a separate do-loop to conserve mass)
+!------------------------------------------------------------------------
+            
+         do i = 1, nx
+            do j = 1, ny
+
+               if (maskC(i,j) .eq. 1) then
+
+                  hout(i,j) = hn1(i,j) - DtoverDx * ( dFx(i,j) + dFy(i,j) )
+                  hout(i,j) = max(hout(i,j), 0d0)
+
+               endif
+                     
+            enddo
+         enddo
+      
+      endif
+      
+      if (peri .ne. 0)   call periodicBC2(hout)	
+        
+      return
+
+   end subroutine advection_thickness
+
 
    subroutine advection_mu(An_1, hn_1, un, vn, hout, Aout)
 

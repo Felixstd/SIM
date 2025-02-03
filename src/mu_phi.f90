@@ -10,7 +10,6 @@
 !                  quantities at one time step.                            !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
 subroutine inertial_number
 
 !------------------------------------------------!
@@ -30,7 +29,7 @@ subroutine inertial_number
 
     !-- Local variables --!
 
-    integer i, j ! indexes
+    integer i, j, peri ! indexes
     double precision highI, lowI, Press ! Max I, min I, Pressure(i, j)
 
     ! Need to look for the eps and see if it is the right thing to do. 
@@ -60,6 +59,7 @@ subroutine inertial_number
 
     !-- Boundary Conditions --!
 
+
     if (Periodic_y .eq. 0) then
         do i = 0, nx+1
 
@@ -87,84 +87,14 @@ subroutine inertial_number
 
         enddo
     endif
+    
+    peri = Periodic_x + Periodic_y
+    if (peri .ne. 0) call periodicBC2(inertial)
+    
 
 end subroutine inertial_number
 
-subroutine non_dimensional_shear
-
-!----------------------------------------------------------!
-!--- SUBROUTINE COMPUTING THE NON DIMENSIONAL SHEAR FOR ---!
-!---              THE FRICTIONAL PRESSURE               ---!
-!----------------------------------------------------------!
-
-    !- Loading modules -!
-    use muphi
-
-    implicit none
-
-    include 'parameter.h'
-    include 'CB_DynVariables.h'
-    include 'CB_mask.h'
-    include 'CB_options.h'
-    include 'CB_const.h'
-    
-    !- Local Variables -!
-    integer i, j
-    double precision eps, highI, lowI, Press
-
-    !-- Looping though the domain --!
-    do i = 0, nx+1
-        do j = 0, ny+1
-
-            !-- If Ocean at i, j
-            if (maskC(i,j) .eq. 1) then
-
-                    ! Capping Pressure 
-                    Press = max(Pmax(i, j), 1d-20)
-
-                    !-- Computing I from Pmax --!
-                    Ifriction(i, j) = max(SQRT(rhoice * h(i, j)/Press) * d_average*shear_I(i, j), 1d0)
-
-                    !-- Computing shear rate --!
-                    gamma_I(i, j) = c_1*Ifriction(i, j)**c_2
-
-            endif
-        enddo
-    enddo
-
-    !--- Boundary conditions ---!
-
-    if (Periodic_y .eq. 0) then
-        do i = 0, nx+1
-
-            if (maskC(i,0) .eq. 1) then             
-                Ifriction(i,1)  = lowI
-            endif
-
-            if (maskC(i,ny+1) .eq. 1) then             
-                Ifriction(i,ny)  = lowI
-            endif
-
-        enddo
-    endif            
-	  
-    if (Periodic_x .eq. 0) then
-        do j = 0, ny+1
-
-            if (maskC(0,j) .eq. 1) then             
-                Ifriction(1,j)  = lowI
-            endif
-
-            if (maskC(nx+1,j) .eq. 1) then             
-                Ifriction(nx,j)   = lowI  
-            endif           
-
-        enddo
-    endif
-
-end subroutine non_dimensional_shear
-
-subroutine volumefraction_phi
+subroutine volumefraction_phi(An_1, Aout)
 
 !----------------------------------------------------------!
 !--- SUBROUTINE USED TO COMPUTE THE VOLUME FRACTION PHI ---!  
@@ -185,10 +115,64 @@ subroutine volumefraction_phi
     include 'CB_const.h'
 
     !-- Local Variables --!
-    integer i, j
+    integer i, j, peri
     double precision eps
+    double precision                :: An_1(0:nx+2,0:ny+2)
+    double precision, intent(out)   :: Aout(0:nx+2,0:ny+2)
 
     eps = 1d-08
+    
+    if (peri .ne. 0) then
+        call periodicBC2(A)
+    endif
+
+    if (Periodic_y .eq. 0) then
+
+        do i = 0, nx+1
+               
+            if (maskC(i,0) .eq. 1) then
+
+                An_1(i,0) = ( 4d0 * An_1(i,1) - An_1(i,2) )/3d0
+                An_1(i,0) = max(An_1(i,0), 0d0)
+                An_1(i,0) = min(An_1(i,0), 1d0)
+                  
+             endif
+
+             if (maskC(i,ny+1) .eq. 1) then
+
+                An_1(i,ny+1)= ( 4d0 * An_1(i,ny) - An_1(i,ny-1) ) / 3d0
+                An_1(i,ny+1)= max(An_1(i,ny+1), 0d0)
+                An_1(i,ny+1)= min(An_1(i,ny+1), 1d0)
+
+             endif
+ 
+          enddo
+                  
+      endif            
+	  
+      if (Periodic_x .eq. 0) then
+	  
+         do j = 0, ny+1
+
+             if (maskC(0,j) .eq. 1) then
+                 An_1(0,j)  = ( 4d0 * An_1(1,j) - An_1(2,j) ) / 3d0
+                 An_1(0,j)  = max(An_1(0,j), 0d0)
+                 An_1(0,j)  = min(An_1(0,j), 1d0)
+
+             endif
+
+             if (maskC(nx+1,j) .eq. 1) then
+             
+                 An_1(nx+1,j) = ( 4d0 * An_1(nx,j) - An_1(nx-1,j) ) / 3d0
+                 An_1(nx+1,j) = max(An_1(nx+1,j), 0d0)
+                 An_1(nx+1,j) = min(An_1(nx+1,j), 1d0)
+
+             endif
+
+         enddo
+
+            
+     endif
     
     !-- Looping through the domain --!
     do i = 0, nx+1
@@ -201,13 +185,18 @@ subroutine volumefraction_phi
                     Phi_I(i, j) = max(0d0, Phi_0 - c_phi * inertial(i, j))
                 
                 else
-                    A(i, j)= max(0d0, Phi_0 - c_phi * inertial(i, j))
+                    Aout(i, j)= max(0d0, Phi_0 - c_phi * inertial(i, j))
 
                 endif
 
             endif
         enddo
     enddo
+
+    if (peri .ne. 0)   call periodicBC2(Aout)	
+        
+    return
+
 
 end subroutine volumefraction_phi
 
@@ -261,8 +250,10 @@ subroutine angle_friction_mu
     include 'CB_options.h'
     include 'CB_const.h'
 
-    integer i, j
+    integer i, j, peri
     double precision eps, scaled_A, diff_A, min_inertial
+
+    peri = Periodic_x + Periodic_y ! =1 if we have periodic conditions      
 
     eps = 1d-12
 
@@ -303,6 +294,9 @@ subroutine angle_friction_mu
             endif
         enddo
     enddo
+
+    if (peri .ne. 0) call periodicBC2(mu_I)
+    
 
 end subroutine angle_friction_mu
 
@@ -367,18 +361,22 @@ subroutine shear(utp, vtp)
     include 'CB_mask.h'
     include 'CB_options.h'
 
-    integer i, j
+    integer i, j, peri
     character filename*64
 
     double precision dudx, dvdy, dudy, dvdx, land, lowA
     double precision, intent(in):: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
 
+    peri = Periodic_x + Periodic_y
     ! double precision shear(0:nx+1,0:ny+1)
 
     land  = -999d0
     shear_I = land
     ! lowA = -888d0
     lowA = 0d0
+
+    if (peri .ne. 0) call periodicBC(utp,vtp)
+
 
     do i = 0, nx+1
         do j = 0, ny+1
@@ -527,3 +525,77 @@ subroutine div(utp, vtp)
     enddo
 
 end subroutine div
+
+subroutine non_dimensional_shear
+
+!----------------------------------------------------------!
+!--- SUBROUTINE COMPUTING THE NON DIMENSIONAL SHEAR FOR ---!
+!---              THE FRICTIONAL PRESSURE               ---!
+!----------------------------------------------------------!
+
+    !- Loading modules -!
+    use muphi
+
+    implicit none
+
+    include 'parameter.h'
+    include 'CB_DynVariables.h'
+    include 'CB_mask.h'
+    include 'CB_options.h'
+    include 'CB_const.h'
+    
+    !- Local Variables -!
+    integer i, j
+    double precision eps, highI, lowI, Press
+
+    !-- Looping though the domain --!
+    do i = 0, nx+1
+        do j = 0, ny+1
+
+            !-- If Ocean at i, j
+            if (maskC(i,j) .eq. 1) then
+
+                    ! Capping Pressure 
+                    Press = max(Pmax(i, j), 1d-20)
+
+                    !-- Computing I from Pmax --!
+                    Ifriction(i, j) = max(SQRT(rhoice * h(i, j)/Press) * d_average*shear_I(i, j), 1d0)
+
+                    !-- Computing shear rate --!
+                    gamma_I(i, j) = c_1*Ifriction(i, j)**c_2
+
+            endif
+        enddo
+    enddo
+
+    !--- Boundary conditions ---!
+
+    if (Periodic_y .eq. 0) then
+        do i = 0, nx+1
+
+            if (maskC(i,0) .eq. 1) then             
+                Ifriction(i,1)  = lowI
+            endif
+
+            if (maskC(i,ny+1) .eq. 1) then             
+                Ifriction(i,ny)  = lowI
+            endif
+
+        enddo
+    endif            
+	  
+    if (Periodic_x .eq. 0) then
+        do j = 0, ny+1
+
+            if (maskC(0,j) .eq. 1) then             
+                Ifriction(1,j)  = lowI
+            endif
+
+            if (maskC(nx+1,j) .eq. 1) then             
+                Ifriction(nx,j)   = lowI  
+            endif           
+
+        enddo
+    endif
+
+end subroutine non_dimensional_shear

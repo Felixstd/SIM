@@ -1,4 +1,4 @@
-Without adv, with hibler P
+With the forcing as a V
 
 &option_nml
     Dynamic  = .true.
@@ -43,7 +43,7 @@ Without adv, with hibler P
 
 &numerical_param_nml
     Deltat    = 300
-    gamma_nl = 1d-4
+    gamma_nl = 1d-7
     NLmax = 400     
     OLmax = 1500
     Nsub  = 120  
@@ -63,7 +63,7 @@ Without adv, with hibler P
     f = 1.46d-04
     d_average = 1d3
     mu_0      = 0.4
-    mu_infty  = 0.8
+    mu_infty  = 0.4
     mu_b      = 0d0
     c_phi     = 1
     I_0       = 1d-3
@@ -71,4 +71,3 @@ Without adv, with hibler P
     c_1       = 1d-02 
     c_2       = 0.25
 /
-

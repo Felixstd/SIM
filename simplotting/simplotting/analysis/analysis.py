@@ -121,8 +121,7 @@ def dilatation(mu, mu0):
         
         tan_psi = (mu-mu0)/(1+mu*mu0)
         
-        return tan_psi
-            
+        return tan_psi       
 
 def compute_invariant_stresses(u, v, zeta, eta, shear, mu, maskC, P, nx, ny, deltax, mu0 = np.tan(20*np.pi/180)):
     
@@ -203,5 +202,51 @@ def compute_invariant_stresses(u, v, zeta, eta, shear, mu, maskC, P, nx, ny, del
     return sigInorm, sigIInorm
     
                
-            
+def mean_values(dates, data_dict, dx, dt, MuPhi = True):
+    
+    if MuPhi:
+        
+        divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot, sigI_tot, sigII_tot, zeta_tot,eta_tot, \
+            uair_tot, vair_tot, muI_tot, phi_tot, I_tot, shearI_tot, Pmax_tot, Peq_tot = data_dict.values()
+    
+    else: 
+        
+        divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
+            data_dict.values()
+        
+    Nx, Ny = np.shape(divergence_tot[0])
+    
+    X = np.arange(0, Nx)*dx/1e3
+    Y = np.arange(0, Ny)*dx/1e3
+    
+    mean_shear_time = np.zeros(len(dates))
+    mean_div_time   = np.zeros(len(dates))
+    mean_mu_time    = np.zeros(len(dates))
+    mean_sigI_time  = np.zeros(len(dates))
+    mean_sigII_time = np.zeros(len(dates))
+    
+    for k, date in enumerate(dates):
+        
+        print('Analysing mean variables: ', date)
+        
+        mu_t    = muI_tot[k]
+        div_t   = divergence_tot[k]
+        shear_t = shear_tot[k]
+        
+        
+        mean_mu_time[k]    = np.mean(mu_t)
+        mean_div_time[k]   = np.mean(div_t)
+        mean_shear_time[k] = np.mean(shear_t)
+        
+        
+        
+    return mean_mu_time, mean_div_time, mean_shear_time
+    
+    
+    
+    
+    
+    
+    
+     
             

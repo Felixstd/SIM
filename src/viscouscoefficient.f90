@@ -1602,6 +1602,9 @@ subroutine MuPhiCoeff
          enddo
       enddo
 
+      if (peri .ne. 0) call periodicBC(etaC,zetaC)
+
+
       do i = 1, nx+1
 
         if (maskC(i,0) .eq. 1 .and. Periodic_y .eq. 0) then
@@ -1642,6 +1645,7 @@ subroutine MuPhiCoeff
         enddo
      enddo
 
+      if (peri .ne. 0) call periodicBC2(etaB)   
 
    endif
 

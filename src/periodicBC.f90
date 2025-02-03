@@ -60,3 +60,35 @@
         return
 
       end subroutine periodicBC
+
+
+subroutine periodicBC2(u) 
+
+    implicit none
+
+    include 'parameter.h'
+    include 'CB_options.h'
+
+    double precision u(0:nx+2,0:ny+2)
+    integer i, j
+
+    if (Periodic_y .eq. 1) then
+    
+      do i = 1, nx+1 ! periodic in y
+            u(i,0)    = u(i,ny)
+            u(i,ny+1) = u(i,1)
+            u(i,ny+2) = u(i,2)
+      enddo
+    endif
+      
+    if (Periodic_x .eq. 1) then        
+      do j = 1, ny+1 ! periodic in x
+            u(0,j)    = u(nx,j)
+            u(nx+1,j) = u(1,j)
+            u(nx+2,j) = u(2,j)
+      enddo
+    endif
+
+    return
+
+end subroutine periodicBC2

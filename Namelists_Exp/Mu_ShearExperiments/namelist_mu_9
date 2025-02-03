@@ -1,4 +1,5 @@
-Without adv, with hibler P
+Changed wind forcing to be an absolute function
+(triangle in y)
 
 &option_nml
     Dynamic  = .true.
@@ -43,7 +44,7 @@ Without adv, with hibler P
 
 &numerical_param_nml
     Deltat    = 300
-    gamma_nl = 1d-4
+    gamma_nl = 1d-7
     NLmax = 400     
     OLmax = 1500
     Nsub  = 120  

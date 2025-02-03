@@ -178,10 +178,10 @@
                      call shear(uice, vice)                     
                      call Ice_strength()
                      call inertial_number()
-                     call divergence_muphi()
+                     ! call divergence_muphi()
                      call angle_friction_mu()
-                     call volumefraction_phi()
-                     call Ice_strength()
+                     ! call volumefraction_phi()
+                     ! call Ice_strength()
                   else
                   
                      call Ice_strength()
@@ -365,10 +365,14 @@
             elseif (Rheology .eq. 3) then
                 call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam) 
 
+            elseif (mu_phi .eqv. .false.) then 
+               print*, 'here adv mu'
+               call advection_thickness(uice, vice, hn1, h)
+               call volumefraction_phi(An1, A)
+
             else
                print*, 'here adv2'
                call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A )
-               call volumefraction_phi
             
             endif
 

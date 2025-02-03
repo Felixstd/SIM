@@ -66,7 +66,7 @@ Without adv, with hibler P
     mu_infty  = 0.8
     mu_b      = 0d0
     c_phi     = 1
-    I_0       = 1d-3
+    I_0       = 1d-4
     Phi_0     = 1 
     c_1       = 1d-02 
     c_2       = 0.25

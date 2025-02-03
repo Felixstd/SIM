@@ -32,7 +32,7 @@
       integer  year, month, day, hour, minute, second, milli
 
       double precision tauax, tauay, wspeed, rampfactor, Tramp, wspeed_goal
-      double precision uairmax, uairmean,alpha
+      double precision uairmax, uairmean,alpha, jj
       double precision uair1(0:nx+2,0:ny+2),vair1(0:nx+2,0:ny+2)
       double precision uair2(0:nx+2,0:ny+2),vair2(0:nx+2,0:ny+2)
       double precision uuair(0:nx+2,0:ny+2),uvair(0:nx+2,0:ny+2)
@@ -171,6 +171,7 @@
          print *, 'Specified uair(m/s) =', tstep, rampfactor*wspeed
 
          do i = 1, nx+1
+            jj = 0d0
             do j = 1, ny+1
 
                if (inclined) then
@@ -190,16 +191,25 @@
                   endif
                
                elseif (shear_test) then
-                  if (j .gt. 100) then 
-                     uair(i, j) = wspeed*rampfactor
-                     vair(i, j) = 0d0
-                  endif
+                  ! if (j .gt. 100) then 
+                  !    uair(i, j) = wspeed*rampfactor
+                  !    vair(i, j) = 0d0
+                  ! !    
+                  ! endif
+                  ! uair(i, j) = wspeed*rampfactor*(1-abs(1-2*jj/dble(ny)))
+
+                  uair(i, j) = wspeed*rampfactor*jj/dble(ny)
+                  vair(i, j) = 0d0
+                  ! uair(i, j) = wspeed*rampfactor*cos(theta)
+                  ! vair(i, j) = -wspeed**rampfactor*sin(theta)
                
                else 
                   uair(i,j) = rampfactor*wspeed
                   vair(i,j) = 0d0
 
                endif
+
+               jj = jj +1d0
                
 !     call random_number(rdnumb)
 !               uair(i,j) = wm * (rdnumb - 0.5d0)

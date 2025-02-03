@@ -221,7 +221,8 @@
       ! wsor  = 2d0           ! relaxation parameter for SOR precond
       wlsor = 1.1d0           ! relaxation parameter for SOR precond
       ! wlsor = 0.6d0
-      wsor  = 0.95d0           ! relaxation parameter for SOR precond
+      ! wsor  = 0.95d0           ! relaxation parameter for SOR precond
+      wsor  = 0.85d0           ! relaxation parameter for SOR precond
       kjac  = 10               !
       ksor  = 10               ! nb of ite of precond SOR
       klsor = 10               ! nb of ite of precond line SOR

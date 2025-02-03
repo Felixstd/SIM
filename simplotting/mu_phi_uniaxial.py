@@ -47,11 +47,11 @@ elif time == 3:
        
 elif time == 4:
         #--- Time for 2 hours 30 minutes run ---#
-        # start = datetime(1990, 1, 1, 8, 0, 00)
-        # start_k = 48
-        start = datetime(1990, 1, 1, 0, 10 , 00)
-        start_k = 1
-        intervals = [timedelta(minutes=10)]*6 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+        start = datetime(1990, 1, 1, 8, 0, 00)
+        start_k = 48
+        # start = datetime(1990, 1, 1, 0, 10 ,00, 00)
+        # start_k = 1
+        intervals = [timedelta(minutes=10)]*11 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
 
 
 dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S') for i in range(len(intervals)+1)]
@@ -84,6 +84,7 @@ for i in range(expno, expno+1):
 
     dx = 1e3*10
     dy = dx
+    dt = 10
 
     angle_phi = 20*np.pi/180
 
@@ -101,7 +102,7 @@ for i in range(expno, expno+1):
     N_transect = 51
     muphi = 1
     log = 0
-    time = np.arange(1, 14, 1)
+    time = np.arange(1, len(intervals)+2, 1)*dt
 
     #_--------- READING DATA ----------#
     datadict = read_data.read_data(expno, start_k, dates, outputdir, MuPhi = muphi)
@@ -119,6 +120,12 @@ for i in range(expno, expno+1):
 
     # #---------- Plotting ----------#
     plot.uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
+    
+    # mean_mu_time, mean_div_time, mean_shear_time = analysis.mean_values(dates, datadict, dx, dt)
+    # plot.plot_mean(mean_mu_time, time, r'$\langle\mu\rangle$', 'mean_mu.png', expno, figdir)
+    # plot.plot_mean(mean_div_time, time, r'$\langle\ \dot{\epsilon}_I \rangle$ (day$^{-1}$)', 'mean_div.png', expno, figdir)
+    # plot.plot_mean(mean_shear_time, time, r'$\langle\ \dot{\epsilon}_\mathrm{II} \rangle$ (day$^{-1}$)', 'mean_shear.png', expno, figdir)
+    
     
 #     plot.totdef_uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
     
