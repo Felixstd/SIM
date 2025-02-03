@@ -182,6 +182,10 @@
                            sig22(i, j) = etaC(i,j)*dvdy -(Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
 
                         endif
+                     
+                     elseif (mu_phi .eqv. .false.) then
+                        sig11(i, j) =  etaC(i, j)*dudx - Pp(i, j)
+                        sig22(i, j) =  etaC(i, j)*dudy - Pp(i, j)
 
                      else 
 

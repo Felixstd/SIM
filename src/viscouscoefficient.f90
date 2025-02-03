@@ -1583,10 +1583,11 @@ subroutine MuPhiCoeff
 
                   elseif (regularization .eq. 'tanh') then
 
-                     if (dilatancy .eqv. .true.) then
+                     if ((dilatancy .eqv. .true.) .or. (mu_phi .eqv. .false.)) then
+
                         zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b ) / (shear_max * 2d08))
                         etaC(i, j)  = eta_max * tanh(mu_I(i, j) * Pp(i, j) / (shear_max * eta_max))
-
+                        ! print*, zetaC(i, j)
                      else
                         zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b + mu_I(i, j) / 2 ) / (shear_max * 2d08))
                         etaC(i, j)  = eta_max * tanh((mu_I(i, j) / 2) * Pp(i, j) / (shear_max * eta_max))

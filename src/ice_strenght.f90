@@ -159,8 +159,19 @@
                      Peq(i, j) = rhoice * h(i, j) * (( d_average * shear_I(i, j) ) / (diff_A))**2  
                      
                      if (P_dilat) then 
-                        Pp(i, j) =  Pstar * h(i,j) * dexp(-C * ( diff_A )-tan_psi(i ,j))
+                        ! Pp(i, j) =  Pstar * h(i,j) * dexp(-C * ( diff_A )-tan_psi(i ,j))
                         ! Pp(i, j) =  Pstar * h(i,j) * dexp(-C * ( diff_A )+an_psi(i ,j))
+                        ! Pp(i, j) = Pmax(i, j)/2*(1-tan_psi(i, j)/abs(tan_psi(i ,j)))
+                        ! Pp(i, j) = Pmax(i, j)*((h(i,  j)/2)**1/2)
+                        
+                        ! if (h(i,j) < 2) then
+                        !    Pp(i, j) = (5*(1/2d0)*(9.80)*(rhowater-rhoice)*rhoice/rhowater + &
+                        !          5/(5-1)*mu_I(i, j)*(rhowater-rhoice)*9.80*(rhoice*(5-1)/rhowater)**2/(2*0.8))*h(i,j)**2/6
+                        ! else
+                        !    Pp(i, j) = 0d0
+                        
+                        ! endif
+                        Pp(i, j) = Pmax(i, j)
                      ! Pressure from mu phi 
 
                      elseif (A2Phi) then

@@ -62,8 +62,8 @@ Without adv, with hibler P
     Cdwater = 5.5d-03
     f = 1.46d-04
     d_average = 1d3
-    mu_0      = 0.1
-    mu_infty  = 0.9
+    mu_0      = 0.7
+    mu_infty  = 0.7
     mu_b      = 0d0
     c_phi     = 1
     I_0       = 1d-3

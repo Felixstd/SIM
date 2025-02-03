@@ -25,10 +25,10 @@ Without adv, with hibler P
     uniaxial = .false.
     shear_test = .true.
     inclined = .false.
-    dilatancy = .false.
-    mu_phi    = .false.
-    adv_mu    = .false.
-    mu_phi_form = .false.
+    dilatancy = .true.
+    mu_phi    = .true.
+    adv_mu    = .true.
+    mu_phi_form = .true.
     correction  = .true.
     step_water = .false.
     Water_Col  = .true.
@@ -36,8 +36,8 @@ Without adv, with hibler P
     Pres_f    = .false.
     Pres_c    = .false.
     Pres_sum  = .false.
-    P_dilat = .true.
-    correction_plus = .false.
+    P_dilat = .false.
+    correction_plus = .true.
     correction_minus = .false.
 /
 
@@ -62,9 +62,9 @@ Without adv, with hibler P
     Cdwater = 5.5d-03
     f = 1.46d-04
     d_average = 1d3
-    mu_0      = 0.1
+    mu_0      = 0.7
     mu_infty  = 0.9
-    mu_b      = 0d0
+    mu_b      = 1
     c_phi     = 1
     I_0       = 1d-3
     Phi_0     = 1 

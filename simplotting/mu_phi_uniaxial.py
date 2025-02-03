@@ -48,19 +48,32 @@ elif time == 3:
 elif time == 4:
         #--- Time for 2 hours 30 minutes run ---#
         # start = datetime(1990, 1, 1, 8, 0, 00)
-        start_k = 48
-        start = datetime(1990, 1, 1, 0,10 , 00)
+        # start_k = 48
+        start = datetime(1990, 1, 1, 0, 10 , 00)
         start_k = 1
-        intervals = [timedelta(minutes=10)]*5 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+        intervals = [timedelta(minutes=10)]*6 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
 
 
 dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S') for i in range(len(intervals)+1)]
 
 print(dates)
-# expno = '33'
-outputdir = "/storage/fstdenis/output_sim/"
+
+#------- MuPhi -------#
+#---- Uniaxial Tests ----#
+outputdir = "/storage/fstdenis/output_sim_MuPhi_Runs_Tests_Dilat/"
 figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_Runs_Tests_Dilat/'
-# outputdir =  "/storage/fstdenis/RHEOLOGY/output_sim_MuPhi_Runs/"
+
+#---- Shear Tests ----#
+outputdir = "/storage/fstdenis/output_sim_MuPhi_Runs_ShearExperiments/"
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_Runs_ShearExperiments/'
+
+
+#------- Mu -------#
+outputdir = "/storage/fstdenis/output_sim/"
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/Mu_ShearExperiments/'
+
+
+
 for i in range(expno, expno+1):
     expno = "{:02d}".format(i)
 
@@ -82,8 +95,8 @@ for i in range(expno, expno+1):
     mask = np.ones((Ny, Nx))
     mask[0, :] = 0
     
-    filemask=outputdir+"mask.dat"
-    maskC = np.genfromtxt(filemask, dtype=None)
+#     filemask=outputdir+"mask.dat"
+#     maskC = np.genfromtxt(filemask, dtype=None)
 
     N_transect = 51
     muphi = 1
@@ -95,6 +108,8 @@ for i in range(expno, expno+1):
     if muphi:
         divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot, sigI_tot, sigII_tot, \
             zeta_tot, eta_tot, uair_tot, vair_tot, muI_tot, phi_tot, I_tot, shearI_tot, Pmax_tot, Peq_tot = datadict.values()
+
+    
     # print(datadict)
     # #---------- Analysing Wind Forcing----------#
     # analysis.wind_forcing(datadict, N_transect, dy, Ny, time, figdir+expno+'/', muphi)

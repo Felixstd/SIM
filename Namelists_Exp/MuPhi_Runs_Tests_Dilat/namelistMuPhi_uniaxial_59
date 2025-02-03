@@ -1,4 +1,4 @@
-Without adv, with hibler P
+Without dilat, big mub
 
 &option_nml
     Dynamic  = .true.
@@ -13,7 +13,7 @@ Without adv, with hibler P
     RampupWind = .true.
     RampupForcing = .false.
     Current = 'specified'
-    Periodic_x = 1
+    Periodic_x = 0
     Periodic_y = 0
     ideal = .true.
     Rheology = 4
@@ -22,15 +22,14 @@ Without adv, with hibler P
     visc_method = 2
     solver = 1
     BasalStress = .false.
-    uniaxial = .false.
-    shear_test = .true.
+    uniaxial = .true.
     inclined = .false.
-    dilatancy = .false.
-    mu_phi    = .false.
+    dilatancy = .true.
+    mu_phi    = .true.
     adv_mu    = .false.
     mu_phi_form = .false.
     correction  = .true.
-    step_water = .false.
+    step_water = .true.
     Water_Col  = .true.
     A2Phi       = .false.
     Pres_f    = .false.
@@ -38,7 +37,7 @@ Without adv, with hibler P
     Pres_sum  = .false.
     P_dilat = .true.
     correction_plus = .false.
-    correction_minus = .false.
+    correction_minus = .true.
 /
 
 &numerical_param_nml
@@ -62,12 +61,13 @@ Without adv, with hibler P
     Cdwater = 5.5d-03
     f = 1.46d-04
     d_average = 1d3
-    mu_0      = 0.1
-    mu_infty  = 0.9
-    mu_b      = 0d0
+    mu_0      = 0.4
+    mu_infty  = 0.8
+    mu_b      = 1
     c_phi     = 1
     I_0       = 1d-3
     Phi_0     = 1 
     c_1       = 1d-02 
     c_2       = 0.25
+    Deltax    = 1d3*10
 /

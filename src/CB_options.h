@@ -12,6 +12,7 @@
                 ideal,          &
                 runoff,         &
                 uniaxial,       &
+                shear_test,     &
                 inclined,       &
                 dilatancy,      &
                 mu_phi
@@ -42,6 +43,7 @@
                 Buoys,          & ! 'Track' or 'Daily'
                 runoff,         & ! River runoff switch
                 uniaxial,       & ! uniaxial experiment (yes or no)
+                shear_test,     &
                 inclined,       & ! Inlcined domain
                 dilatancy,      & ! Dilatancy law or not 
                 mu_phi,         & ! Flavor of mu rheology. if true mu(I)-phi(I) if false mu(I)

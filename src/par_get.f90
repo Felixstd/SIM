@@ -134,6 +134,7 @@
       calc_month_mean = .false.      ! to calc monthly mean fields
       runoff     = .false.
       uniaxial   = .false.
+      shear_test = .false.
       inclined   = .false.
       dilatancy  = .false.
       mu_phi     = .true.
@@ -153,7 +154,8 @@
          ! Deltax     =  2.5d01            ! Uniaxial loading (Ringeisen et al., 2019).
          Deltax     =  100000
 
-      elseif (((nx == 200) .and. (ny == 500)) .or. ((nx == 500) .and. (ny == 500))) then
+      elseif (((nx == 200) .and. (ny == 500)) .or. ((nx == 500) .and. (ny == 500)) &
+               .or. ((nx == 500) .and. (ny == 200))) then
          ! Deltax     = 2d03
          ! Deltax     = 1d03*2
          Deltax     = 1d03*10
@@ -398,12 +400,12 @@
 
 subroutine read_namelist
 
-        use ellipse
-        use numerical_VP
-        use numerical_EVP
-        use solver_choice
-        use basal_param
-        use muphi
+      use ellipse
+      use numerical_VP
+      use numerical_EVP
+      use solver_choice
+      use basal_param
+      use muphi
 
       implicit none
 
@@ -425,7 +427,7 @@ subroutine read_namelist
            adv_scheme, AirTemp, OcnTemp, Wind, RampupWind,      &
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,     &
-           BasalStress, uniaxial, inclined, dilatancy, mu_phi,  &
+           BasalStress, uniaxial, shear_test, inclined, dilatancy, mu_phi,  &
            Water_Col, Phi_eq, adv_mu, step_water, correction,   &
            A2Phi, mu_phi_form, Pres_f, Pres_c, Pres_sum, P_dilat,&
            correction_plus, correction_minus
@@ -475,6 +477,7 @@ subroutine read_namelist
           costheta_w = 1d0
       endif
       print *, theta_w, f, theta_a
+      print*, Deltax
       DtoverDx   = Deltat / Deltax
       ell2       = e_ratio**2
       ell_2      = 1/(e_ratio**2)
@@ -653,6 +656,23 @@ subroutine read_namelist
             do j = 0, ny+1
                maskC(i,j) = 1
                if ((j .lt. 1)) then
+                  maskC(i,j) = 0                        
+               endif
+            enddo
+         enddo
+
+         write (filename,'("/storage/fstdenis/output_sim/mask.dat")') 
+         open (1, file = filename, status = 'unknown')
+         do j = 0, ny+1               ! land mask                                                                
+         write (1, *) ( maskC(i,j), i = 0, nx+1 )
+         enddo
+         close(1)
+      
+      elseif ((nx == 500) .and. (ny == 200)) then
+         do i = 0, nx+1
+            do j = 0, ny+1
+               maskC(i,j) = 1
+               if ((j .lt. 1) .or. (j .gt. ny)) then
                   maskC(i,j) = 0                        
                endif
             enddo

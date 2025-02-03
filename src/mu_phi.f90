@@ -197,7 +197,13 @@ subroutine volumefraction_phi
             if (maskC(i,j) .eq. 1) then
 
                 !-- Computing the volume fraction --!
-                Phi_I(i, j) = max(0d0, Phi_0 - c_phi * inertial(i, j))
+                if (mu_phi) then
+                    Phi_I(i, j) = max(0d0, Phi_0 - c_phi * inertial(i, j))
+                
+                else
+                    A(i, j)= max(0d0, Phi_0 - c_phi * inertial(i, j))
+
+                endif
 
             endif
         enddo
@@ -264,15 +270,13 @@ subroutine angle_friction_mu
         do j = 0, ny+1
             if (maskC(i,j) .eq. 1) then
 
-                ! if ((dilatancy .eqv. .true.) .and. (mu_phi .eqv. .false.)) then
-                !     min_inertial = max(inertial(i, j), 1d-20)
 
                 !------- TODO ----------------------!
                 !-- Add a condition --!
                 !-- for the use of  --!
                 !-- The boundary condition for mu --!
 
-                
+                if (mu_phi) then
                     if (h(i,j) < 1e-2) then
                 !     ! if (h(i,j) < 1e-6) then
 
@@ -281,9 +285,6 @@ subroutine angle_friction_mu
                             
 
                     else 
-                !     ! mu_I(i, j) = mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1)
-                !     mu_I(i, j) = max(mu_0 + ( mu_infty - mu_0 ) / ( I_0/min_inertial + 1) + tan_psi(i, j), 0d0)
-                    
                         if (A2Phi) then 
 
                             diff_A = max(1d-20, 0.90-Phi_A(i, j))
@@ -294,11 +295,11 @@ subroutine angle_friction_mu
                         endif
 
                         mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/diff_A + 1 )
-
-                        
-
                     endif
-
+                
+                else 
+                    mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/inertial(i, j) + 1 )
+                endif
             endif
         enddo
     enddo

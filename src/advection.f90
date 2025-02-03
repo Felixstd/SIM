@@ -168,7 +168,7 @@
 !     update the concentration values      
 !     (in a separate do-loop to conserve mass)                                             
 !------------------------------------------------------------------------   
-
+         if (mu_phi) then
          do i = 1, nx
             do j = 1, ny
 
@@ -182,6 +182,7 @@
 
             enddo
          enddo
+         endif
 
       elseif ( adv_scheme .eq. 'upwindRK2' ) then
                

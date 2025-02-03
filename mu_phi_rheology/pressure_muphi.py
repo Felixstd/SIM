@@ -100,10 +100,24 @@ def friction_coefficient(phi, mu0, mu_infty, I_0 = 1e-3):
 
 def pressure_sutherland(A, h, dilat, gamma = 5, Pstar = 27.5e3, C = 20):
 
-    
+    # return Pstar*h*np.exp(-(1-dilat))
     return Pstar*h*np.exp(-(C)*(1-A))*np.exp(dilat)
 
-
+def press_rothrcok(A, h, mu, C = 20, g = 9.80, rhow = 1026, rhoi = 900, tanphi = 0.8, k = 5):
+    
+    
+    cp = 1/2*g*(rhow - rhoi)*rhoi/(rhow)
+    print('cp', cp)
+    
+    cf = mu*(rhow - rhoi)*g*(rhoi*(k-1)/rhow)**2/(2*tanphi)
+    print((rhoi*(k-1)/rhow)**2)
+    
+    print('cf', cf)
+    
+    p = (k*cp + k/(k-1)*cf)*h**2/6
+    
+    return p
+    
 #--- Constants ---# 
 phi = np.linspace(0, 1, 100000)
 
@@ -133,6 +147,7 @@ Ishear = I_shear(press_h, shear, h)
 press_f = pressure_friction(phi, h, tan_psi, Ishear, c_1 = 1)
 
 press_suth = pressure_sutherland(phi, h, tan_psi , Pstar= 27.5e3)
+press_roth = press_rothrcok(phi, 3, mu, g = 9.80, rhow = 1026, rhoi = 900, tanphi = 0.8, k = 5)
 print(tan_psi, press_suth)
 #-- Collisional --#
 press_c, press_c_phi = press_collision(phi, h, shear)
@@ -179,7 +194,7 @@ h = plt.plot(1-phi, (press_h)/1e3, color = 'k', linestyle = '-', label = r'$p_H$
 for i in range(len(shear)):
     c = plt.plot(1-phi, press_c[i]/1e3, linestyle = ':', label = r'$p_c$')
 
-plt.plot(1-phi, press_suth/1e3, color = 'orange', label = 'p_s')
+plt.plot(1-phi, press_roth/1e3, color = 'orange', label = 'p_s')
 full = mlines.Line2D([], [], color='black', linestyle='-', label='$p_H$')
 dot = mlines.Line2D([], [], color='black', linestyle=':', label='$p_\mu$')
 full2 = mlines.Line2D([], [], color='orange', linestyle='-', label='$p_s$')
@@ -194,7 +209,7 @@ plt.xlim(0, 0.3)
 plt.savefig('pressure_simplified.png')
 
 plt.figure()
-plt.plot(1-phi, press_suth/1e3)
+plt.plot(1-phi, press_roth/1e3)
 plt.xlabel('dilat')
 plt.ylabel('p')
 plt.savefig('press_dilat.png')

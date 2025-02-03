@@ -115,56 +115,15 @@
                endif
 
                call shear(uice, vice)
-               call angle_friction_mu()
                
                if (dilatancy) then
                   call divergence_muphi
                endif
 
-
                call Ice_strength()
+               call inertial_number()
+               call angle_friction_mu()
 
-
-               ! if (dilatancy) then
-               !    call shear(uice, vice)   
-               !    call Ice_strength()                  
-               !    call non_dimensional_shear()
-                  
-
-               
-               !    if (Phi_eq) then
-               !       call inertial_number()
-               !       call volumefraction_phi()
-               !    endif
-
-               !    call angle_friction_mu()
-                  
-               !    ! Added here the divergence call
-               !    call divergence_muphi()
-
-               !    if (Pres_sum) then
-               !       call non_dimensional_shear()
-               !    endif
-
-               !    call Ice_strength()  
-                  
-               ! else
-               !    call angle_friction_mu()
-               !    call shear(uice, vice)
-
-               !    if (A2Phi) then
-               !       call SIC_2_PHI()
-               !    endif
-
-               !    call Ice_strength()
-               !    if (Pres_sum) then
-               !       call non_dimensional_shear()
-               !       call divergence_muphi()
-               !       call Ice_strength()
-               !    endif
-
- 
-               ! endif
             endif
 
             if (solver .le. 2) then ! Picard or JFNK
@@ -409,6 +368,7 @@
             else
                print*, 'here adv2'
                call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A )
+               call volumefraction_phi
             
             endif
 
@@ -461,3 +421,43 @@
     end subroutine stepper
       
 
+               ! if (dilatancy) then
+               !    call shear(uice, vice)   
+               !    call Ice_strength()                  
+               !    call non_dimensional_shear()
+                  
+
+               
+               !    if (Phi_eq) then
+               !       call inertial_number()
+               !       call volumefraction_phi()
+               !    endif
+
+               !    call angle_friction_mu()
+                  
+               !    ! Added here the divergence call
+               !    call divergence_muphi()
+
+               !    if (Pres_sum) then
+               !       call non_dimensional_shear()
+               !    endif
+
+               !    call Ice_strength()  
+                  
+               ! else
+               !    call angle_friction_mu()
+               !    call shear(uice, vice)
+
+               !    if (A2Phi) then
+               !       call SIC_2_PHI()
+               !    endif
+
+               !    call Ice_strength()
+               !    if (Pres_sum) then
+               !       call non_dimensional_shear()
+               !       call divergence_muphi()
+               !       call Ice_strength()
+               !    endif
+
+ 
+               ! endif

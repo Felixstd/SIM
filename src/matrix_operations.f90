@@ -183,7 +183,6 @@ end subroutine Funk
         if ((mu_phi .eqv. .false.) .and. (rheology .eq. 4) .and. (dilatancy .eqv. .false.)) then
 
             !--- FOR MU(I) RHEOLOGY ---!
-
             !------------------------------------------------------------------------
             !     d ( eta (du/dx) ) / dx    B1_1  p.899... 
             !------------------------------------------------------------------------
@@ -198,7 +197,6 @@ end subroutine Funk
              (rheology .eq. 4)) then
             !--- FOR MU(I)-PHI(I) RHEOLOGY WITH DILATATION---!
 
-
             !------------------------------------------------------------------------
             !     d ( eta (du/dx) ) / dx    B1_1  p.899... 
             !------------------------------------------------------------------------
@@ -212,7 +210,6 @@ end subroutine Funk
 
         elseif ((dilatancy .eqv. .true.) .and. (correction .eqv. .true.) .and. &
              (rheology .eq. 4)) then
-
             !--- FOR MU(I)-PHI(I) RHEOLOGY WITH DILATATION AND CORRECTION---!
 
             !------------------------------------------------------------------------
@@ -245,7 +242,6 @@ end subroutine Funk
 
          
         else 
-
         !--- FOR MU(I)-PHI(I) RHEOLOGY WITHOUT DILATATION OR VP---!
 
             !------------------------------------------------------------------------

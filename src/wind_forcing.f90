@@ -136,6 +136,7 @@
                ! wspeed_goal = 10d0
 
                ! wspeed = wspeed_goal * min(1.0d0, (tstep * Deltat) / Tramp)
+               ! wspeed = 10d0
                wspeed = 10d0
                ! Tramp = 60*60*10
                Tramp = 60*60*2
@@ -176,27 +177,28 @@
                   vair(i, j) = -wspeed*rampfactor*cos(theta)
                   uair(i, j) = -wspeed*rampfactor*sin(theta)
 
-               ! else
-               
-               ! uair(i,j) = 0d0
-               ! vair(i,j) = 0d0
-               ! if (i .gt. 100) then
+               elseif (uniaxial) then
 
-                  ! uair(i,j) = rampfactor*wspeed
-                  ! vair(i,j) = 0d0
-               ! ! endif
-               elseif (ny == 1000) then
-                  if (j .gt. 500) then
-
-               ! elseif (ny == 500) then
-               !    if (j .gt. 250) then
-                  !    ! 
+                  if (ny == 1000) then
+                     if (j .gt. 500) then
+                        vair(i, j) = -wspeed*rampfactor
+                        uair(i, j) = 0d0
+                     endif
+                  else 
                      vair(i, j) = -wspeed*rampfactor
                      uair(i, j) = 0d0
                   endif
+               
+               elseif (shear_test) then
+                  if (j .gt. 100) then 
+                     uair(i, j) = wspeed*rampfactor
+                     vair(i, j) = 0d0
+                  endif
+               
                else 
-                  vair(i, j) = -wspeed*rampfactor
-                  uair(i, j) = 0d0
+                  uair(i,j) = rampfactor*wspeed
+                  vair(i,j) = 0d0
+
                endif
                
 !     call random_number(rdnumb)
