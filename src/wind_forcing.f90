@@ -130,20 +130,10 @@
 
             ! linear ramp up 
       
-               ! rampfactor = 1d0
-               ! Tramp = 2*60*60
-               ! Tramp = 10
-               ! wspeed_goal = 10d0
 
-               ! wspeed = wspeed_goal * min(1.0d0, (tstep * Deltat) / Tramp)
-               ! wspeed = 10d0
                wspeed = 10d0
                ! Tramp = 60*60*10
                Tramp = 60*60*2
-               ! Tramp = 60*60*10
-               ! Tramp = 3600000*2
-               ! Tramp = 10
-               ! rampfactor=1d0-exp(-1d0*tstep*Deltat/Tramp)
                rampfactor = tanh(tstep*Deltat/Tramp)
                ! rampfactor =  1
 
@@ -191,15 +181,17 @@
                   endif
                
                elseif (shear_test) then
-                  ! if (j .gt. 100) then 
-                  !    uair(i, j) = wspeed*rampfactor
-                  !    vair(i, j) = 0d0
-                  ! !    
-                  ! endif
+                  if (j .gt. 100) then 
+                     uair(i, j) = wspeed*rampfactor
+                     vair(i, j) = 0d0
+                     ! uair(i, j) = wspeed*rampfactor*cos(theta)
+                     ! vair(i, j) = -wspeed**rampfactor*sin(theta)
+                  !    
+                  endif
                   ! uair(i, j) = wspeed*rampfactor*(1-abs(1-2*jj/dble(ny)))
 
-                  uair(i, j) = wspeed*rampfactor*jj/dble(ny)
-                  vair(i, j) = 0d0
+                  ! ! uair(i, j) = wspeed*rampfactor*jj/dble(ny)
+                  ! vair(i, j) = 0d0
                   ! uair(i, j) = wspeed*rampfactor*cos(theta)
                   ! vair(i, j) = -wspeed**rampfactor*sin(theta)
                

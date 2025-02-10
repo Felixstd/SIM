@@ -1569,6 +1569,7 @@ subroutine MuPhiCoeff
 
   elseif ( BndyCond .eq. 'noslip' ) then
 
+      if (peri .ne. 0) call periodicBC(Pp, shear_I)
    
       do i = 1, nx
          do j = 1, ny
@@ -1603,6 +1604,7 @@ subroutine MuPhiCoeff
       enddo
 
       if (peri .ne. 0) call periodicBC(etaC,zetaC)
+      if (peri .ne. 0) call periodicBC2(P)
 
 
       do i = 1, nx+1

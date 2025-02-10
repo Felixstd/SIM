@@ -22,7 +22,7 @@
       include 'CB_const.h'
 
 
-      integer i, j, pressure_sum
+      integer i, j, pressure_sum, peri
       double precision eps, P_min, diff_A, weight, A_0, shear, scaled_A, diff_phi
 
       P_min = 1e-3

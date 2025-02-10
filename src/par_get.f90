@@ -207,7 +207,7 @@
       correction_plus = .true.
       correction_minus = .false.
       ! d = 200
-      theta = 45 * pi / 180
+      theta =  45*pi/180
       intercept_2 = 200
       d = sqrt(2*intercept_2**2)
 
@@ -220,6 +220,7 @@
       wjac  = 0.575d0
       ! wsor  = 2d0           ! relaxation parameter for SOR precond
       wlsor = 1.1d0           ! relaxation parameter for SOR precond
+      ! wlsor = 1.3d0
       ! wlsor = 0.6d0
       ! wsor  = 0.95d0           ! relaxation parameter for SOR precond
       wsor  = 0.85d0           ! relaxation parameter for SOR precond

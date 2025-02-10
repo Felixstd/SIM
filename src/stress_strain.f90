@@ -36,7 +36,7 @@
       character filename*77
 
       integer, intent(in) :: k, expno
-      integer i, j, m, year, month, day, hour, minute, second
+      integer i, j, m, year, month, day, hour, minute, second, peri
 
       double precision dudx, dvdy, dudy, dvdx, land, lowA
       REAL(8) e11, e22, e12, e21, ep, em, sigp, sigm, sigtmp
@@ -44,14 +44,14 @@
 
       double precision, intent(in):: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
 
-      double precision shear(0:nx+1,0:ny+1), div(0:nx+1,0:ny+1)
-      double precision sigI(0:nx+1,0:ny+1), sigII(0:nx+1,0:ny+1)
-      double precision sig11(0:nx+1,0:ny+1), sig22(0:nx+1,0:ny+1)
-      double precision sig21(0:nx+1,0:ny+1), sig12(0:nx+1,0:ny+1)
-      double precision sig1(0:nx+1,0:ny+1), sig2(0:nx+1,0:ny+1)
-      double precision sigInorm(0:nx+1,0:ny+1), sigIInorm(0:nx+1,0:ny+1)! stress invariants
-      double precision sig1norm(0:nx+1,0:ny+1), sig2norm(0:nx+1,0:ny+1) ! princ stresses
-      double precision zetaCout(0:nx+1,0:ny+1)
+      double precision shear(0:nx+2,0:ny+2), div(0:nx+2,0:ny+2)
+      double precision sigI(0:nx+2,0:ny+2), sigII(0:nx+2,0:ny+2)
+      double precision sig11(0:nx+2,0:ny+2), sig22(0:nx+2,0:ny+2)
+      double precision sig21(0:nx+2,0:ny+2), sig12(0:nx+2,0:ny+2)
+      double precision sig1(0:nx+2,0:ny+2), sig2(0:nx+2,0:ny+2)
+      double precision sigInorm(0:nx+2,0:ny+2), sigIInorm(0:nx+2,0:ny+2)! stress invariants
+      double precision sig1norm(0:nx+2,0:ny+2), sig2norm(0:nx+2,0:ny+2) ! princ stresses
+      double precision zetaCout(0:nx+2,0:ny+2)
 
       year = date%year
       month = date%month
@@ -63,6 +63,8 @@
       land=-999d0
       lowA=-0d0
 
+      peri = Periodic_x + Periodic_y
+
 !      land=0d0
 !      lowA=0d0
 
@@ -71,9 +73,14 @@
 !       with u^{k-1} and the deformations with u^k. This is why we use here zetaCf and etaCf
 !       Calculating both with u^k leads to stress that are all VP whatever the level of 
 !       convergence of the solution.
+         ! if (peri .ne. 0) call periodicBC(utp, vtp)
 
-         do i = 1, nx
-            do j = 1, ny
+
+         ! do i = 1, nx
+         !    do j = 1, ny
+         
+         do i = 0, nx+1
+            do j = 0, ny+1
 
                dudx       = 0d0
                dvdy       = 0d0
@@ -252,8 +259,8 @@
             enddo
          enddo
 
-! Take care of 1st row, 1st column, last row and last column
-
+! ! ! Take care of 1st row, 1st column, last row and last column
+      if (Periodic_y .eq. 0) then
          j=0
          do i=0,nx+1
             if ( maskC(i,j) .eq. 1 ) then
@@ -283,6 +290,8 @@
                zetaCout(i,j)  = 0d0
             endif
          enddo
+      
+      elseif (Periodic_x .eq. 0) then
 
          i=0
          do j=0,ny+1
@@ -313,6 +322,12 @@
                zetaCout(i,j)  = 0d0
             endif
          enddo
+
+      elseif (peri .ne. 0) then
+         call periodicBC(sigI, sigII)
+         call periodicBC(sigInorm, sigIInorm)
+         call periodicBC(sig1norm, sig2norm)
+      endif
 
       write (filename,&
       '("/storage/fstdenis/output_sim/sigI",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &

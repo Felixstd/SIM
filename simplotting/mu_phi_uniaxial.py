@@ -47,15 +47,14 @@ elif time == 3:
        
 elif time == 4:
         #--- Time for 2 hours 30 minutes run ---#
-        start = datetime(1990, 1, 1, 8, 0, 00)
-        start_k = 48
-        # start = datetime(1990, 1, 1, 0, 10 ,00, 00)
-        # start_k = 1
+        # start = datetime(1990, 1, 1, 8, 0, 00)
+        # start_k = 48
+        start = datetime(1990, 1, 1, 0, 10 ,00, 00)
+        start_k = 1
         intervals = [timedelta(minutes=10)]*11 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
-
+        # intervals = [timedelta(minutes=10)]*58 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
 
 dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S') for i in range(len(intervals)+1)]
-
 print(dates)
 
 #------- MuPhi -------#
@@ -111,6 +110,30 @@ for i in range(expno, expno+1):
             zeta_tot, eta_tot, uair_tot, vair_tot, muI_tot, phi_tot, I_tot, shearI_tot, Pmax_tot, Peq_tot = datadict.values()
 
     
+    else: 
+        
+        divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
+            datadict.values()
+            
+    h = h_tot[1]
+    u = u_tot[1]
+    v = v_tot[1]
+    # mu = muI_tot[1]
+    A = A_tot[1]
+    div = divergence_tot[1]
+    shear = shear_tot[1]
+    
+    
+    print('h', np.vstack([h[100:, 1],h[100:, -1]]).T)
+    print('A', np.vstack([A[100:, 1],A[100:, -1]]).T)
+    print('u', np.vstack([u[100:, 1],u[100:, -1]]).T)
+    print('v', np.vstack([v[100:, 1],v[100:, -1]]).T)
+    print('div',np.vstack([div[100:, 1],div[100:, -1]]).T)
+    print('shear',np.vstack([shear[100:, 1],shear[100:, -1]]).T)
+    # print('mu',np.vstack([mu[100:, 1],mu[100:, -1]]).T)
+    # print('mu', np.vstack([mu[100:, 0],mu[100:, -2]]).T)
+    # print(np.vstack([h[100:, 1],h[100:, -1]]).T)
+    
     # print(datadict)
     # #---------- Analysing Wind Forcing----------#
     # analysis.wind_forcing(datadict, N_transect, dy, Ny, time, figdir+expno+'/', muphi)
@@ -126,6 +149,7 @@ for i in range(expno, expno+1):
     # plot.plot_mean(mean_div_time, time, r'$\langle\ \dot{\epsilon}_I \rangle$ (day$^{-1}$)', 'mean_div.png', expno, figdir)
     # plot.plot_mean(mean_shear_time, time, r'$\langle\ \dot{\epsilon}_\mathrm{II} \rangle$ (day$^{-1}$)', 'mean_shear.png', expno, figdir)
     
-    
+    # analysis.velocity_transects(datadict, dates, dx,figdir, expno, MuPhi = muphi)
+#     
 #     plot.totdef_uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
     

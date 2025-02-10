@@ -4,6 +4,8 @@ import matplotlib.colors as colors
 import scipy.integrate as inte
 import cmocean
 import scienceplots
+
+from random import randint
 plt.style.use('science')
 
 def wind_forcing(data_dict, N, dy, Ny, time, figdir, MuPhi = True):
@@ -233,16 +235,77 @@ def mean_values(dates, data_dict, dx, dt, MuPhi = True):
         div_t   = divergence_tot[k]
         shear_t = shear_tot[k]
         
+        div_t[div_t < 100] = np.nan
+        shear_t[shear_t < 0 ] = np.nan
+        
         
         mean_mu_time[k]    = np.mean(mu_t)
-        mean_div_time[k]   = np.mean(div_t)
-        mean_shear_time[k] = np.mean(shear_t)
+        mean_div_time[k]   = np.nanmean(div_t)
+        mean_shear_time[k] = np.nanmean(shear_t)
         
         
         
     return mean_mu_time, mean_div_time, mean_shear_time
     
+def velocity_transects(data_dict, dates, dx,figdir, expno, MuPhi = True):
     
+    if MuPhi:
+        
+        divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot, sigI_tot, sigII_tot, zeta_tot,eta_tot, \
+            uair_tot, vair_tot, muI_tot, phi_tot, I_tot, shearI_tot, Pmax_tot, Peq_tot = data_dict.values()
+    
+    else: 
+        
+        divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
+            data_dict.values()
+        
+    Nx, Ny = np.shape(divergence_tot[0])
+    
+    Half_domain = Nx//2
+    
+    X = np.arange(0, Nx)*dx/1e3
+    Y = np.arange(0, Ny)*dx/1e3
+    
+    colors = ['0C5DA5', '00B945', 'FF9500', 'FF2C00', '845B97', 'forestgreen', 'orangered']
+    fig, ((ax1, ax2), (ax3, ax4)) =  plt.subplots(2, 2, sharey = True, figsize = (5, 4))
+    axs = [ax1, ax2, ax3, ax4]
+    for ax in axs:
+        ax.grid()
+
+    date_list = []
+    lines = []
+    for k, date in enumerate(dates):
+        if k % 10 == 0 :
+            u, v       = u_tot[k], v_tot[k]
+            uair, vair = uair_tot[k],  vair_tot[k]
+            color = '#%06X' % randint(0, 0xFFFFFF)
+            line = ax1.plot(u[:, Half_domain], X, color = color, linestyle = '-',)
+            ax3.plot(uair[:, Half_domain], X, color = color, linestyle = '--')
+            
+            ax2.plot(v[:, Half_domain], X, color = color, linestyle = '-', label = 'v') 
+            ax4.plot(vair[:, Half_domain], X, color = color, linestyle = '--')
+            date_list.append(date)
+            lines.append(line[0])
+            
+    ax3.set_xlabel(r'$u$ (m/s)')
+    ax4.set_xlabel(r'$v$ (m/s)')
+    plt.suptitle('Sea Ice')
+    
+    ax1.set_ylabel(r'$y$ (km)')
+    ax3.set_ylabel(r'$y$ (km)')
+    
+    plt.subplots_adjust(hspace=0.5)
+
+# Add text in figure coordinates
+    plt.figtext(0.5, 0.5, 'Wind', ha='center', va='center')
+
+    fig.legend(lines, date_list, loc = 'outside center right', bbox_to_anchor = (1.3, 0.5))
+    plt.savefig(figdir+expno+'/velocitytransect.png')
+    
+    
+        
+    
+       
     
     
     

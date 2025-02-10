@@ -108,6 +108,11 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
         uair, vair = uair_tot[k], vair_tot[k]
         u, v = u_tot[k], v_tot[k]
         
+        divergence[divergence < 100] = np.nan
+        shear[shear < 0 ] = np.nan
+        sigI[sigI < -500 ] = np.nan
+        sigII[sigII < -500 ] = np.nan
+        
         
         #----- DEFORMATION Plots -----#
         
@@ -130,7 +135,7 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
             plot_colormesh(ax4, dx, fig, X, Y, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-4, vmax=1e-0), 
             r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', None, None) 
         else:
-            plot_colormesh(ax3, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-4, vmin=-1e-1, vmax=1e-1), 
+            plot_colormesh(ax3, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-6, vmin=-1e-3, vmax=1e-3), 
                 r'$\dot{\epsilon}_{\mathrm{I}} \text{ (day}^{-1})$', None, None)
             plot_colormesh(ax4, dx, fig, X, Y, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-5, vmax=1e-1), 
                 r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', None, None) 

@@ -235,9 +235,14 @@
 
                if ( IMEX .gt. 0 ) then ! IMEX method 1 or 2                    
                   
-               
-                  
-                  call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A )
+
+                  if ((mu_phi .eqv. .false.) .and. rheology .eq. 4)  then
+                     call advection_thickness(uice, vice, hn1, h)
+                     call volumefraction_phi(An1, A)
+                  else
+                     call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A )
+                  endif
+
                   
                   if (Rheology .eq. 3) then !calculate the damage factor
                   
@@ -256,7 +261,7 @@
                      call inertial_number()
                      call divergence_muphi()
                      call angle_friction_mu()
-                     call volumefraction_phi()
+                     ! call volumefraction_phi()
                      
                   else
                   
@@ -365,7 +370,7 @@
             elseif (Rheology .eq. 3) then
                 call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam) 
 
-            elseif (mu_phi .eqv. .false.) then 
+            elseif (( mu_phi .eqv. .false.) .and. (rheology .eq. 4)) then 
                print*, 'here adv mu'
                call advection_thickness(uice, vice, hn1, h)
                call volumefraction_phi(An1, A)

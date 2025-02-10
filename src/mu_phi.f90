@@ -123,7 +123,7 @@ subroutine volumefraction_phi(An_1, Aout)
     eps = 1d-08
     
     if (peri .ne. 0) then
-        call periodicBC2(A)
+        call periodicBC2(An_1)
     endif
 
     if (Periodic_y .eq. 0) then
@@ -380,11 +380,7 @@ subroutine shear(utp, vtp)
 
     do i = 0, nx+1
         do j = 0, ny+1
-        ! if (A(i, j) .lt. 0.1) then
-        ! if (h(i, j) .lt. 1d-06) then
-            ! shear_I(i, j) = 0d0
-        
-        ! else
+
             dudx       = 0d0
             dvdy       = 0d0
             dudy       = 0d0
@@ -456,44 +452,46 @@ subroutine shear(utp, vtp)
 
             endif
 
-
-               
-            ! endif
         enddo
     enddo
 
-    j = 0
-    do i = 0, nx+1
-        if ( maskC(i,j) .eq. 1 ) then
-            shear_I(i,j)     = lowA
-            ! div_I(i, j) = lowA
-        endif
-    enddo
+    if (Periodic_y .eq. 0) then
+        j = 0
+        do i = 0, nx+1
+            if ( maskC(i,j) .eq. 1 ) then
+                shear_I(i,j)     = lowA
+                ! div_I(i, j) = lowA
+            endif
+        enddo
 
-    j=ny+1
-    do i = 0, nx+1
-        if ( maskC(i,j) .eq. 1 ) then
-            shear_I(i,j)    = lowA
-            ! div_I(i, j) = lowA
-        endif
-    enddo
+        j=ny+1
+        do i = 0, nx+1
+            if ( maskC(i,j) .eq. 1 ) then
+                shear_I(i,j)    = lowA
+                ! div_I(i, j) = lowA
+            endif
+        enddo
 
-    i=0
-    do j=0,ny+1
-        if ( maskC(i,j) .eq. 1 ) then
-            shear_I(i,j)     = lowA
-            ! div_I(i, j) = lowA
-        endif
-    enddo
+    elseif (Periodic_x .eq. 0) then
+        i=0
+        do j=0,ny+1
+            if ( maskC(i,j) .eq. 1 ) then
+                shear_I(i,j)     = lowA
+                ! div_I(i, j) = lowA
+            endif
+        enddo
 
-    i = nx+1
-    do j=0,ny+1
-        if ( maskC(i,j) .eq. 1 ) then
-            shear_I(i,j)     = lowA
-            ! div_I(i, j) = lowA
-        endif
-    enddo
+        i = nx+1
+        do j=0,ny+1
+            if ( maskC(i,j) .eq. 1 ) then
+                shear_I(i,j)     = lowA
+                ! div_I(i, j) = lowA
+            endif
+        enddo
 
+    endif
+
+    ! if (peri .ne. 0) call periodicBC2(shear_I)
 
     return
 end subroutine shear
