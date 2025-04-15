@@ -57,6 +57,7 @@
           enddo
         endif
 
+
         return
 
       end subroutine periodicBC
@@ -88,6 +89,7 @@ subroutine periodicBC2(u)
             u(nx+2,j) = u(2,j)
       enddo
     endif
+
 
     return
 

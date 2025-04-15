@@ -47,11 +47,11 @@ subroutine ini_get (restart, expno_r, restart_date)
 
 !     h and A set to zero on open boundaries
 
-             if ((i.eq.0 .or. i.eq.nx+1) .and. Periodic_y .eq. 0) then
+             if ((i.eq.0 .or. i.eq.nx+1) .and. Periodic_x .eq. 0) then ! Changed for Periodic_x
                 h(i,j) = 0d0
                 A(i,j) = 0d0   
              endif
-             if ((j.eq.0 .or. j.eq.ny+1) .and. Periodic_x .eq. 0) then
+             if ((j.eq.0 .or. j.eq.ny+1) .and. Periodic_y .eq. 0) then ! Changed for Periodic_y
                 h(i,j) = 0d0
                 A(i,j) = 0d0  
              endif

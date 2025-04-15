@@ -64,7 +64,7 @@ subroutine ViscousCoefficient(utp,vtp)
   if (Rheology .eq. 3) then
      call MEBcoeff
    elseif (Rheology .eq. 4) then
-      call MuPhiCoeff
+      call MuPhiCoeff(utp,vtp)
    elseif (visc_method .eq. 1) then
       call ViscousCoeff_method1(utp,vtp)
    elseif (visc_method .eq. 2) then
@@ -144,12 +144,17 @@ subroutine ViscousCoeff_method1(utp,vtp)
      dvdx       = 0d0
 
 
-     
+   !Remove this. because PBC are already applied.
      if (peri .ne. 0) call periodicBC(utp,vtp)
      
+      !Original
+   !   do i = 1, nx
+   !      do j = 1, ny
 
-     do i = 1, nx
-        do j = 1, ny
+   !FSTD Modification
+   !need to go -1 and +1 for the PBC
+     do i = 0, nx+1
+        do j = 0, ny+1
 
            if ( maskC(i,j) .eq. 1 ) then
                   
@@ -222,6 +227,7 @@ subroutine ViscousCoeff_method1(utp,vtp)
                      
                     zetaC(i,j) =  ( (Pp(i,j)+Pt(i,j))/denomin ) &
                          *( tanh(denomin*(1/deno)))
+                     ! zetaC(i, j) = 1d12
                          
                     P(i,j) = ((( Pp(i,j)-Pt(i,j))/denomin ) &
                          *tanh(denomin*(1/deno))) *deno 
@@ -250,6 +256,7 @@ subroutine ViscousCoeff_method1(utp,vtp)
                  endif
 
                  etaC(i,j)  = zetaC(i,j) * ell_2
+               !   etaC(i, j) = 1d12
                      
               elseif ( rheo .eq. 2 ) then ! triangle, jfl p.1124
 
@@ -289,9 +296,10 @@ subroutine ViscousCoeff_method1(utp,vtp)
         endif
 
      enddo
-     
-     if (peri .ne. 0) call periodicBC(etaC,zetaC)
-     if (peri .ne. 0) call periodicBC(etaB,P)  !etaB = zero and is a dummy here
+   
+   ! FSTD: removing this. because PBC are already applied. 
+   !   if (peri .ne. 0) call periodicBC(etaC,zetaC)
+   !   if (peri .ne. 0) call periodicBC(etaB,P)  !etaB = zero and is a dummy here
 !------------------------------------------------------------------------
 !     Shear and bulk viscosity calculation at the grid node
 !------------------------------------------------------------------------
@@ -310,8 +318,6 @@ subroutine ViscousCoeff_method1(utp,vtp)
          
   endif
   
-
-      
   return
 end subroutine ViscousCoeff_method1
 
@@ -391,8 +397,13 @@ subroutine ViscousCoeff_method2(utp,vtp)
 !------------------------------------------------------------------------   
 
      do i = 1, nx
-        do j = 1, ny               
-               
+        do j = 1, ny    
+   !   do i = 0, nx+1
+   !    do j = 0, ny+1          
+
+      ! do i = 0, nx+1
+      !    do j = 0, ny+1  
+
            if ( maskC(i,j) .eq. 1 ) then
                   
               dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
@@ -462,6 +473,7 @@ subroutine ViscousCoeff_method2(utp,vtp)
                      
                     zetaC(i,j) =  ( (Pp(i,j)+Pt(i,j))/denomin ) &
                          *( tanh(denomin*(1/deno)))
+                     ! zetaC(i, j) = 1d12
                          
                     P(i,j) = ((( Pp(i,j)-Pt(i,j))/denomin ) &
                          *tanh(denomin*(1/deno))) *deno 
@@ -489,7 +501,8 @@ subroutine ViscousCoeff_method2(utp,vtp)
                         
                  endif
 
-                 etaC(i,j)  = zetaC(i,j) * ell_2
+               !   etaC(i,j)  = zetaC(i,j) * ell_2
+                 etaC(i, j) = 1d12
                      
               elseif ( rheo .eq. 2 ) then ! triangle, jfl p.1124
 
@@ -536,13 +549,13 @@ subroutine ViscousCoeff_method2(utp,vtp)
 
      if (peri .ne. 0) call periodicBC(etaC,zetaC)
      if (peri .ne. 0) call periodicBC(etaB,P)  !etaB = zero and is a dummy here     
-
+     if (peri .ne. 0) call periodicBC(Pp, Pt)  
 !------------------------------------------------------------------------
 !     Shear viscosity calculation at the grid node (see p.2-118 PDF notebook)
 !------------------------------------------------------------------------
-
+      
          
-         ! for sig12B (defined at the node)
+   !       ! for sig12B (defined at the node)
      do j = 1, ny+1 
         do i = 1, nx+1
 
@@ -552,8 +565,9 @@ subroutine ViscousCoeff_method2(utp,vtp)
            if (summaskC .ge. 2) then
 
               if (summaskC .eq. 4) then
-! oo
+! oo                
 ! oo normal
+               !   print*, 'case 1'
                  dudy = ( utp(i,j) - utp(i,j-1) ) / Deltax !case 1 
                  dvdx = ( vtp(i,j) - vtp(i-1,j) ) / Deltax
 		     
@@ -569,8 +583,9 @@ subroutine ViscousCoeff_method2(utp,vtp)
               elseif (summaskC .eq. 3) then 
 
                  if (maskC(i-1,j) .eq. 0) then !case 2
-! xo
+! xo                print* 'case 1'
 ! oo    
+                  !   print*,'case 2'
                     dudy = (-3d0*utp(i,j-1) + utp(i,j-2)/3d0) / Deltax
                     dvdx = (3d0*vtp(i,j) - vtp(i+1,j)/3d0) / Deltax
 
@@ -586,6 +601,7 @@ subroutine ViscousCoeff_method2(utp,vtp)
                  elseif (maskC(i,j) .eq. 0) then !case 3
 ! ox
 ! oo           
+                     ! print*,'case 3'
                     dudy = (-3d0*utp(i,j-1) + utp(i,j-2)/3d0) / Deltax
                     dvdx = (-3d0*vtp(i-1,j) + vtp(i-2,j)/3d0) / Deltax
                         
@@ -727,8 +743,9 @@ subroutine ViscousCoeff_method2(utp,vtp)
                  if ( regularization .eq. 'tanh' ) then
 
                     deno = max( deno, 1d-20 )
-                    etaB(i,j) = ell_2 * ( pnode/denomin ) &
-                         *(tanh( denomin*(1/deno)) )
+                  !   etaB(i,j) = ell_2 * ( pnode/denomin ) &
+                  !        *(tanh( denomin*(1/deno)) )
+                    etaB(i,j) = 1d12
 
                  elseif ( regularization .eq. 'Kreysher' ) then
 
@@ -757,6 +774,8 @@ subroutine ViscousCoeff_method2(utp,vtp)
            
         enddo
      enddo
+
+     if (peri .ne. 0) call periodicBC2(etaB)
          
   endif
       
@@ -1525,7 +1544,7 @@ end subroutine MEBcoeff
 
 
 
-subroutine MuPhiCoeff 
+subroutine MuPhiCoeff (utp, vtp)
 
 !************************************************************************                                  
 !     Subroutine MEBcoeff: computes the Mu-Phi coefficients in the same format as                                         
@@ -1555,8 +1574,9 @@ subroutine MuPhiCoeff
    include 'CB_const.h'
 
    integer i, j, peri, rheo
-   double precision deno, lowA, p_over_shear
-   double precision eta_max, shear_max
+   double precision deno, lowA, p_over_shear, munode, pnode,summaskC
+   double precision eta_max, shear_max, dudx, dudy, dvdx, dvdy
+   double precision utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
    
    lowA = 0d0
    peri = Periodic_x + Periodic_y
@@ -1569,86 +1589,252 @@ subroutine MuPhiCoeff
 
   elseif ( BndyCond .eq. 'noslip' ) then
 
-      if (peri .ne. 0) call periodicBC(Pp, shear_I)
+   do i = 0, nx+1
+      do j = 0, ny+1
+
+         etaC(i,j)  = 0d0
+         zetaC(i,j) = 0d0 
+         etaB(i,j)  = 0d0
+         
+      enddo
+   enddo
+
+
+   dudx       = 0d0
+   dvdy       = 0d0
+   dudy       = 0d0
+   dvdx       = 0d0
+   pnode      = 0d0
+
+   ! if (mu_phi) then
+   !    call shear(utp, vtp)
+   ! endif
+
+   ! if (peri .ne. 0) call periodicBC2(Pp)
+
+   if (peri .ne. 0) call periodicBC(utp, vtp)
    
-      do i = 1, nx
-         do j = 1, ny
-               if ( maskC(i, j) .eq. 1) then
+   do i = 0, nx+1
+      do j = 0, ny+1
+         if ( maskC(i, j) .eq. 1) then
 
-                  shear_max = max(1d-20, shear_I(i, j))
+            shear_max = max(1d-20, shearC_I(i, j))
 
-                  if (regularization .eq. 'capping') then
+            if (regularization .eq. 'capping') then
 
-                     etaC(i, j)  = min((mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), eta_max)
-                     zetaC(i, j) = min(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / shear_I(i, j), 2d08*Pp(i, j))
+               etaC(i, j)  = min((mu_I(i, j) / 2 ) * Pp(i, j) / shearC_I(i, j), eta_max)
+               zetaC(i, j) = min(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / shearC_I(i, j), 2d08*Pp(i, j))
 
-                  elseif (regularization .eq. 'tanh') then
+            elseif (regularization .eq. 'tanh') then
 
-                     if ((dilatancy .eqv. .true.) .or. (mu_phi .eqv. .false.)) then
+                     ! if ((dilatancy .eqv. .true.) .or. (mu_phi .eqv. .false.)) then
+               if ((dilatancy .eqv. .true.)) then
 
-                        zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b ) / (shear_max * 2d08))
-                        etaC(i, j)  = eta_max * tanh(mu_I(i, j) * Pp(i, j) / (shear_max * eta_max))
-                        ! print*, zetaC(i, j)
-                     else
-                        zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b + mu_I(i, j) / 2 ) / (shear_max * 2d08))
-                        etaC(i, j)  = eta_max * tanh((mu_I(i, j) / 2) * Pp(i, j) / (shear_max * eta_max))
+                  zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b ) / (shear_max * 2d08))
+                  etaC(i, j)  = eta_max * tanh(mu_I(i, j) * Pp(i, j) / (shear_max * eta_max))
+                  ! print*, zetaC(i, j)
+                     
+               elseif (mu_phi .eqv. .false.) then
+                  ! zetaC(i, j) = eta_max * tanh(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / (shear_max * eta_max))
+                  ! etaC(i, j)  = eta_max * tanh((mu_I(i, j) / 2) * Pp(i, j) / (shear_max * eta_max))
 
-                     endif
-
-                  endif
+                  etaC(i, j) = eta_max
+                  zetaC(i,j) = eta_max
                   
-                  P(i,j) = Pp(i, j)
+               else
+                  zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b + mu_I(i, j) / 2 ) / (shear_max * 2d08))
+                  etaC(i, j)  = eta_max * tanh((mu_I(i, j) / 2) * Pp(i, j) / (shear_max * eta_max))
 
                endif
-         enddo
+
+            endif
+                  
+            P(i,j) = Pp(i, j)
+
+         endif
       enddo
+   enddo
 
-      if (peri .ne. 0) call periodicBC(etaC,zetaC)
-      if (peri .ne. 0) call periodicBC2(P)
+   do i = 1, nx+1
 
-
-      do i = 1, nx+1
-
-        if (maskC(i,0) .eq. 1 .and. Periodic_y .eq. 0) then
-           etaC(i,1)  = 0d0
-           zetaC(i,1) = 0d0
-        endif
+      if (maskC(i,0) .eq. 1 .and. Periodic_y .eq. 0) then
+         etaC(i,1)  = 0d0
+         zetaC(i,1) = 0d0
+      endif
             
-        if (maskC(i,ny+1) .eq. 1 .and. Periodic_y .eq. 0) then
-           etaC(i,ny)  = 0d0
-           zetaC(i,ny) = 0d0
-        endif
+      if (maskC(i,ny+1) .eq. 1 .and. Periodic_y .eq. 0) then
+         etaC(i,ny)  = 0d0
+         zetaC(i,ny) = 0d0
+      endif
         
-     enddo
+   enddo
          
-     do j = 1, ny+1
+   do j = 1, ny+1
             
-        if (maskC(0,j) .eq. 1 .and. Periodic_x .eq. 0) then   
-           etaC(1,j)  = 0d0
-           zetaC(1,j) = 0d0
-        endif
+      if (maskC(0,j) .eq. 1 .and. Periodic_x .eq. 0) then   
+         etaC(1,j)  = 0d0
+         zetaC(1,j) = 0d0
+      endif
+         
+      if (maskC(nx+1,j) .eq. 1 .and. Periodic_x .eq. 0) then  
+         etaC(nx,j)  = 0d0
+         zetaC(nx,j) = 0d0
+      endif
+
+   enddo
+
+   
+   do i = 1, nx+1
+      do j = 1, ny+1
+
+         deno = max ( maskC(i,j) + maskC(i-1,j) + maskC(i,j-1) +   &
+               maskC(i-1,j-1), 1) 
             
-        if (maskC(nx+1,j) .eq. 1 .and. Periodic_x .eq. 0) then  
-           etaC(nx,j)  = 0d0
-           zetaC(nx,j) = 0d0
-        endif
-
-     enddo
-
-      do i = 1, nx+1
-        do j = 1, ny+1
-
-           deno = max ( maskC(i,j) + maskC(i-1,j) + maskC(i,j-1) +   &
-                maskC(i-1,j-1), 1) 
-               
-           etaB(i,j)  = ( etaC(i,j) + etaC(i-1,j) + etaC(i,j-1) +    &
-                etaC(i-1,j-1) ) / deno
-           
-        enddo
-     enddo
-
-      if (peri .ne. 0) call periodicBC2(etaB)   
+         etaB(i,j)  = ( etaC(i,j) + etaC(i-1,j) + etaC(i,j-1) +    &
+               etaC(i-1,j-1) ) / deno
+         
+      enddo
+   enddo
+       
 
    endif
 
+   ! if (peri .ne. 0) call periodicBC2(etaB) 
+
 end subroutine MuPhiCoeff
+
+   !   if (peri .ne. 0) then
+   !       call periodicBC(etaC,zetaC)
+   !       call periodicBC2(P)
+   !       call periodicBC2(etaB)    
+   !   endif
+
+! !------------------------------------------------------
+! !     Shear viscosity calculation at the grid node (see p.2-118 PDF notebook)
+! !------------------------------------------------------------------------
+
+! !          ! for sig12B (defined at the node)
+!      do j = 1, ny+1 
+!         do i = 1, nx+1
+
+!            summaskC = maskC(i-1,j) + maskC(i,j) + & 
+!                 maskC(i,j-1) + maskC(i-1,j-1)
+
+!            if (summaskC .ge. 2) then
+
+!               if (summaskC .eq. 4) then
+
+!                  pnode = ( Pp(i-1,j) + Pp(i,j) + Pp(i,j-1) + Pp(i-1,j-1) ) / 4d0 
+!                  munode = ( mu_I(i-1,j) + mu_I(i,j) + mu_I(i,j-1) + mu_I(i-1,j-1) ) / 4d0 
+                     
+!               elseif (summaskC .eq. 3) then 
+
+!                  if (maskC(i-1,j) .eq. 0) then !case 2
+! ! xo
+!                     pnode = ( Pp(i,j) + Pp(i,j-1) + Pp(i-1,j-1) ) / 3d0 ! check ca 
+!                     munode = ( mu_I(i,j) + mu_I(i,j-1) + mu_I(i-1,j-1) ) / 3d0
+
+!                  elseif (maskC(i,j) .eq. 0) then !case 3
+
+!                     pnode = ( Pp(i-1,j) + Pp(i,j-1) + Pp(i-1,j-1) ) / 3d0
+!                     munode = ( mu_I(i-1,j) + mu_I(i,j-1) + mu_I(i-1,j-1) ) / 3d0
+
+!                  elseif (maskC(i,j-1) .eq. 0) then !case 5
+! ! oo                                                          
+! ! ox
+
+!                     pnode = ( Pp(i-1,j) + Pp(i,j) + Pp(i-1,j-1)  ) / 3d0
+!                     munode = ( mu_I(i-1,j) + mu_I(i,j) + mu_I(i-1,j-1)  ) / 3d0
+
+!                  elseif (maskC(i-1,j-1) .eq. 0) then !case 4
+! ! oo                                                            
+! ! xo      
+
+!                     pnode = ( Pp(i-1,j) + Pp(i,j) + Pp(i,j-1) ) / 3d0
+!                     munode = ( mu_I(i-1,j) + mu_I(i,j) + mu_I(i,j-1) ) / 3d0
+!                  else
+
+!                     print *, 'wowowo1'
+!                     stop
+
+!                  endif !summaskC .eq. 3
+                 
+!               elseif (summaskC .eq. 2) then !case 7
+                     
+!                  if (maskC(i-1,j) .eq. 0 .and. &
+!                       maskC(i-1,j-1) .eq. 0) then
+! ! xo
+! ! xo
+!                     pnode = ( Pp(i,j) + Pp(i,j-1)  )/2d0
+!                     munode = ( mu_I(i,j) + mu_I(i,j-1)  )/2d0
+
+!                  elseif(maskC(i,j) .eq. 0 .and. & !case 6
+!                       maskC(i,j-1) .eq. 0) then
+! ! ox
+! ! ox                                                                           
+!                     pnode = ( Pp(i-1,j) + Pp(i-1,j-1) )/2d0
+!                     munode = ( mu_I(i-1,j) + mu_I(i-1,j-1) )/2d0
+
+!                  elseif(maskC(i-1,j) .eq. 0 .and. & !case 8           
+!                       maskC(i,j) .eq. 0) then
+! ! xx
+! ! oo
+!                     pnode = ( Pp(i-1,j-1) + Pp(i,j-1) )/2d0
+!                     munode = ( mu_I(i-1,j-1) + mu_I(i,j-1) )/2d0
+
+!                  elseif(maskC(i,j-1) .eq. 0 .and. & !case 9
+!                       maskC(i-1,j-1) .eq. 0) then
+! ! oo                                                                     
+! ! xx                                          
+!                     pnode = ( Pp(i-1,j) + Pp(i,j)) / 2d0
+!                     munode = ( mu_I(i-1,j) + mu_I(i,j)) / 2d0
+
+!                  elseif(maskC(i-1,j) .eq. 0 .and. & !case 15
+!                       maskC(i,j-1) .eq. 0) then
+! ! xo                                                                    
+! ! ox                    ! don't do anything (could be improved)                                        
+                        
+			
+!                  elseif(maskC(i,j) .eq. 0 .and. & !case 16
+!                       maskC(i-1,j-1) .eq. 0) then
+! ! ox                                                                      
+! ! xo                    ! don't do anything (could be improved)                                                     
+			
+!                  else
+
+!                     print *, 'wowowo2'
+!                     stop
+
+!                  endif  !summaskC .eq. 2
+
+!               else
+!                  print *, 'wowowo3'
+!                  stop
+
+!               endif !if (summaskC .eq. 4) then...
+                  
+
+! !------------------------------------------------------------------------
+! !     Shear viscosity calculation at the grid node
+! !------------------------------------------------------------------------
+               
+
+!             if (regularization .eq. 'tanh') then
+
+!                if (dilatancy .eqv. .true.) then
+
+!                   etaB(i, j)  = eta_max * tanh(munode * pnode / ((max(shearB_I(i ,j), 1d-20)) * eta_max))
+
+!                   ! print*, zetaC(i, j)
+!                else
+               
+!                   etaB(i, j)  = eta_max * tanh(munode* pnode / (2 * (max(shearB_I(i ,j), 1d-20)) * eta_max))
+
+!                endif
+!             endif
+   
+              
+!            endif !summaskC .ge. 2 
+           
+!         enddo
+!       enddo

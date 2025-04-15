@@ -152,6 +152,7 @@
                   hout(i,j) = hn1(i,j) - DtoverDx * ( dFx(i,j) + dFy(i,j) )
                   hout(i,j) = max(hout(i,j), 0d0)
 
+
                endif
                      
             enddo
@@ -987,7 +988,7 @@
                   if (maskC(i,j) .eq. 1) then
 
                      hout(i, j) = hn_1(i, j) - DtoverDx * (Fx(i, j)+Fy(i, j)) - &
-                        Deltat * hn_1(i, j) * (div(i, j) +  shear_I(i, j) * tan_psi(i, j))
+                        Deltat * hn_1(i, j) * (div(i, j) +  shearC_I(i, j) * tan_psi(i, j))
                      hout(i,j) = max(hout(i,j), 0d0)
 
                   endif
@@ -1008,7 +1009,7 @@
                   if (maskC(i,j) .eq. 1) then
 
                      Aout(i, j) = An_1(i, j) - DtoverDx * (Fx(i, j)+Fy(i, j)) - &
-                        Deltat * An_1(i, j) * (div(i, j) +  shear_I(i, j) * tan_psi(i, j))
+                        Deltat * An_1(i, j) * (div(i, j) +  shearC_I(i, j) * tan_psi(i, j))
                      
                      Aout(i,j) = max(Aout(i,j), 0d0)
                      Aout(i,j) = min(Aout(i,j), 1d0)

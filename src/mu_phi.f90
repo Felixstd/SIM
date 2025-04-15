@@ -51,7 +51,7 @@ subroutine inertial_number
                     Press = max(Pp(i, j), 1d-20)
 
                     ! Computing inertial number
-                    inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shear_I(i, j), highI)
+                    inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shearC_I(i, j), highI)
 
             endif
         enddo
@@ -88,11 +88,611 @@ subroutine inertial_number
         enddo
     endif
     
-    peri = Periodic_x + Periodic_y
-    if (peri .ne. 0) call periodicBC2(inertial)
+end subroutine inertial_number
+
+subroutine angle_friction_mu 
+
+    use muphi
+
+    implicit none
+
+    include 'parameter.h'
+    include 'CB_DynVariables.h'
+    include 'CB_mask.h'
+    include 'CB_options.h'
+    include 'CB_const.h'
+
+    integer i, j, peri
+    double precision eps, scaled_A, diff_A, min_inertial
+
+    peri = Periodic_x + Periodic_y ! =1 if we have periodic conditions      
+
+    eps = 1d-12
+
+    do i = 0, nx+1
+        do j = 0, ny+1
+            if (maskC(i,j) .eq. 1) then
+
+                if ((mu_phi .eqv. .true.) .and. (dilatancy .eqv. .true.)) then
+                    if (h(i,j) < 1e-2) then
+                !     ! if (h(i,j) < 1e-6) then
+
+                ! !     !     !UNTIL 23
+                            mu_I(i, j) = 0d0
+                            
+
+                    else 
+                        if (A2Phi) then 
+
+                            diff_A = max(1d-20, 0.90-Phi_A(i, j))
+
+                        else 
+                            diff_A = max(1d-20, 1-A(i, j))
+
+                        endif
+
+                        mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/diff_A + 1 )
+                    endif
+                
+                else 
+                    mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/inertial(i, j) + 1 )
+                endif
+            endif
+        
+        enddo
+    enddo
+
+    if (Periodic_y .eq. 0) then
+        do i = 0, nx+1
+
+            if (maskC(i,0) .eq. 1) then             
+                mu_I(i,1)  = mu_0
+            endif
+
+            if (maskC(i,ny+1) .eq. 1) then             
+                mu_I(i,ny)  = mu_0
+            endif
+
+        enddo
+    endif            
+	  
+    if (Periodic_x .eq. 0) then
+        do j = 0, ny+1
+
+            if (maskC(0,j) .eq. 1) then             
+                mu_I(1,j)  = mu_0
+            endif
+
+            if (maskC(nx+1,j) .eq. 1) then             
+                mu_I(nx,j)   = mu_0  
+            endif           
+
+        enddo
+    endif
+
     
 
-end subroutine inertial_number
+end subroutine angle_friction_mu
+
+subroutine shear_inv(utp, vtp)
+
+    use datetime, only: datetime_type
+    use ellipse
+    
+    implicit none
+
+    include 'parameter.h'
+    include 'CB_Dyndim.h'
+    include 'CB_DynVariables.h'
+    include 'CB_DynForcing.h'
+    include 'CB_const.h'
+    include 'CB_mask.h'
+    include 'CB_options.h'
+
+    integer i, j, peri, ii, jj, im, jm
+    character filename*64
+
+    double precision dudx, dvdy, dudy, dvdx, land, lowA, summaskC
+    double precision, intent(in):: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
+
+    peri = Periodic_x + Periodic_y
+
+    land  = -999d0
+    shearC_I = land
+    lowA = 0d0
+
+    if (peri .ne. 0) call periodicBC(utp,vtp)
+
+    dudx       = 0d0
+    dvdy       = 0d0
+    dudy       = 0d0
+    dvdx       = 0d0
+    
+    !---- At the grid centers (C-Grid) ----!
+    !--- Only for the domain ---!
+    do i = 1, nx
+        do j = 1, ny
+            
+            if ( maskC(i,j) .eq. 1 ) then
+                  
+                    dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                    dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+
+                  
+                if (( maskC(i+1,j) + maskC(i-1,j) .eq. 2 )) then
+                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                            ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
+                            ( 4d0 * Deltax )
+                     
+                elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. 1 ) then
+                    dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
+                            3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
+                            ( 6d0 * Deltax )
+                
+                elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. -1 ) then
+                    dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
+                            3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
+                            ( 6d0 * Deltax )
+                    
+                elseif ( maskC(i+1,j) + maskC(i-1,j) .eq. 0 ) then
+                    
+                    print *, 'WARNING: irregular grid cell case1', i, j
+                    
+                endif
+
+               
+                if     ( maskC(i,j+1) + maskC(i,j-1) .eq. 2 ) then
+                    dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                            ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+                            ( 4d0 * Deltax )
+                     
+                elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
+                    dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
+                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                            ( 6d0 * Deltax )
+                     
+                elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. -1 ) then
+                    dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
+                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                            ( 6d0 * Deltax )
+                     
+                elseif ( maskC(i,j+1) + maskC(i,j-1) .eq. 0 ) then
+                     
+                    print *, 'WARNING: irregular grid cell case2',i,j
+                     
+                endif
+                  
+!----- stresses and strain rates at the grid center -------------------------   
+
+                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
+                       + ( dudy + dvdx )**2d0 )
+                ! div_I(i, j) = (dudx + dvdy)
+            
+            else
+                shearC_I(i,j) = land
+                ! div_I(i, j) = land
+
+            endif
+
+        enddo
+    enddo
+
+    !------ Boundary Conditions ------!
+
+    !----- Boundary Conditions in X ---!
+    if (Periodic_x .eq. 1) then
+    !--- Periodic in x---!
+        i = 0
+        do j = 0, ny+1 
+
+            if (maskC(i,j) .eq. 1) then
+                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+                
+                dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -            &
+                                ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) / &
+                                ( 4d0 * Deltax )
+
+
+                if (j .eq. 0) then
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -         &
+                                ( utp(i,ny+2) + utp(i+1,ny+2) ) ) / &
+                                ( 4d0 * Deltax )
+                else
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                ( utp(i,j-1) + utp(i+1,j-1) ) ) /  &
+                                ( 4d0 * Deltax )
+                endif
+                
+                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
+                        + ( dudy + dvdx )**2d0 )
+            else
+                shearC_I(i,j) = land
+
+            endif
+        enddo
+
+        i = nx+1
+        do j = 0, ny+1 
+
+            if (maskC(i,j) .eq. 1) then
+                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+                
+                dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -           &
+                                ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /  &
+                                ( 4d0 * Deltax )
+
+
+                if (j .eq. 0) then
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -         &
+                                ( utp(i,ny+2) + utp(i+1,ny+2) ) ) / &
+                                ( 4d0 * Deltax )
+                else
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                ( utp(i,j-1) + utp(i+1,j-1) ) ) /  &
+                                ( 4d0 * Deltax )
+                endif
+                
+                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
+                        + ( dudy + dvdx )**2d0 )
+
+            else
+                shearC_I(i,j) = land
+
+            endif
+        enddo
+
+    else 
+        !--- Open Boundary Conditions (Neumann BC) in x ---!
+        i = 0
+        do j = 0, ny+1 
+
+            if (maskC(i,j) .eq. 1) then
+                dudx = 0d0
+                dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+                
+                dvdx = 0d0
+
+                if (j .eq. 0) then
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                ( utp(i,ny+2) + utp(i+1,ny+2) ) ) /     &
+                                ( 4d0 * Deltax )
+                else
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+                                ( 4d0 * Deltax )
+                endif
+                
+                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
+                        + ( dudy + dvdx )**2d0 )
+            else
+                shearC_I(i,j) = land
+            endif
+        enddo
+
+        i = nx+1
+        do j = 0, ny+1 
+
+            if (maskC(i,j) .eq. 1) then
+                dudx = 0d0
+                dvdx = 0d0
+                dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+                
+                if (j .eq. 0) then
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                ( utp(i,ny+2) + utp(i+1,ny+2) ) ) /     &
+                                ( 4d0 * Deltax )
+                else
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+                                ( 4d0 * Deltax )
+                endif
+                
+                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
+                        + ( dudy + dvdx )**2d0 )
+
+            else
+                shearC_I(i,j) = land
+            endif
+        enddo
+
+
+    endif
+
+
+    !--- Boundary Conditions in Y ---!
+    
+    if (Periodic_y .eq. 1) then
+    !--- Periodic (Dirichlet BC) in y ---!
+
+
+        j = 0
+        do i = 0, nx+1 
+            if (maskC(i,j) .eq. 1) then
+                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+                
+
+                if (i .eq. 0) then
+                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                            ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) /      &
+                            ( 4d0 * Deltax )
+                else
+
+                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                            ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
+                            ( 4d0 * Deltax )
+
+                endif
+
+                dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                            ( utp(i,ny+2) + utp(i+1,ny+2) ) ) /     &
+                            ( 4d0 * Deltax )
+
+                
+                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
+                        + ( dudy + dvdx )**2d0 )
+
+            else
+                shearC_I(i,j) = land
+
+            endif
+        enddo
+            
+        j = ny+1
+        do i = 0, nx+1 
+            if (maskC(i,j) .eq. 1) then
+                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+                
+
+                if (i .eq. 0) then
+                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                            ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) /      &
+                            ( 4d0 * Deltax )
+                else
+
+                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                            ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
+                            ( 4d0 * Deltax )
+
+                endif
+
+                dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                            ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+                            ( 4d0 * Deltax )
+
+                
+                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
+                        + ( dudy + dvdx )**2d0 )
+                        
+            else
+                shearC_I(i,j) = land
+
+            endif
+        enddo
+
+    else
+        !--- Neumann BC in y ---!
+        j = 0
+        do i = 0, nx+1 
+            if (maskC(i,j) .eq. 1) then
+                dvdy = 0d0
+                dudy = 0d0
+                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                
+                if (i .eq. 0) then
+                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                            ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) /      &
+                            ( 4d0 * Deltax )
+                else
+
+                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                            ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
+                            ( 4d0 * Deltax )
+
+                endif
+
+                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
+                        + ( dudy + dvdx )**2d0 )
+
+            else
+                shearC_I(i, j) = land
+            endif
+        enddo
+            
+        j = ny+1
+        do i = 0, nx+1 
+            if (maskC(i,j) .eq. 1) then
+                dvdy = 0d0
+                dudy = 0d0
+                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                
+                if (i .eq. 0) then
+                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                            ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) /      &
+                            ( 4d0 * Deltax )
+                else
+
+                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                            ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
+                            ( 4d0 * Deltax )
+
+                endif
+
+                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
+                        + ( dudy + dvdx )**2d0 )
+                        
+            else
+                shearC_I(i, j) = land
+            endif
+        enddo
+
+    endif
+
+    !---- For the B grid (at the nodes) ----!
+    do j = 1, ny+1 
+        do i = 1, nx+1
+
+           summaskC = maskC(i-1,j) + maskC(i,j) + & 
+                maskC(i,j-1) + maskC(i-1,j-1)
+
+           if (summaskC .ge. 2) then
+
+              if (summaskC .eq. 4) then
+! oo
+! oo normal
+                 dudy = ( utp(i,j) - utp(i,j-1) ) / Deltax !case 1 
+                 dvdx = ( vtp(i,j) - vtp(i-1,j) ) / Deltax
+		     
+                 dudx = ( (utp(i+1,j) + utp(i+1,j-1)) * maskB(i+1,j) - &
+                      (utp(i-1,j) + utp(i-1,j-1)) * maskB(i-1,j) ) / (4d0*Deltax)
+                 
+                 dvdy = ( (vtp(i-1,j+1) + vtp(i,j+1)) * maskB(i,j+1) - &
+                      (vtp(i-1,j-1) + vtp(i,j-1)) * maskB(i,j-1) ) / (4d0*Deltax)
+                     
+                     
+              elseif (summaskC .eq. 3) then 
+
+                 if (maskC(i-1,j) .eq. 0) then !case 2
+! xo
+! oo    
+                    dudy = (-3d0*utp(i,j-1) + utp(i,j-2)/3d0) / Deltax
+                    dvdx = (3d0*vtp(i,j) - vtp(i+1,j)/3d0) / Deltax
+
+                    dudx = ( utp(i+1,j) + utp(i+1,j-1) - &
+                         ( utp(i+2,j) + utp(i+2,j-1) ) * maskB(i+2,j)/4d0 ) / Deltax
+		       
+                    dvdy = ( -vtp(i-1,j-1) - vtp(i,j-1) + &
+                         ( vtp(i-1,j-2) + vtp(i,j-2) ) * maskB(i,j-2)/4d0 ) / Deltax
+                        
+                 elseif (maskC(i,j) .eq. 0) then !case 3
+! ox
+! oo           
+                    dudy = (-3d0*utp(i,j-1) + utp(i,j-2)/3d0) / Deltax
+                    dvdx = (-3d0*vtp(i-1,j) + vtp(i-2,j)/3d0) / Deltax
+                        
+                    dudx = ( -utp(i-1,j) - utp(i-1,j-1) + &
+                         ( utp(i-2,j) + utp(i-2,j-1) ) * maskB(i-2,j)/4d0 ) / Deltax
+		       
+                    dvdy = ( -vtp(i-1,j-1) - vtp(i,j-1) + &
+                         ( vtp(i-1,j-2) + vtp(i,j-2) ) * maskB(i,j-2)/4d0 ) / Deltax
+
+                 elseif (maskC(i,j-1) .eq. 0) then !case 5
+! oo                                                          
+! ox
+                    dudy = (3d0*utp(i,j) - utp(i,j+1)/3d0) / Deltax
+                    dvdx = (-3d0*vtp(i-1,j) + vtp(i-2,j)/3d0) / Deltax
+
+                    dudx = ( -utp(i-1,j) - utp(i-1,j-1) + &
+                         ( utp(i-2,j) + utp(i-2,j-1) ) * maskB(i-2,j)/4d0 ) / Deltax
+
+                    dvdy = ( vtp(i-1,j+1) + vtp(i,j+1) - &
+                         ( vtp(i-1,j+2) + vtp(i,j+2) ) * maskB(i,j+2)/4d0 ) / Deltax
+    
+                 elseif (maskC(i-1,j-1) .eq. 0) then !case 4
+! oo                                                            
+! xo      
+                    dudy = (3d0*utp(i,j) - utp(i,j+1)/3d0) / Deltax
+                    dvdx = (3d0*vtp(i,j) - vtp(i+1,j)/3d0) / Deltax
+                        
+                    dudx = ( utp(i+1,j) + utp(i+1,j-1) - &
+                         ( utp(i+2,j) + utp(i+2,j-1) ) * maskB(i+2,j)/4d0 ) / Deltax
+
+                    dvdy = ( vtp(i-1,j+1) + vtp(i,j+1) - &
+                         ( vtp(i-1,j+2) + vtp(i,j+2) ) * maskB(i,j+2)/4d0 ) / Deltax
+
+                 else
+
+                    print *, 'wowowo1'
+                    stop
+
+                 endif !summaskC .eq. 3
+                 
+              elseif (summaskC .eq. 2) then !case 7
+                     
+                 if (maskC(i-1,j) .eq. 0 .and. &
+                      maskC(i-1,j-1) .eq. 0) then
+! xo
+! xo
+                    dudy = 0d0
+                    dvdx = (3d0*vtp(i,j) - vtp(i+1,j)/3d0) / Deltax
+                        
+                    dudx = ( utp(i+1,j) + utp(i+1,j-1) - &
+                         ( utp(i+2,j) + utp(i+2,j-1) ) * maskB(i+2,j)/4d0 ) / Deltax
+		      
+                    dvdy = 0d0
+
+                 elseif(maskC(i,j) .eq. 0 .and. & !case 6
+                      maskC(i,j-1) .eq. 0) then
+! ox
+! ox                                                                           
+                    dudy = 0d0
+                    dvdx = (-3d0*vtp(i-1,j) + vtp(i-2,j)/3d0) / Deltax
+                        
+                    dudx = ( -utp(i-1,j) - utp(i-1,j-1) + &
+                         ( utp(i-2,j) + utp(i-2,j-1) ) * maskB(i-2,j)/4d0 ) / Deltax
+
+                    dvdy = 0d0
+
+                 elseif(maskC(i-1,j) .eq. 0 .and. & !case 8           
+                      maskC(i,j) .eq. 0) then
+! xx
+! oo
+                    dudy = (-3d0*utp(i,j-1) + utp(i,j-2)/3d0) / Deltax
+                    dvdx = 0d0
+                    dudx = 0d0
+                    dvdy = ( -vtp(i-1,j-1) - vtp(i,j-1) + &
+                         ( vtp(i-1,j-2) + vtp(i,j-2) ) * maskB(i,j-2)/4d0 ) / Deltax
+
+                 elseif(maskC(i,j-1) .eq. 0 .and. & !case 9
+                      maskC(i-1,j-1) .eq. 0) then
+! oo                                                                     
+! xx                                          
+                    dudy = (3d0*utp(i,j) - utp(i,j+1)/3d0) / Deltax
+                    dvdx = 0d0
+                    dudx = 0d0
+                    dvdy = ( vtp(i-1,j+1) + vtp(i,j+1) - &
+                         ( vtp(i-1,j+2) + vtp(i,j+2) ) * maskB(i,j+2)/4d0 ) / Deltax
+                        
+
+                 elseif(maskC(i-1,j) .eq. 0 .and. & !case 15
+                      maskC(i,j-1) .eq. 0) then
+! xo                                                                    
+! ox                    ! don't do anything (could be improved)                                        
+                        
+			
+                 elseif(maskC(i,j) .eq. 0 .and. & !case 16
+                      maskC(i-1,j-1) .eq. 0) then
+! ox                                                                      
+! xo                    ! don't do anything (could be improved)                                                     
+			
+                 else
+
+                    print *, 'wowowo2'
+                    stop
+
+                 endif  !summaskC .eq. 2
+
+              else
+                 print *, 'wowowo3'
+                 stop
+
+              endif
+
+            shearB_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
+                       + ( dudy + dvdx )**2d0 )
+        endif
+    enddo
+    enddo
+            
+
+    ! if (peri .ne. 0) call periodicBC(shearC_I, shearB_I)
+
+    return
+end subroutine shear_inv
+
 
 subroutine volumefraction_phi(An_1, Aout)
 
@@ -193,13 +793,85 @@ subroutine volumefraction_phi(An_1, Aout)
         enddo
     enddo
 
-    if (peri .ne. 0)   call periodicBC2(Aout)	
+    ! if (peri .ne. 0)   call periodicBC2(Aout)	
         
     return
 
 
 end subroutine volumefraction_phi
 
+
+subroutine div(utp, vtp)
+
+    implicit none
+
+    include 'parameter.h'
+    include 'CB_mask.h'
+    include 'CB_const.h'
+    include 'CB_DynVariables.h'
+
+    integer i, j
+    double precision, intent(in) :: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
+    ! double precision, intent(out):: div(nx,ny)
+
+    do i = 1, nx
+        do j = 1, ny
+
+        if (maskC(i,j) .eq. 1) then
+
+            div_I(i,j)=(utp(i+1,j)-utp(i,j) + vtp(i,j+1)-vtp(i,j))/Deltax 
+
+        endif
+
+        enddo
+    enddo
+
+end subroutine div
+
+subroutine divergence_muphi()
+
+    use datetime, only: datetime_type
+    use ellipse
+    use muphi
+    
+    implicit none
+
+    include 'parameter.h'
+    include 'CB_Dyndim.h'
+    include 'CB_DynVariables.h'
+    include 'CB_DynForcing.h'
+    include 'CB_const.h'
+    include 'CB_mask.h'
+    include 'CB_options.h'
+
+    integer i, j
+    double precision tan_dilat_angle, microscopic, pi
+
+    pi = 4d0 * atan( 1d0 )
+    microscopic = tan(phi_f_micro*pi/180)
+
+    do i = 0, nx+1
+        do j = 0, ny+1
+
+            if (maskC(i, j) .eq. 1) then
+
+                if (Phi_eq) then
+                    tan_psi(i,j) = K_div*(A(i,j) - Phi_I(i,j))
+
+                else 
+                
+                    tan_psi(i, j) = (mu_I(i, j) - microscopic) /(1+microscopic*mu_I(i, j))
+
+                endif
+
+                div_I(i, j) = shearC_I(i, j) * tan_psi(i, j)
+
+            endif
+            
+        enddo
+    enddo
+
+end subroutine divergence_muphi
 
 subroutine SIC_2_PHI
 
@@ -238,292 +910,6 @@ subroutine SIC_2_PHI
 
 end subroutine SIC_2_PHI
 
-subroutine angle_friction_mu 
-
-    use muphi
-
-    implicit none
-
-    include 'parameter.h'
-    include 'CB_DynVariables.h'
-    include 'CB_mask.h'
-    include 'CB_options.h'
-    include 'CB_const.h'
-
-    integer i, j, peri
-    double precision eps, scaled_A, diff_A, min_inertial
-
-    peri = Periodic_x + Periodic_y ! =1 if we have periodic conditions      
-
-    eps = 1d-12
-
-    do i = 0, nx+1
-        do j = 0, ny+1
-            if (maskC(i,j) .eq. 1) then
-
-
-                !------- TODO ----------------------!
-                !-- Add a condition --!
-                !-- for the use of  --!
-                !-- The boundary condition for mu --!
-
-                if (mu_phi) then
-                    if (h(i,j) < 1e-2) then
-                !     ! if (h(i,j) < 1e-6) then
-
-                ! !     !     !UNTIL 23
-                            mu_I(i, j) = 0d0
-                            
-
-                    else 
-                        if (A2Phi) then 
-
-                            diff_A = max(1d-20, 0.90-Phi_A(i, j))
-
-                        else 
-                            diff_A = max(1d-20, 1-A(i, j))
-
-                        endif
-
-                        mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/diff_A + 1 )
-                    endif
-                
-                else 
-                    mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/inertial(i, j) + 1 )
-                endif
-            endif
-        enddo
-    enddo
-
-    if (peri .ne. 0) call periodicBC2(mu_I)
-    
-
-end subroutine angle_friction_mu
-
-subroutine divergence_muphi()
-
-    use datetime, only: datetime_type
-    use ellipse
-    use muphi
-    
-    implicit none
-
-    include 'parameter.h'
-    include 'CB_Dyndim.h'
-    include 'CB_DynVariables.h'
-    include 'CB_DynForcing.h'
-    include 'CB_const.h'
-    include 'CB_mask.h'
-    include 'CB_options.h'
-
-    integer i, j
-    double precision tan_dilat_angle, microscopic, pi
-
-    pi = 4d0 * atan( 1d0 )
-    microscopic = tan(phi_f_micro*pi/180)
-
-    do i = 0, nx+1
-        do j = 0, ny+1
-
-            if (maskC(i, j) .eq. 1) then
-
-                if (Phi_eq) then
-                    tan_psi(i,j) = K_div*(A(i,j) - Phi_I(i,j))
-
-                else 
-                
-                    tan_psi(i, j) = (mu_I(i, j) - microscopic) /(1+microscopic*mu_I(i, j))
-
-                endif
-
-                div_I(i, j) = shear_I(i, j) * tan_psi(i, j)
-
-            endif
-            
-        enddo
-    enddo
-
-end subroutine divergence_muphi
-
-
-subroutine shear(utp, vtp)
-
-    use datetime, only: datetime_type
-    use ellipse
-    
-    implicit none
-
-    include 'parameter.h'
-    include 'CB_Dyndim.h'
-    include 'CB_DynVariables.h'
-    include 'CB_DynForcing.h'
-    include 'CB_const.h'
-    include 'CB_mask.h'
-    include 'CB_options.h'
-
-    integer i, j, peri
-    character filename*64
-
-    double precision dudx, dvdy, dudy, dvdx, land, lowA
-    double precision, intent(in):: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
-
-    peri = Periodic_x + Periodic_y
-    ! double precision shear(0:nx+1,0:ny+1)
-
-    land  = -999d0
-    shear_I = land
-    ! lowA = -888d0
-    lowA = 0d0
-
-    if (peri .ne. 0) call periodicBC(utp,vtp)
-
-
-    do i = 0, nx+1
-        do j = 0, ny+1
-
-            dudx       = 0d0
-            dvdy       = 0d0
-            dudy       = 0d0
-            dvdx       = 0d0
-               
-            if ( maskC(i,j) .eq. 1 ) then
-                  
-                    dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-                    dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
-                  
-                if     ( maskC(i+1,j) + maskC(i-1,j) .eq. 2 ) then
-                     
-                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-                            ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
-                            ( 4d0 * Deltax )
-                     
-                elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. 1 ) then
-                    
-                    dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-                            3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-                            ( 6d0 * Deltax )
-                
-                elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. -1 ) then
-                    
-                    dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
-                            3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-                            ( 6d0 * Deltax )
-                    
-                elseif ( maskC(i+1,j) + maskC(i-1,j) .eq. 0 ) then
-                    
-                    print *, 'WARNING: irregular grid cell case1', i, j
-                    
-                endif
-
-               
-                if     ( maskC(i,j+1) + maskC(i,j-1) .eq. 2 ) then
-                    
-                    dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                            ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
-                            ( 4d0 * Deltax )
-                     
-                elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
-                    
-                    dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                     
-                elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. -1 ) then
-                     
-                    dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                     
-                elseif ( maskC(i,j+1) + maskC(i,j-1) .eq. 0 ) then
-                     
-                    print *, 'WARNING: irregular grid cell case2',i,j
-                     
-                endif
-                  
-!----- stresses and strain rates at the grid center -------------------------   
-
-                shear_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
-                       + ( dudy + dvdx )**2d0 )
-                ! div_I(i, j) = (dudx + dvdy)
-            
-            else
-                shear_I(i,j) = land
-                ! div_I(i, j) = land
-
-            endif
-
-        enddo
-    enddo
-
-    if (Periodic_y .eq. 0) then
-        j = 0
-        do i = 0, nx+1
-            if ( maskC(i,j) .eq. 1 ) then
-                shear_I(i,j)     = lowA
-                ! div_I(i, j) = lowA
-            endif
-        enddo
-
-        j=ny+1
-        do i = 0, nx+1
-            if ( maskC(i,j) .eq. 1 ) then
-                shear_I(i,j)    = lowA
-                ! div_I(i, j) = lowA
-            endif
-        enddo
-
-    elseif (Periodic_x .eq. 0) then
-        i=0
-        do j=0,ny+1
-            if ( maskC(i,j) .eq. 1 ) then
-                shear_I(i,j)     = lowA
-                ! div_I(i, j) = lowA
-            endif
-        enddo
-
-        i = nx+1
-        do j=0,ny+1
-            if ( maskC(i,j) .eq. 1 ) then
-                shear_I(i,j)     = lowA
-                ! div_I(i, j) = lowA
-            endif
-        enddo
-
-    endif
-
-    ! if (peri .ne. 0) call periodicBC2(shear_I)
-
-    return
-end subroutine shear
-
-
-subroutine div(utp, vtp)
-
-    implicit none
-
-    include 'parameter.h'
-    include 'CB_mask.h'
-    include 'CB_const.h'
-    include 'CB_DynVariables.h'
-
-    integer i, j
-    double precision, intent(in) :: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
-    ! double precision, intent(out):: div(nx,ny)
-
-    do i = 1, nx
-        do j = 1, ny
-
-        if (maskC(i,j) .eq. 1) then
-
-            div_I(i,j)=(utp(i+1,j)-utp(i,j) + vtp(i,j+1)-vtp(i,j))/Deltax 
-
-        endif
-
-        enddo
-    enddo
-
-end subroutine div
-
 subroutine non_dimensional_shear
 
 !----------------------------------------------------------!
@@ -557,7 +943,7 @@ subroutine non_dimensional_shear
                     Press = max(Pmax(i, j), 1d-20)
 
                     !-- Computing I from Pmax --!
-                    Ifriction(i, j) = max(SQRT(rhoice * h(i, j)/Press) * d_average*shear_I(i, j), 1d0)
+                    Ifriction(i, j) = max(SQRT(rhoice * h(i, j)/Press) * d_average*shearC_I(i, j), 1d0)
 
                     !-- Computing shear rate --!
                     gamma_I(i, j) = c_1*Ifriction(i, j)**c_2

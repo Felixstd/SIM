@@ -114,15 +114,16 @@
                   call SIC_2_PHI()
                endif
 
-               call shear(uice, vice)
+               call shear_inv(uice, vice)
+               call Ice_strength()
+               call inertial_number()
+               call angle_friction_mu()
                
                if (dilatancy) then
                   call divergence_muphi
                endif
 
-               call Ice_strength()
-               call inertial_number()
-               call angle_friction_mu()
+               
 
             endif
 
@@ -146,6 +147,9 @@
             ul  = uice
             vl  = vice
 
+            !Location 
+            call variable_post(uice, vice, date, 1, expno, k)
+
 !------- Initialize stuff for tolerance and FGMRES its count -------------
 
             sumtot_its = 0
@@ -159,14 +163,16 @@
                uk2  = uice ! uk2 is u^k-2, uk1 is u^k-1 = uice here
                vk2  = vice
 
+               call variable_post(uk2, vk2, date, 2, expno, k)
+
                call transformer (uice,vice,xtp,1)
+
 
                if ( IMEX .eq. 1 ) then ! IMEX 1 (2 doesn't work with Picard) 
 
                   call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A )
                   
                   if (Rheology .eq. 3) then !calculate the damage factor
-                  
                      kd   = 0d0
                      dam  = dam1
                      damB = damB1
@@ -175,13 +181,15 @@
                   
 
                   elseif (Rheology .eq. 4) then
-                     call shear(uice, vice)                     
+                     call shear_inv(uice, vice)                     
                      call Ice_strength()
                      call inertial_number()
-                     ! call divergence_muphi()
                      call angle_friction_mu()
-                     ! call volumefraction_phi()
-                     ! call Ice_strength()
+                     if (dilatancy) then
+                        call divergence_muphi
+                     endif
+                     
+
                   else
                   
                      call Ice_strength()
@@ -194,6 +202,9 @@
 
                call ViscousCoefficient(uice,vice)
                call bvect (ul,vl,rhs) ! forms b(ul)
+               call variable_post(ul, vl, date, 3, expno, k)
+               call variable_post(etaC, zetaC, date, 5, expno, k)
+
                call Funk(xtp,rhs,Fu)
 
                res = sqrt(DOT_PRODUCT(Fu,Fu)) ! L2norm  
@@ -253,15 +264,12 @@
                      call stress_strain_MEB(uice, vice, date, kd, expno)
                   
                   elseif (Rheology .eq. 4) then
-                     ! call angle_friction_mu()
-                     ! call shear(uice, vice)
-                     ! call Ice_strength()
-                     call shear(uice, vice)                     
+ 
+                     call shear_inv(uice, vice)                     
                      call Ice_strength()
                      call inertial_number()
                      call divergence_muphi()
                      call angle_friction_mu()
-                     ! call volumefraction_phi()
                      
                   else
                   
@@ -327,21 +335,7 @@
             kd = 1d0
             call stress_strain_MEB(uice, vice, date, kd, expno)
                   
-         endif      
-
-!          if ( Rheology .eq. 4) then
-! ! !------------------------------------------------------------------------        
-! ! !     If using the mu(I) - Phi(I) rheology, update the shear, inertial number, mu and the dilantancy      
-! ! !------------------------------------------------------------------------    
-
-!             call shear(uice, vice)
-!             ! call inertial_number()
-!             call angle_friction_mu()
-!             ! call dilatancy() 
-
-!          endif
-
-         
+         endif               
 
 !------------------------------------------------------------------------       
 
@@ -360,32 +354,17 @@
       if ( Dynamic ) then
 
          if (IMEX .eq. 0) then ! already done with IMEX 1 and 2
-            if ((rheology .eq. 4) .and.  (dilatancy .eqv. .true.) .and. (mu_phi .eqv. .true.) .and. (adv_mu .eqv. .true.)) then
-                  ! call shear(uice, vice)
-                  ! call angle_friction_mu
-                  ! call divergence_muphi
-                  ! call advection_mu(An1, hn1, uice, vice, h, A)
-                  print*, 'here adv'
+            call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A )
+            call variable_post(A, h, date, 4, expno, k)
 
-            elseif (Rheology .eq. 3) then
-                call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam) 
+            ! elseif (Rheology .eq. 3) then
+            !     call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam) 
 
-            elseif (( mu_phi .eqv. .false.) .and. (rheology .eq. 4)) then 
-               print*, 'here adv mu'
-               call advection_thickness(uice, vice, hn1, h)
-               call volumefraction_phi(An1, A)
 
-            else
-               print*, 'here adv2'
-               call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A )
-            
-            endif
 
          endif
             
       endif
-
-      ! print*, A 
 
 ! we should have monthly winds fr thermo forcing...modify load_forcing.f
          

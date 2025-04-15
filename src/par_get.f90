@@ -207,7 +207,7 @@
       correction_plus = .true.
       correction_minus = .false.
       ! d = 200
-      theta =  45*pi/180
+      theta =  0d0*pi/180
       intercept_2 = 200
       d = sqrt(2*intercept_2**2)
 
@@ -219,7 +219,7 @@
 
       wjac  = 0.575d0
       ! wsor  = 2d0           ! relaxation parameter for SOR precond
-      wlsor = 1.1d0           ! relaxation parameter for SOR precond
+      wlsor = 1d0           ! relaxation parameter for SOR precond
       ! wlsor = 1.3d0
       ! wlsor = 0.6d0
       ! wsor  = 0.95d0           ! relaxation parameter for SOR precond
@@ -440,7 +440,7 @@ subroutine read_namelist
       namelist /phys_param_nml/ &
            Pstar, C, e_ratio, k1, k2, rhoair, rhoice, rhowater, &
            Cdair, Cdwater, f, d_average, mu_0 , mu_infty, mu_b, c_phi, &
-            I_0 , Phi_0, c_1, c_2, phi_f_micro, Deltax
+            I_0 , Phi_0, c_1, c_2, phi_f_micro, Deltax, theta
 
       ! filename ='namelistMuPhi'
       filename ='namelistMuPhi_uniaxial'
@@ -674,7 +674,12 @@ subroutine read_namelist
          do i = 0, nx+1
             do j = 0, ny+1
                maskC(i,j) = 1
-               if ((j .lt. 1) .or. (j .gt. ny)) then
+               ! if ((j .lt. 1) .or. (j .gt. ny-1)) then
+
+               ! if (((i .lt. 1) .or. (i .gt. nx)) .and. (j .lt. ny/2)) then
+               !    maskC(i,j) = 0    
+               ! endif    
+               if (j .lt. 1) then
                   maskC(i,j) = 0                        
                endif
             enddo

@@ -50,7 +50,8 @@
                 Pmu      (0:nx+2,0:ny+2), &
                 inertial (0:nx+2,0:ny+2), &
                 Ifriction(0:nx+2,0:ny+2), &
-                shear_I  (0:nx+2,0:ny+2), &
+                shearC_I  (0:nx+2,0:ny+2), &
+                shearB_I  (0:nx+2,0:ny+2), &
                 Phi_I    (0:nx+2,0:ny+2), &
                 mu_I     (0:nx+2,0:ny+2), &
                 mu_B_I   (0:nx+2,0:ny+2), &
@@ -59,7 +60,6 @@
                 tan_psi  (0:nx+2,0:ny+2), &
                 P_fric   (0:nx+2,0:ny+2), &
                 P_col    (0:nx+2,0:ny+2), &
-                Pdilat   (0:nx+2,0:ny+2), &
                 gamma_I  (0:nx+2,0:ny+2), &
                 Phi_S    (0:nx+2,0:ny+2), &
                 Phi_G    (0:nx+2,0:ny+2), &
@@ -112,7 +112,8 @@
                 Peq,            & ! mu-phi pressure, comes from I
                 inertial,       & ! Inertial number I
                 Ifriction,      & ! Frictional I for frictional pressure
-                shear_I,        & ! Max shear strain rate
+                shearC_I,        & ! Max shear strain rate
+                shearB_I, &
                 Phi_I,          & ! Volume fraction from 1-I
                 mu_I,           & ! Friction coefficient mu
                 mu_B_I,         & ! bulk friction coefficient (non constant)

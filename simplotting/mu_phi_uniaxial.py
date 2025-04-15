@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import os
 import warnings
 import argparse
+import matplotlib.lines as mlines
 
 warnings.filterwarnings("ignore")
  
@@ -41,18 +42,18 @@ elif time == 2:
 elif time == 3:
         # --- Time for 2 hours 30 minutes run ---#
         start = datetime(1990, 1, 1, 0, 5, 00)
-        start_k = 1
+        start_k = 6
         # Time interval (30 seconds initially, then 5-minute steps)
-        intervals = [timedelta(seconds=30)]*0  + [timedelta(minutes=4)]*0 + [timedelta(minutes=5)]*24 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+        intervals = [timedelta(seconds=30)]*5  + [timedelta(minutes=4)]*0 + [timedelta(minutes=5)]*24 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
        
 elif time == 4:
         #--- Time for 2 hours 30 minutes run ---#
-        # start = datetime(1990, 1, 1, 8, 0, 00)
-        # start_k = 48
-        start = datetime(1990, 1, 1, 0, 10 ,00, 00)
-        start_k = 1
-        intervals = [timedelta(minutes=10)]*11 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
-        # intervals = [timedelta(minutes=10)]*58 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+        start = datetime(1990, 1, 1,4 , 00, 00)
+        start_k = 24
+        # start = datetime(1990, 1, 1, 0 ,10, 00)
+        # start_k = 1
+        intervals = [timedelta(minutes=10)]*6#+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+        # intervals = [timedelta(minutes=10)]*2 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
 
 dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S') for i in range(len(intervals)+1)]
 print(dates)
@@ -68,13 +69,28 @@ figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_Runs_ShearExperiment
 
 
 #------- Mu -------#
-outputdir = "/storage/fstdenis/output_sim/"
+outputdir = "/storage/fstdenis/output_sim/output_mu_ShearExperiments/"
 figdir = '/storage/fstdenis/Experiments_Results_MuPhi/Mu_ShearExperiments/'
 
+#------- Mu Periodic Boundary Conditions -------#
+outputdir = "/storage/fstdenis/output_sim_mu_PeriodicBC/"
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/Mu_PeriodicBC/'
 
+#------- Mu Periodic Boundary Conditions -------#
+outputdir = "/storage/fstdenis/output_sim/"
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/VP_PeriodicBC/'
 
-for i in range(expno, expno+1):
-    expno = "{:02d}".format(i)
+markers = ['.', 'x', '^', '*']
+fig_ellipse = plt.figure()
+ax_ellipse = plt.axes()
+
+ax_ellipse.set_aspect('equal')
+ax_ellipse.grid()
+# expnos = [40, 42, 43, 44]
+expnos = [expno]
+# for i in range(expno, expno+1):
+for i, expno in enumerate(expnos):
+    expno = "{:02d}".format(expno)
 
     if not os.path.isdir(figdir+expno):
         os.mkdir(figdir+expno)
@@ -95,8 +111,12 @@ for i in range(expno, expno+1):
     mask = np.ones((Ny, Nx))
     mask[0, :] = 0
     
-#     filemask=outputdir+"mask.dat"
-#     maskC = np.genfromtxt(filemask, dtype=None)
+    filemask=outputdir+"mask.dat"
+    maskC = np.genfromtxt(filemask, dtype=None)
+    
+    # plt.figure()
+    # plt.pcolor(maskC)
+    # plt.savefig('mask.png')
 
     N_transect = 51
     muphi = 1
@@ -108,31 +128,49 @@ for i in range(expno, expno+1):
     if muphi:
         divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot, sigI_tot, sigII_tot, \
             zeta_tot, eta_tot, uair_tot, vair_tot, muI_tot, phi_tot, I_tot, shearI_tot, Pmax_tot, Peq_tot = datadict.values()
-
+            
+        I = I_tot[0]
+        shearI = shearI_tot[0]
+        mu = muI_tot[0]
+        zeta = zeta_tot[0]
+        eta = eta_tot[0]
+        print(np.shape(shearI))
+        # print('I', np.vstack([I[100:, 1],I[100:, -1]]).T)
+        print('shearI', np.vstack([shearI[100:, 1],shearI[100:, -1]]).T)
+        print('shearI', np.vstack([shearI[201, 0],shearI[201, 501]]).T)
+        # print('mu', np.vstack([mu[100:, 1],mu[100:, -1]]).T)
+        # print('zeta', np.vstack([zeta[100:, 1],zeta[100:, -1]]).T)
+        # print('eta', np.vstack([eta[100:, 1],eta[100:, -1]]).T)
     
     else: 
         
         divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
             datadict.values()
             
-    h = h_tot[1]
-    u = u_tot[1]
-    v = v_tot[1]
+    h = h_tot[0]
+    u = u_tot[0]
+    v = v_tot[0]
+    p = p_tot[0]
     # mu = muI_tot[1]
-    A = A_tot[1]
-    div = divergence_tot[1]
-    shear = shear_tot[1]
+    A = A_tot[0]
+    div = divergence_tot[0]
+    shear = shear_tot[0]
+    zeta = zeta_tot[0]
+    eta = eta_tot[0]
+    # shear = shearI_tot[1]
     
+    # print(np.shape(u))
+    # print('h', np.vstack([h[100:, 1],h[100:, -1]]).T)
+    # print('A', np.vstack([A[100:, 1],A[100:, -1]]).T)
+    # print('u', np.vstack([u[100:, 0],u[100:, -1]]).T)
+    # print('v', np.vstack([v[100:, 0],v[100:, -1]]).T)
+    # print('p', np.vstack([p[100:, 0],p[100:, -1]]).T)
+    # print('div',np.vstack([div[100:, 1],div[100:, -1]]).T)
+    # print('shear',np.vstack([shear[100:, 1],shear[100:, -1]]).T)
+    # print('shear',np.vstack([shear[100:, 0],shear[100:, -2]]).T)
+    print('zeta', np.vstack([zeta[100:, 1],zeta[100:, -1]]).T)
+    print('eta', np.vstack([eta[100:, 1],eta[100:, -1]]).T)
     
-    print('h', np.vstack([h[100:, 1],h[100:, -1]]).T)
-    print('A', np.vstack([A[100:, 1],A[100:, -1]]).T)
-    print('u', np.vstack([u[100:, 1],u[100:, -1]]).T)
-    print('v', np.vstack([v[100:, 1],v[100:, -1]]).T)
-    print('div',np.vstack([div[100:, 1],div[100:, -1]]).T)
-    print('shear',np.vstack([shear[100:, 1],shear[100:, -1]]).T)
-    # print('mu',np.vstack([mu[100:, 1],mu[100:, -1]]).T)
-    # print('mu', np.vstack([mu[100:, 0],mu[100:, -2]]).T)
-    # print(np.vstack([h[100:, 1],h[100:, -1]]).T)
     
     # print(datadict)
     # #---------- Analysing Wind Forcing----------#
@@ -144,12 +182,89 @@ for i in range(expno, expno+1):
     # #---------- Plotting ----------#
     plot.uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
     
-    # mean_mu_time, mean_div_time, mean_shear_time = analysis.mean_values(dates, datadict, dx, dt)
-    # plot.plot_mean(mean_mu_time, time, r'$\langle\mu\rangle$', 'mean_mu.png', expno, figdir)
-    # plot.plot_mean(mean_div_time, time, r'$\langle\ \dot{\epsilon}_I \rangle$ (day$^{-1}$)', 'mean_div.png', expno, figdir)
-    # plot.plot_mean(mean_shear_time, time, r'$\langle\ \dot{\epsilon}_\mathrm{II} \rangle$ (day$^{-1}$)', 'mean_shear.png', expno, figdir)
+    
+    # for j in range(len(sigI_tot)):
+    # # for i in range(0, 1):
+    j = -1
+    sigI = sigI_tot[j]
+    sigII = sigII_tot[j]
+    
+    sigI_1 = sigI[0:90, :]
+    sigI_2 = sigI[90:110, :]
+    sigI_3 = sigI[110:, :]
+    
+    sigII_1 = sigII[0:90, :]
+    sigII_2 = sigII[90:110, :]
+    sigII_3 = sigII[110:, :]
+    
+    
+    
+    # plt.plot(sigI_tot[i].flatten(), sigII_tot[i].flatten(), linestyle ='', marker = 'o', markersize=1)
+    
+    ax_ellipse.scatter(sigI_1.flatten(), sigII_1.flatten(), alpha = 0.2,color = 'r', marker = markers[i], s=2)
+    ax_ellipse.scatter(sigI_3.flatten(), sigII_3.flatten(),  alpha = 0.2,color = 'r', marker = markers[i], s=2)
+    ax_ellipse.scatter(sigI_2.flatten(), sigII_2.flatten(),  alpha = 0.2,color = 'g' ,marker = markers[i], s=2)
+    
+#     mean_mu_time, mean_div_time, mean_shear_time = analysis.mean_values(dates, datadict, dx, dt)
+#     plot.plot_mean(mean_mu_time, time, r'$\langle\mu\rangle$', 'mean_mu.png', expno, figdir)
+#     plot.plot_mean(mean_div_time, time, r'$\langle\ \dot{\epsilon}_I \rangle$ (day$^{-1}$)', 'mean_div.png', expno, figdir)
+#     plot.plot_mean(mean_shear_time, time, r'$\langle\ \dot{\epsilon}_\mathrm{II} \rangle$ (day$^{-1}$)', 'mean_shear.png', expno, figdir)
     
     # analysis.velocity_transects(datadict, dates, dx,figdir, expno, MuPhi = muphi)
 #     
-#     plot.totdef_uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
+    # plot.totdef_uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
     
+u  =u_tot[-1]
+print(np.shape(u))
+# u_split = np.hsplit(u, 2)
+y = np.shape(u)[1] // 2  # 250
+u_split_1 = u[:, :y]
+u_split_2 = u[:, y+1:]
+
+# print(np.shape(u_split))
+plt.figure()
+plt.pcolor(u_split_1 - u_split_2)
+plt.colorbar()
+plt.savefig('error_vp.png')
+
+
+
+
+
+
+sigI = sigI_tot[-1]
+sigII = sigII_tot[-1]
+print(np.shape(sigI))
+
+sigI_t = np.linspace(-1 ,0, 2000 )
+# sigI_t = np.arange(0,1, 0.0001 )
+sigII_t = (1/2)*np.sqrt((1/2)**2-(sigI_t+1/2)**2)
+colors = ['blue', 'green', 'red']
+
+
+    
+ext = mlines.Line2D([], [], color='r', marker= 'None', linestyle='None',
+                      markersize=1, label='Extremities')
+cent = mlines.Line2D([], [], color='g', marker= 'None', linestyle='None',
+                      markersize=1, label='Center')
+zerodeg = mlines.Line2D([], [], color='k', marker= '.', linestyle='None',
+                      markersize=1, label='0°')
+tendeg = mlines.Line2D([], [], color='k', marker= 'x', linestyle='None',
+                      markersize=1, label='10°')
+twentydeg = mlines.Line2D([], [], color='k', marker= '^', linestyle='None',
+                      markersize=1, label='20°')
+thirtydeg = mlines.Line2D([], [], color='k', marker= '*', linestyle='None',
+                      markersize=1, label='30°')
+
+
+
+                        
+fig_ellipse.legend(loc='upper center', 
+        handles=[ext, cent, zerodeg, tendeg, twentydeg, thirtydeg], labelcolor='linecolor',  bbox_to_anchor=(1.05, 0.9))
+    
+    
+ax_ellipse.plot(sigI_t, sigII_t, color = 'k')
+ax_ellipse.plot(sigI_t, -sigII_t, color = 'k')
+ax_ellipse.set_xlabel(r'$\sigma_I/P$')
+ax_ellipse.set_ylabel(r'$\sigma_{II}/P$')
+fig_ellipse.savefig('sigI_sigII.png', dpi=500)

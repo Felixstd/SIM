@@ -181,14 +181,25 @@
       if ( Dynamic ) then
 
          ! do j = 1, ny
-         do j = 0, ny+1
-          !   write(12,*) ( uice(i,j), i = 1, nx+1 )
-          !   write(13,*) ( vice(i,j), i = 1, nx+1 )
-            write(12,*) ( uice(i,j), i = 0, nx+1 )
-            write(13,*) ( vice(i,j), i = 0, nx+1 )
-            write(44,*) (uair(i, j), i = 0, nx+1)
-            write(45,*) (vair(i, j), i = 0, nx+1)
-!            write(17,20) ( uwatnd(i,j), i = 1, nx+1 )
+     !     do j = 0, ny+1
+!           !   write(12,*) ( uice(i,j), i = 1, nx+1 )
+!           !   write(13,*) ( vice(i,j), i = 1, nx+1 )
+!             write(12,*) ( uice(i,j), i = 0, nx+1 )
+!             write(13,*) ( vice(i,j), i = 0, nx+1 )
+!             write(44,*) (uair(i, j), i = 0, nx+1)
+!             write(45,*) (vair(i, j), i = 0, nx+1)
+! !            write(17,20) ( uwatnd(i,j), i = 1, nx+1 )
+!          enddo
+
+          do j = 1, ny
+            write(12,*) ( uice(i,j), i = 1, nx+1 )
+            write(44,20) ( uair(i,j), i = 1, nx+1 )
+         enddo
+
+
+         do j = 1, ny+1
+            write(13,*) ( vice(i,j), i = 1, nx )
+           write(45,10) ( vair(i,j), i = 1, nx )
          enddo
 
          do j = 0, ny+1
@@ -255,7 +266,7 @@
             write(38,*) ( mu_I(i,j), i = 0, nx+1)
             write(39,*) ( Peq(i,j), i = 0, nx+1)
             write(43,*) ( Pmax(i,j), i = 0, nx+1)
-            write(15,*) (shear_I(i, j), i = 0, nx+1)
+            write(15,*) (shearC_I(i, j), i = 0, nx+1)
           !   write(41,*) (etaC(i, j), i = 0, nx+1)
          enddo
          
@@ -278,6 +289,114 @@
  !100  format (1x, 1000(e12.4, 1x))
       return
     end subroutine sea_ice_post
+
+
+subroutine variable_post(u, v, date, loc, expno, k)
+
+     ! ----- Subroutine used to output a pair of variables u and v which can be any other one ------ !
+     !
+     !
+     use datetime, only: datetime_type
+     implicit none
+
+     include 'parameter.h'
+     include 'CB_options.h'
+     include 'CB_DynVariables.h'
+     include 'CB_ThermoVariables.h'
+     include 'CB_ThermoForcing.h'
+     include 'CB_DynForcing.h'
+     include 'CB_buoys.h'
+
+     type(datetime_type), intent(in) :: date
+     
+     integer, intent(in) :: expno
+     integer, intent(in) :: loc
+     integer, intent(in) :: k
+
+     double precision, intent(in) :: u(0:nx+2, 0:ny+2), v(0:nx+2, 0:ny+2)
+     integer i, j, c, kk, year, month, day, hour, minute, second
+
+     character filename*64
+
+     year = date%year
+     month = date%month
+     day = date%day
+     hour = date%hour
+     minute = date%minute
+     second = date%second
+
+     write (filename,&
+          '("/storage/fstdenis/output_sim/var1","_",i2.2,"_",i2.2,"_", &
+          i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+           loc, k, year, month, day, hour, minute, second, expno
+      open (10, file = filename, status = 'unknown')
+
+      write (filename,&
+          '("/storage/fstdenis/output_sim/var2","_",i2.2,"_",i2.2,"_",&
+          i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+           loc, k, year, month, day, hour, minute, second, expno
+      open (11, file = filename, status = 'unknown')
+
+
+     do j = 0, ny+2
+          write(10,*) ( u(i,j), i = 0, nx+2 )
+          write(11,*) ( v(i,j), i = 0, nx+2 )
+     enddo
+
+     do c = 10, 11
+         close(c)
+     enddo
+
+
+end subroutine variable_post
+
+subroutine variable_post2(u, v, loc, expno, k)
+
+     ! ----- Subroutine used to output a pair of variables u and v which can be any other one ------ !
+     !
+     !
+     implicit none
+
+     include 'parameter.h'
+     include 'CB_options.h'
+     include 'CB_DynVariables.h'
+     include 'CB_ThermoVariables.h'
+     include 'CB_ThermoForcing.h'
+     include 'CB_DynForcing.h'
+     include 'CB_buoys.h'
+
+     
+     integer, intent(in) :: expno
+     integer, intent(in) :: loc
+     integer, intent(in) :: k
+
+     double precision, intent(in) :: u(0:nx+2, 0:ny+2), v(0:nx+2, 0:ny+2)
+     integer i, j, c, kk, year, month, day, hour, minute, second
+
+     character filename*64
+
+     write (filename,&
+          '("/storage/fstdenis/output_sim/var2","_",i2.2,"_",i2.2,".",i2.2)') &
+           loc, k, expno
+      open (1, file = filename, status = 'unknown')
+
+      write (filename,&
+          '("/storage/fstdenis/output_sim/var2","_",i2.2,"_",i2.2,".",i2.2)') &
+           loc, k, expno
+      open (2, file = filename, status = 'unknown')
+
+
+     do j = 0, ny+2
+          write(1,*) ( u(i,j), i = 0, nx+2 )
+          write(2,*) ( v(i,j), i = 0, nx+2 )
+     enddo
+
+     do c = 1, 2
+         close(c)
+     enddo
+
+
+end subroutine variable_post2
 
 subroutine info_file (expno)
 

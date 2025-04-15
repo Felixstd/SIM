@@ -4,7 +4,8 @@
       use datetime, only: delta_init, datetime_str, seconds, time_set_from_datetime
       use io, only: load_geostrophic_wind, RP!, load_climatological_wind
       use solver_choice
-      use grid_angle
+      use muphi
+      use UTILS
 
       implicit none
 
@@ -27,7 +28,7 @@
       character(LEN=60) file_u, file_v
 
       integer i, j, imax, jmax 
-      integer  ncell
+      integer  ncell, peri
       integer, parameter :: h2sec = 3600
       integer  year, month, day, hour, minute, second, milli
 
@@ -38,6 +39,8 @@
       double precision uuair(0:nx+2,0:ny+2),uvair(0:nx+2,0:ny+2)
  
       logical :: verbose = .false.
+
+      peri = Periodic_x + Periodic_y
      
       delta =  int(deltax)/1000
 
@@ -182,11 +185,11 @@
                
                elseif (shear_test) then
                   if (j .gt. 100) then 
-                     uair(i, j) = wspeed*rampfactor
-                     vair(i, j) = 0d0
-                     ! uair(i, j) = wspeed*rampfactor*cos(theta)
-                     ! vair(i, j) = -wspeed**rampfactor*sin(theta)
-                  !    
+                     ! uair(i, j) = wspeed*rampfactor
+                     ! vair(i, j) = 0d0
+                     uair(i, j) = wspeed*rampfactor*cos(theta*PI/180d0)
+                     vair(i, j) = -wspeed**rampfactor*sin(theta*PI/180d0)
+                  ! !    
                   endif
                   ! uair(i, j) = wspeed*rampfactor*(1-abs(1-2*jj/dble(ny)))
 
@@ -336,8 +339,14 @@
          stop
 
       endif
-         
+
+      ! if (peri .ne. 0) then
+      !    call periodicBC(R1, R2)
+      !    call periodicBC(R1n, R2n)
+      !    call periodicBC(uair, vair)
+      !    call periodicBC(uuair, uvair)
+      ! endif
+
       return
       end
       
-

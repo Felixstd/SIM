@@ -43,7 +43,8 @@ def plot_colormesh(ax, dx, fig, X, Y, Field, cmap, norm, label, xlabel, ylabel):
         # ax.axvline(180*dx/1e3, color = 'pink', zorder = 3)
         ax.set_xticks(np.arange(0, Ny, 100)*dx/1e3)
         # cax = fig.add_axes([ax.get_position().x1+0.01,ax.get_position().y0,0.02,ax.get_position().height])
-        fig.colorbar(pc, ax = ax, label = label)
+        cbar = fig.colorbar(pc, ax = ax)
+        cbar.set_label(label = label, fontsize = 16)
         # ax.invert_yaxis()
         if xlabel:
             ax.set_xlabel(xlabel)
@@ -96,19 +97,26 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
     X = np.arange(0, Nx)*dx/1e3
     Y = np.arange(0, Ny)*dx/1e3
     
+    Nx2, Ny2 = np.shape(u_tot[0])
+    
+
+    X2, Y2 =  np.arange(0, Nx2)*dx/1e3,  np.arange(0, Ny2-1)*dx/1e3
+    
     
     for k, date in enumerate(dates):
         
         print('Plotting: ', date)
         
-        divergence, shear = divergence_tot[k], shear_tot[k]
+        divergence, shear = divergence_tot[k], shearI_tot[k]*86400
+        # shear = shearI_tot[k]*86400
         h, A, p = h_tot[k], A_tot[k], p_tot[k]
         sigI, sigII = sigI_tot[k], sigII_tot[k]
         zeta, eta = zeta_tot[k], eta_tot[k]
         uair, vair = uair_tot[k], vair_tot[k]
         u, v = u_tot[k], v_tot[k]
         
-        divergence[divergence < 100] = np.nan
+
+        divergence[divergence < -100] = np.nan
         shear[shear < 0 ] = np.nan
         sigI[sigI < -500 ] = np.nan
         sigII[sigII < -500 ] = np.nan
@@ -117,9 +125,11 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
         #----- DEFORMATION Plots -----#
         
         x, y = np.meshgrid(Y, X)
+        x2, y2 = np.meshgrid(Y2, X2)
+        
         # fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2, figsize=(5, 6))
-        quiver_step = max(x.shape[1] // 20, 1)
-        quiver_step_2 = max(x.shape[0] // 20, 1)
+        quiver_step = max(x2.shape[1] // 20, 1)
+        quiver_step_2 = max(x2.shape[0] // 20, 1)
         
         
         if Shear:
@@ -127,7 +137,7 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
         else:
             fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2, figsize=(6, 7))
         plot_colormesh(ax1, dx, fig, X, Y, 1-A, cmocean.cm.ice, colors.LogNorm(vmin=1e-6, vmax=1e-1), r'$1-A$', None, None)
-        plot_colormesh(ax2, dx, fig, X, Y, h-1, cmocean.cm.balance, colors.SymLogNorm(linthresh  = 1e-4, vmin=-1e-3, vmax=1e-3), r'$h-1$', None, None)
+        plot_colormesh(ax2, dx, fig, X, Y, h-1, cmocean.cm.balance, colors.SymLogNorm(linthresh  = 1e-4, vmin=-1e-2, vmax=1e-2), r'$h-1$', None, None)
     
         if log:
             plot_colormesh(ax3, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.LogNorm(vmin=1e-4, vmax=1e-0), 
@@ -135,9 +145,9 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
             plot_colormesh(ax4, dx, fig, X, Y, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-4, vmax=1e-0), 
             r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', None, None) 
         else:
-            plot_colormesh(ax3, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-6, vmin=-1e-3, vmax=1e-3), 
+            plot_colormesh(ax3, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-6, vmin=-1e-1, vmax=1e-1), 
                 r'$\dot{\epsilon}_{\mathrm{I}} \text{ (day}^{-1})$', None, None)
-            plot_colormesh(ax4, dx, fig, X, Y, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-5, vmax=1e-1), 
+            plot_colormesh(ax4, dx, fig, X, Y, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-7, vmax=1e-1), 
                 r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', None, None) 
         
         plt.subplots_adjust(hspace = 0.1)
@@ -146,26 +156,34 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
         # fig.tight_layout()
         plt.savefig(figdir+expno+'/deformations_{}.png'.format(date))
         
+        divergence = divergence[1:-1, 1:-1]
+        shear = shear[1:-1, 1:-1]
+        h = h[1:-1, 1:-1]
+        A = A[1:-1, 1:-1]
+        uair = uair[:, :-1]
+        u = u[:, :-1]
+        vair = vair[:-1, :]
+        v = v[:-1, :]
         
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, sharex = True, sharey = True, figsize = (8, 4))
         
         
-        plot_colormesh(ax1, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-4, vmin=-1e-1, vmax=1e-1), 
+        plot_colormesh(ax1, dx, fig, X2, Y2, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-4, vmin=-1e-1, vmax=1e-1), 
                 r'$\dot{\epsilon}_{\mathrm{I}} \text{ (day}^{-1})$', None, None)
-        ax1.quiver(x[::quiver_step_2, ::quiver_step], y[::quiver_step_2, ::quiver_step], u[::quiver_step_2, ::quiver_step], v[::quiver_step_2, ::quiver_step], color = 'r')
+        ax1.quiver(x2[::quiver_step_2, ::quiver_step], y2[::quiver_step_2, ::quiver_step], u[::quiver_step_2, ::quiver_step], v[::quiver_step_2, ::quiver_step], color = 'r')
         
-        plot_colormesh(ax2, dx, fig, X, Y, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-4, vmax=1e-0), 
+        plot_colormesh(ax2, dx, fig, X2, Y2, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-4, vmax=1e-0), 
             r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', None, None) 
-        ax2.quiver(x[::quiver_step_2, ::quiver_step], y[::quiver_step_2, ::quiver_step], u[::quiver_step_2, ::quiver_step], v[::quiver_step_2, ::quiver_step], color = 'r')
+        ax2.quiver(x2[::quiver_step_2, ::quiver_step], y2[::quiver_step_2, ::quiver_step], u[::quiver_step_2, ::quiver_step], v[::quiver_step_2, ::quiver_step], color = 'r')
         
         
-        plot_colormesh(ax3, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-4, vmin=-1e-1, vmax=1e-1), 
+        plot_colormesh(ax3, dx, fig, X2, Y2, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-4, vmin=-1e-1, vmax=1e-1), 
                 r'$\dot{\epsilon}_{\mathrm{I}} \text{ (day}^{-1})$', None, None)
-        ax3.quiver(x[::quiver_step_2, ::quiver_step], y[::quiver_step_2, ::quiver_step], uair[::quiver_step_2, ::quiver_step], vair[::quiver_step_2, ::quiver_step], color = 'g')
+        ax3.quiver(x2[::quiver_step_2, ::quiver_step], y2[::quiver_step_2, ::quiver_step], uair[::quiver_step_2, ::quiver_step], vair[::quiver_step_2, ::quiver_step], color = 'g')
         
-        plot_colormesh(ax4, dx, fig, X, Y, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-4, vmax=1e-0), 
+        plot_colormesh(ax4, dx, fig, X2, Y2, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-4, vmax=1e-0), 
             r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', None, None) 
-        ax4.quiver(x[::quiver_step_2, ::quiver_step], y[::quiver_step_2, ::quiver_step], uair[::quiver_step_2, ::quiver_step], vair[::quiver_step_2, ::quiver_step], color = 'g')
+        ax4.quiver(x2[::quiver_step_2, ::quiver_step], y2[::quiver_step_2, ::quiver_step], uair[::quiver_step_2, ::quiver_step], vair[::quiver_step_2, ::quiver_step], color = 'g')
        
         fig.supylabel('Y (km)')
         fig.supxlabel('X (km)')
@@ -223,6 +241,9 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
             
             plt.savefig(figdir+expno+'/icestrenght{}.png'.format(date))
             
+            sigI = sigI[1:-1, 1:-1]
+            sigII = sigII[1:-1, 1:-1]
+            I = I[1:-1, 1:-1]
             fig = plt.figure()
             ax = plt.axes()
             if (np.shape(sigI)[0] == 1002):
@@ -251,7 +272,34 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
             ax.set_xlabel(r'$\sigma_{I}/P$')
             ax.set_ylabel(r'$\sigma_{II}/P$')
             plt.savefig(figdir+expno+'/stress_space{}.png'.format(date))
-            
+        
+
+        fig, ((ax1, ax2)) = plt.subplots(2,1, figsize=(8, 6))
+
+        plot_colormesh(ax1, dx, fig, X2, Y2, 1-A, cmocean.cm.ice, colors.LogNorm(vmin=1e-6, vmax=1e-1), r'$1-A$', None, None)
+        plot_colormesh(ax2, dx, fig, X2, Y2, h-1, cmocean.cm.balance, colors.SymLogNorm(linthresh  = 1e-4, vmin=-1e-2, vmax=1e-2), r'$h-1$', None, None)
+
+        plt.subplots_adjust(hspace = 0.1)
+        fig.supxlabel('x (km)', fontsize = 16)
+        fig.supylabel('y (km)', fontsize = 16)
+        # fig.tight_layout()
+        plt.savefig(figdir+expno+'/tracers_{}.png'.format(date))
+        
+        
+        # fig, ((ax1, ax2)) = plt.subplots(1,2, figsize=(8, 6))
+        fig, ((ax1, ax2)) = plt.subplots(2,1, figsize=(8, 6))
+        plot_colormesh(ax1, dx, fig, X2, Y2, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-6, vmin=-1e-1, vmax=1e-1), 
+            r'$\dot{\epsilon}_{\mathrm{I}} \text{ (day}^{-1})$', None, None)
+        plot_colormesh(ax2, dx, fig, X2, Y2, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-4, vmax=1e-2), 
+            r'$\dot{\epsilon}_{\mathrm{II}} \text{ (day}^{-1})$', None, None) 
+       
+        plt.subplots_adjust(hspace = 0.1)
+        fig.supxlabel('x (km)', fontsize = 16)
+        fig.supylabel('y (km)', fontsize = 16)
+        # fig.tight_layout()
+        plt.savefig(figdir+expno+'/shear_div_{}.png'.format(date))
+
+        
         plt.close()
             
 def totdef_uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPhi = True, log = True):

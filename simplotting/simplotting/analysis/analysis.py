@@ -258,13 +258,14 @@ def velocity_transects(data_dict, dates, dx,figdir, expno, MuPhi = True):
         
         divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
             data_dict.values()
-        
-    Nx, Ny = np.shape(divergence_tot[0])
     
-    Half_domain = Nx//2
+    Nx2, Ny2 = np.shape(u_tot[0])
     
-    X = np.arange(0, Nx)*dx/1e3
-    Y = np.arange(0, Ny)*dx/1e3
+    X2, Y2 =  np.arange(0, Nx2)*dx/1e3,  np.arange(0, Ny2-1)*dx/1e3
+
+    
+    Half_domain = Nx2//2
+    
     
     colors = ['0C5DA5', '00B945', 'FF9500', 'FF2C00', '845B97', 'forestgreen', 'orangered']
     fig, ((ax1, ax2), (ax3, ax4)) =  plt.subplots(2, 2, sharey = True, figsize = (5, 4))
@@ -278,12 +279,18 @@ def velocity_transects(data_dict, dates, dx,figdir, expno, MuPhi = True):
         if k % 10 == 0 :
             u, v       = u_tot[k], v_tot[k]
             uair, vair = uair_tot[k],  vair_tot[k]
-            color = '#%06X' % randint(0, 0xFFFFFF)
-            line = ax1.plot(u[:, Half_domain], X, color = color, linestyle = '-',)
-            ax3.plot(uair[:, Half_domain], X, color = color, linestyle = '--')
             
-            ax2.plot(v[:, Half_domain], X, color = color, linestyle = '-', label = 'v') 
-            ax4.plot(vair[:, Half_domain], X, color = color, linestyle = '--')
+            uair = uair[:, :-1]
+            u = u[:, :-1]
+            vair = vair[:-1, :]
+            v = v[:-1, :]
+            
+            color = '#%06X' % randint(0, 0xFFFFFF)
+            line = ax1.plot(u[:, Half_domain], X2, color = color, linestyle = '-',)
+            ax3.plot(uair[:, Half_domain], X2, color = color, linestyle = '--')
+            
+            ax2.plot(v[:, Half_domain], X2, color = color, linestyle = '-', label = 'v') 
+            ax4.plot(vair[:, Half_domain], X2, color = color, linestyle = '--')
             date_list.append(date)
             lines.append(line[0])
             

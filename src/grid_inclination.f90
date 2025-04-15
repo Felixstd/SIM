@@ -1,6 +1,7 @@
 subroutine grid_inclination_mask
 
     use grid_angle
+    use muphi
 
     implicit none
 
@@ -64,6 +65,7 @@ end subroutine grid_inclination_mask
 subroutine grid_inclination_init
 
     use grid_angle
+    use muphi
 
     implicit none
 

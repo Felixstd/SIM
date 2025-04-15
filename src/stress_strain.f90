@@ -39,7 +39,6 @@
       integer i, j, m, year, month, day, hour, minute, second, peri
 
       double precision dudx, dvdy, dudy, dvdx, land, lowA
-      REAL(8) e11, e22, e12, e21, ep, em, sigp, sigm, sigtmp
 
 
       double precision, intent(in):: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
@@ -65,22 +64,14 @@
 
       peri = Periodic_x + Periodic_y
 
-!      land=0d0
-!      lowA=0d0
-
-
 ! note: to study the numerical convergence of the stress, zeta and eta should be calculated 
 !       with u^{k-1} and the deformations with u^k. This is why we use here zetaCf and etaCf
 !       Calculating both with u^k leads to stress that are all VP whatever the level of 
 !       convergence of the solution.
-         ! if (peri .ne. 0) call periodicBC(utp, vtp)
+         if (peri .ne. 0) call periodicBC(utp, vtp)
 
-
-         ! do i = 1, nx
-         !    do j = 1, ny
-         
-         do i = 0, nx+1
-            do j = 0, ny+1
+         do i = 1, nx
+            do j = 1, ny
 
                dudx       = 0d0
                dvdy       = 0d0
@@ -151,85 +142,25 @@
                         
                         print *, 'WARNING: irregular grid cell case2',i,j
                      
-                  endif
+                     endif
                   
 !----- stresses and strain rates at the grid center -------------------------   
 
 
                   shear(i,j) = sqrt(( dudx - dvdy )**2d0 &  ! in day-1
-                       + ( dudy + dvdx )**2d0 )*86400d0
+                     + ( dudy + dvdx )**2d0 )*86400d0
 
                   div(i,j)   = ( dudx + dvdy )*86400d0      ! in day-1
 
 ! watchout p in our code is in fact p/2 in Hibler's equations
 
-                  if (Rheology .eq. 4) then
-                     em = dudx - dvdy
-                     ep = dudx + dvdy
-
-                     e12 = (dudy + dvdx) /2 
-                     e21 = (dudy + dvdx) /2
-
-
-                     if (dilatancy) then
-
-                        if (correction_minus) then
-
-                           sig11(i, j) = etaC(i,j)*dudx + zetaC(i, j)*ep - (Pp(i, j) + zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
-                           sig22(i, j) = etaC(i,j)*dvdy + zetaC(i, j)*ep - (Pp(i, j) + zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
-                          
-
-                        elseif ( correction_plus ) then
-                           sig11(i, j) = etaC(i,j)*dudx + zetaC(i, j)*ep - (Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
-                           sig22(i, j) = etaC(i,j)*dvdy + zetaC(i, j)*ep - (Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
-                           
-
-                        else 
-                           sig11(i, j) = etaC(i,j)*dudx -(Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
-                           sig22(i, j) = etaC(i,j)*dvdy -(Pp(i, j) - zetaC(i,j)*shear_I(i,j)*tan_psi(i, j))
-
-                        endif
-                     
-                     elseif (mu_phi .eqv. .false.) then
-                        sig11(i, j) =  etaC(i, j)*dudx - Pp(i, j)
-                        sig22(i, j) =  etaC(i, j)*dudy - Pp(i, j)
-
-                     else 
-
-                        sig11(i, j) = zetaC(i, j)*ep + etaC(i, j)*em - Pp(i, j)
-                        sig22(i, j) = zetaC(i, j)*ep - etaC(i, j)*em - Pp(i, j)
-
-
-                     endif
-
-                     sig12(i, j) = 2d0*e21*etaC(i, j)
-                     sig21(i, j) = 2d0*e12*etaC(i, j)
-                           
-
-                     sigp = sig11(i,j) + sig22(i,j)
-                     sigm = sig11(i,j) - sig22(i,j)
-                     sigtmp = sqrt(abs(sigm**2 + 4d0*sig12(i,j)*sig21(i,j)))
-                     
-                     sig1(i, j) = (sigp + sigtmp) / 2
-                     sig2(i, j) = (sigp - sigtmp) / 2
-
-                     sig1norm(i, j) = sig1(i,j)/(Pp(i,j)+1e-20)
-                     sig2norm(i, j) = sig2(i,j)/(Pp(i,j)+1e-20)
-
-
-                     sigI(i,j) = (sig1(i,j) + sig2(i,j)) / 2
-                     sigII(i,j) = (sig1(i,j) - sig2(i,j)) / 2
-                     
-                     
-                     sigInorm(i,j) = (sig1norm(i,j) + sig2norm(i,j)) / 2
-                     sigIInorm(i,j) = (sig1norm(i,j) - sig2norm(i,j)) / 2
-                  
-                  else
-                     sigI(i,j)   = -1d0*( dudx + dvdy )*zetaCf(i,j)+Pf(i,j)
-
+                     ! FSTD: changed the sign 
+                     ! sigI(i,j)   = -1d0*( dudx + dvdy )*zetaCf(i,j)+Pf(i,j)
+                     sigI(i,j)   = ( dudx + dvdy )*zetaCf(i,j)-Pf(i,j)
 
                      sigII(i,j) = sqrt(( dudx - dvdy )**2d0 &
                         + ( dudy + dvdx )**2d0 )*etaCf(i,j)
+   
 
                      sigInorm(i,j)  = sigI(i,j)  / (2d0*max(Pp(i,j),1d-10))
                      
@@ -238,11 +169,11 @@
                      sig1norm(i,j) = -1d0*sigInorm(i,j) + sigIInorm(i,j)
                      sig2norm(i,j) = -1d0*sigInorm(i,j) - sigIInorm(i,j)
 
-                  endif
+                  ! endif
 
-                  endif
+               endif
 
-            else 
+            else !mask = 0!
                div(i, j)      = land
                shear(i, j)     = land
                sigI(i, j)     = land
@@ -324,6 +255,7 @@
          enddo
 
       elseif (peri .ne. 0) then
+         ! call periodicBC(shear, )
          call periodicBC(sigI, sigII)
          call periodicBC(sigInorm, sigIInorm)
          call periodicBC(sig1norm, sig2norm)
@@ -1143,4 +1075,65 @@ return
 end subroutine post_MEB_stress
 
 
+! REAL(8) e11, e22, e12, e21, ep, em, sigp, sigm, sigtmp
 
+                     ! if (dilatancy) then
+
+                     !    if (correction_minus) then
+
+                     !       sig11(i, j) = etaC(i,j)*dudx + zetaC(i, j)*ep - (Pp(i, j) + zetaC(i,j)*shearC_I(i,j)*tan_psi(i, j))
+                     !       sig22(i, j) = etaC(i,j)*dvdy + zetaC(i, j)*ep - (Pp(i, j) + zetaC(i,j)*shearC_I(i,j)*tan_psi(i, j))
+                          
+
+                     !    elseif ( correction_plus ) then
+                     !       sig11(i, j) = etaC(i,j)*dudx + zetaC(i, j)*ep - (Pp(i, j) - zetaC(i,j)*shearC_I(i,j)*tan_psi(i, j))
+                     !       sig22(i, j) = etaC(i,j)*dvdy + zetaC(i, j)*ep - (Pp(i, j) - zetaC(i,j)*shearC_I(i,j)*tan_psi(i, j))
+                           
+
+                     !    else 
+                     !       sig11(i, j) = etaC(i,j)*dudx -(Pp(i, j) - zetaC(i,j)*shearC_I(i,j)*tan_psi(i, j))
+                     !       sig22(i, j) = etaC(i,j)*dvdy -(Pp(i, j) - zetaC(i,j)*shearC_I(i,j)*tan_psi(i, j))
+
+                     !    endif
+                     
+                     ! elseif (mu_phi .eqv. .false.) then
+                     !    sig11(i, j) =  etaC(i, j)*dudx - Pp(i, j)
+                     !    sig22(i, j) =  etaC(i, j)*dudy - Pp(i, j)
+
+                     ! else 
+
+                     ! sig11(i, j) = zetaC(i, j)*ep + etaC(i, j)*em - Pp(i, j)
+                     ! sig22(i, j) = zetaC(i, j)*ep - etaC(i, j)*em - Pp(i, j)
+
+
+                     ! ! endif
+
+                     ! sig12(i, j) = 2d0*e21*etaC(i, j)
+                     ! sig21(i, j) = 2d0*e12*etaC(i, j)
+                           
+
+                     ! sigp = sig11(i,j) + sig22(i,j)
+                     ! sigm = sig11(i,j) - sig22(i,j)
+                     ! sigtmp = sqrt(abs(sigm**2 + 4d0*sig12(i,j)*sig21(i,j)))
+                     
+                     ! sig1(i, j) = (sigp + sigtmp) / 2
+                     ! sig2(i, j) = (sigp - sigtmp) / 2
+
+                     ! sig1norm(i, j) = sig1(i,j)/(Pp(i,j)+1e-20)
+                     ! sig2norm(i, j) = sig2(i,j)/(Pp(i,j)+1e-20)
+
+
+                     ! sigI(i,j) = (sig1(i,j) + sig2(i,j)) / 2
+                     ! sigII(i,j) = (sig1(i,j) - sig2(i,j)) / 2
+                     
+                     
+                     ! sigInorm(i,j) = (sig1norm(i,j) + sig2norm(i,j)) / 2
+                     ! sigIInorm(i,j) = (sig1norm(i,j) - sig2norm(i,j)) / 2
+                  
+                  ! else
+
+                     !                   em = dudx - dvdy
+                     ! ep = dudx + dvdy
+
+                     ! e12 = (dudy + dvdx) /2 
+                     ! e21 = (dudy + dvdx) /2
