@@ -1,4 +1,14 @@
-With new strain and new I
+With VP
+With winds half the domain at 10 m/s
+With viscous method 1 
+With one wall at bottom
+0 angle in the winds
+changed called to periodic BC
+based experiment
+Removed the explicit call to shear
+addec conditions for periodicity in x
+
+Here, changed the conditions for periodic in viscous method 1 as the shear. 
 
 &option_nml
     Dynamic  = .true.
@@ -16,7 +26,7 @@ With new strain and new I
     Periodic_x = 1
     Periodic_y = 0
     ideal = .true.
-    Rheology = 4
+    Rheology = 1
     IMEX = 0
     BDF = 0
     visc_method = 1
@@ -43,7 +53,7 @@ With new strain and new I
 
 &numerical_param_nml
     Deltat    = 300
-    gamma_nl = 1d-4
+    gamma_nl = 1d-3
     NLmax = 400     
     OLmax = 500
     Nsub  = 120  
@@ -64,7 +74,7 @@ With new strain and new I
     d_average = 1d3
     mu_0      = 0.1
     mu_infty  = 0.8
-    mu_b      = 1
+    mu_b      = 1d0
     c_phi     = 1
     I_0       = 1d-3
     Phi_0     = 1 

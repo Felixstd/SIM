@@ -1,5 +1,3 @@
-With new strain and new I
-
 &option_nml
     Dynamic  = .true.
     ThermoDyn  = .false.
@@ -42,8 +40,8 @@ With new strain and new I
 /
 
 &numerical_param_nml
-    Deltat    = 300
-    gamma_nl = 1d-4
+    Deltat    = 150
+    gamma_nl = 1d-5
     NLmax = 400     
     OLmax = 500
     Nsub  = 120  
@@ -64,7 +62,7 @@ With new strain and new I
     d_average = 1d3
     mu_0      = 0.1
     mu_infty  = 0.8
-    mu_b      = 1
+    mu_b      = 5d0
     c_phi     = 1
     I_0       = 1d-3
     Phi_0     = 1 

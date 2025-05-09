@@ -1,4 +1,4 @@
-With new strain and new I
+With a wall also on top of the domain. 
 
 &option_nml
     Dynamic  = .true.
@@ -50,7 +50,7 @@ With new strain and new I
 /
 
 &phys_param_nml
-    Pstar  = 27.5d03
+    Pstar  = 13.75d03
     C = 20.0
     k1 = 8.0
     k2 = 15d0

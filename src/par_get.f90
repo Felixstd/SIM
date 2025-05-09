@@ -219,7 +219,7 @@
 
       wjac  = 0.575d0
       ! wsor  = 2d0           ! relaxation parameter for SOR precond
-      wlsor = 1d0           ! relaxation parameter for SOR precond
+      wlsor = 0.9d0           ! relaxation parameter for SOR precond
       ! wlsor = 1.3d0
       ! wlsor = 0.6d0
       ! wsor  = 0.95d0           ! relaxation parameter for SOR precond
@@ -679,11 +679,12 @@ subroutine read_namelist
                ! if (((i .lt. 1) .or. (i .gt. nx)) .and. (j .lt. ny/2)) then
                !    maskC(i,j) = 0    
                ! endif    
-               if (j .lt. 1) then
+               if (j .lt. 1) then!.or. (j .gt. ny-1)) then
                   maskC(i,j) = 0                        
                endif
             enddo
          enddo
+         print*,  'MASKC', maskC(1,ny+1)
          write (filename,'("/storage/fstdenis/output_sim/mask.dat")') 
          open (1, file = filename, status = 'unknown')
          do j = 0, ny+1               ! land mask                                                                

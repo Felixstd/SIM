@@ -1,5 +1,15 @@
-With new strain and new I
-
+With mu-phi
+With winds half the domain at 10 m/s
+With viscous method 1 
+With one wall at bottom
+0 angle in the winds
+changed called to periodic BC
+based experiment
+added boundary confitions on mu
+changed the boundary conditions on shear (removed the 0)
+added the explicit calls to BC for I, mu, shear
+Removed the explicit call to shear
+addec conditions for periodicity in x and in y
 &option_nml
     Dynamic  = .true.
     ThermoDyn  = .false.
@@ -64,7 +74,7 @@ With new strain and new I
     d_average = 1d3
     mu_0      = 0.1
     mu_infty  = 0.8
-    mu_b      = 1
+    mu_b      = 1d0
     c_phi     = 1
     I_0       = 1d-3
     Phi_0     = 1 

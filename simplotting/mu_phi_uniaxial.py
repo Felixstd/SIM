@@ -48,12 +48,12 @@ elif time == 3:
        
 elif time == 4:
         #--- Time for 2 hours 30 minutes run ---#
-        start = datetime(1990, 1, 1,4 , 00, 00)
-        start_k = 24
+        start = datetime(1990, 1, 1,23,0, 00)
+        start_k =138
         # start = datetime(1990, 1, 1, 0 ,10, 00)
         # start_k = 1
-        intervals = [timedelta(minutes=10)]*6#+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
-        # intervals = [timedelta(minutes=10)]*2 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+        intervals = [timedelta(minutes=10)]*5#+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
+        # intervals = [timedelta(minutes=10)]*142 #+ [timedelta(minutes=3)]*1 + [timedelta(minutes=1)]*1
 
 dates = [(start + sum(intervals[:i], timedelta())).strftime('%Y_%m_%d_%H_%M_%S') for i in range(len(intervals)+1)]
 print(dates)
@@ -80,15 +80,27 @@ figdir = '/storage/fstdenis/Experiments_Results_MuPhi/Mu_PeriodicBC/'
 outputdir = "/storage/fstdenis/output_sim/"
 figdir = '/storage/fstdenis/Experiments_Results_MuPhi/VP_PeriodicBC/'
 
+#------- Mu Parameter Sensibility -------#
+outputdir = "/storage/fstdenis/output_sim/"
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuCompressibleParameters/'
+
 markers = ['.', 'x', '^', '*']
 fig_ellipse = plt.figure()
 ax_ellipse = plt.axes()
 
 ax_ellipse.set_aspect('equal')
 ax_ellipse.grid()
-# expnos = [40, 42, 43, 44]
 expnos = [expno]
+# expnos = [1, 2, 3, 4]
+# expnos = [5, 6, 7, 8]
+# mub = [1, 2, 5, 10] 
+mub = [1]
 # for i in range(expno, expno+1):
+
+
+fig = plt.figure()
+ax = plt.axes()
+
 for i, expno in enumerate(expnos):
     expno = "{:02d}".format(expno)
 
@@ -103,7 +115,6 @@ for i, expno in enumerate(expnos):
 
     angle_phi = 20*np.pi/180
 
-
     Ny = 502
     Nx = 202
 
@@ -114,10 +125,6 @@ for i, expno in enumerate(expnos):
     filemask=outputdir+"mask.dat"
     maskC = np.genfromtxt(filemask, dtype=None)
     
-    # plt.figure()
-    # plt.pcolor(maskC)
-    # plt.savefig('mask.png')
-
     N_transect = 51
     muphi = 1
     log = 0
@@ -134,44 +141,16 @@ for i, expno in enumerate(expnos):
         mu = muI_tot[0]
         zeta = zeta_tot[0]
         eta = eta_tot[0]
-        print(np.shape(shearI))
-        # print('I', np.vstack([I[100:, 1],I[100:, -1]]).T)
-        print('shearI', np.vstack([shearI[100:, 1],shearI[100:, -1]]).T)
-        print('shearI', np.vstack([shearI[201, 0],shearI[201, 501]]).T)
-        # print('mu', np.vstack([mu[100:, 1],mu[100:, -1]]).T)
-        # print('zeta', np.vstack([zeta[100:, 1],zeta[100:, -1]]).T)
-        # print('eta', np.vstack([eta[100:, 1],eta[100:, -1]]).T)
+        print('shearI', np.vstack([shearI[:, 1],shearI[:, -1]]).T)
     
     else: 
         
         divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
             datadict.values()
             
-    h = h_tot[0]
-    u = u_tot[0]
-    v = v_tot[0]
-    p = p_tot[0]
-    # mu = muI_tot[1]
-    A = A_tot[0]
-    div = divergence_tot[0]
-    shear = shear_tot[0]
-    zeta = zeta_tot[0]
-    eta = eta_tot[0]
-    # shear = shearI_tot[1]
-    
-    # print(np.shape(u))
-    # print('h', np.vstack([h[100:, 1],h[100:, -1]]).T)
-    # print('A', np.vstack([A[100:, 1],A[100:, -1]]).T)
-    # print('u', np.vstack([u[100:, 0],u[100:, -1]]).T)
-    # print('v', np.vstack([v[100:, 0],v[100:, -1]]).T)
-    # print('p', np.vstack([p[100:, 0],p[100:, -1]]).T)
-    # print('div',np.vstack([div[100:, 1],div[100:, -1]]).T)
-    # print('shear',np.vstack([shear[100:, 1],shear[100:, -1]]).T)
-    # print('shear',np.vstack([shear[100:, 0],shear[100:, -2]]).T)
-    print('zeta', np.vstack([zeta[100:, 1],zeta[100:, -1]]).T)
-    print('eta', np.vstack([eta[100:, 1],eta[100:, -1]]).T)
-    
-    
+    # datadict_A = read_data.read_data_var('A', expno, start_k, dates, outputdir)
+    # A_tot = datadict_A['variable_date']
+    # print(A_tot)
     # print(datadict)
     # #---------- Analysing Wind Forcing----------#
     # analysis.wind_forcing(datadict, N_transect, dy, Ny, time, figdir+expno+'/', muphi)
@@ -182,28 +161,36 @@ for i, expno in enumerate(expnos):
     # #---------- Plotting ----------#
     plot.uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
     
-    
-    # for j in range(len(sigI_tot)):
-    # # for i in range(0, 1):
-    j = -1
-    sigI = sigI_tot[j]
-    sigII = sigII_tot[j]
-    
-    sigI_1 = sigI[0:90, :]
-    sigI_2 = sigI[90:110, :]
-    sigI_3 = sigI[110:, :]
-    
-    sigII_1 = sigII[0:90, :]
-    sigII_2 = sigII[90:110, :]
-    sigII_3 = sigII[110:, :]
+    #---- Dilatation ----#
+    # dilatation_time = []
+    # time = np.arange(0, len(dates))*10/60
+    # for c in range(len(A_tot)) : 
+    #     A = A_tot[c] 
+    #     dilatation_x =  np.cumsum(1-A, axis = 1)
+    #     dilatation_y =  np.cumsum(1-A, axis = 0)
+    #     dilat = np.nanmean(1-A)
+    #     dilat = np.sum(1-A)/(Nx*Ny)
+    #     dilatation_time.append(dilat)
     
     
+    # ax.plot(time, dilatation_time, label = r'$\mu_b = {}$'.format(mub[i]))
     
-    # plt.plot(sigI_tot[i].flatten(), sigII_tot[i].flatten(), linestyle ='', marker = 'o', markersize=1)
     
-    ax_ellipse.scatter(sigI_1.flatten(), sigII_1.flatten(), alpha = 0.2,color = 'r', marker = markers[i], s=2)
-    ax_ellipse.scatter(sigI_3.flatten(), sigII_3.flatten(),  alpha = 0.2,color = 'r', marker = markers[i], s=2)
-    ax_ellipse.scatter(sigI_2.flatten(), sigII_2.flatten(),  alpha = 0.2,color = 'g' ,marker = markers[i], s=2)
+    # j = -1
+    # sigI = sigI_tot[j]
+    # sigII = sigII_tot[j]
+    
+    # sigI_1 = sigI[0:90, :]
+    # sigI_2 = sigI[90:110, :]
+    # sigI_3 = sigI[110:, :]
+    
+    # sigII_1 = sigII[0:90, :]
+    # sigII_2 = sigII[90:110, :]
+    # sigII_3 = sigII[110:, :]
+    
+    # ax_ellipse.scatter(sigI_1.flatten(), sigII_1.flatten(), alpha = 0.2,color = 'r', marker = markers[i], s=2)
+    # ax_ellipse.scatter(sigI_3.flatten(), sigII_3.flatten(),  alpha = 0.2,color = 'r', marker = markers[i], s=2)
+    # ax_ellipse.scatter(sigI_2.flatten(), sigII_2.flatten(),  alpha = 0.2,color = 'g' ,marker = markers[i], s=2)
     
 #     mean_mu_time, mean_div_time, mean_shear_time = analysis.mean_values(dates, datadict, dx, dt)
 #     plot.plot_mean(mean_mu_time, time, r'$\langle\mu\rangle$', 'mean_mu.png', expno, figdir)
@@ -213,6 +200,15 @@ for i, expno in enumerate(expnos):
     # analysis.velocity_transects(datadict, dates, dx,figdir, expno, MuPhi = muphi)
 #     
     # plot.totdef_uniaxial(dates, expno, datadict, dx, figdir, mu_0, mu_infty, angle_phi, MuPhi = muphi, log = log)
+
+ax.set_ylabel(r'$\overline{1-A}$')
+ax.set_xlabel(r'Time (hr)')
+ax.grid()
+                        
+fig.legend(loc='upper center', 
+        labelcolor='linecolor',  bbox_to_anchor=(1.05, 0.9))
+plt.savefig('dilatation.png')
+
     
 u  =u_tot[-1]
 print(np.shape(u))
@@ -226,8 +222,6 @@ plt.figure()
 plt.pcolor(u_split_1 - u_split_2)
 plt.colorbar()
 plt.savefig('error_vp.png')
-
-
 
 
 
@@ -268,3 +262,38 @@ ax_ellipse.plot(sigI_t, -sigII_t, color = 'k')
 ax_ellipse.set_xlabel(r'$\sigma_I/P$')
 ax_ellipse.set_ylabel(r'$\sigma_{II}/P$')
 fig_ellipse.savefig('sigI_sigII.png', dpi=500)
+
+
+            # h = h_tot[0]
+    # u = u_tot[0]
+    # v = v_tot[0]
+    # p = p_tot[0]
+    # # mu = muI_tot[1]
+    # A = A_tot[0]
+    # div = divergence_tot[0]
+    # shear = shear_tot[0]
+    # zeta = zeta_tot[0]
+    # eta = eta_tot[0]
+        # print(np.shape(shearI))
+        # print('I', np.vstack([I[100:, 1],I[100:, -1]]).T)
+        # print('shearI', shearI[:, -1])
+        # print('shearI', shearI[:, 1])
+
+        # with np.printoptions(threshold=np.inf):
+            # print('shearI', np.where(shearI == -999)[0])
+        # print(np.where(shearI == -999)[0], shearI[0, -1])
+        # print('shearI', np.vstack([shearI[201, 0],shearI[201, 501]]).T)
+        # print('mu', np.vstack([mu[100:, 1],mu[100:, -1]]).T)
+        # print('zeta', np.vstack([zeta[100:, 1],zeta[100:, -1]]).T)
+        # print('eta', np.vstack([eta[100:, 1],eta[100:, -1]]).T)
+    # print(np.shape(u))
+    # print('h', np.vstack([h[100:, 1],h[100:, -1]]).T)
+    # print('A', np.vstack([A[100:, 1],A[100:, -1]]).T)
+    # print('u', np.vstack([u[100:, 0],u[100:, -1]]).T)
+    # print('v', np.vstack([v[100:, 0],v[100:, -1]]).T)
+    # print('p', np.vstack([p[100:, 0],p[100:, -1]]).T)
+    # print('div',np.vstack([div[100:, 1],div[100:, -1]]).T)
+    # print('shear',np.vstack([shear[100:, 1],shear[100:, -1]]).T)
+    # print('shear',np.vstack([shear[100:, 0],shear[100:, -2]]).T)
+    # print('zeta', np.vstack([zeta[100:, 1],zeta[100:, -1]]).T)
+    # print('eta', np.vstack([eta[100:, 1],eta[100:, -1]]).T)

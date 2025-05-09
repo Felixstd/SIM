@@ -27,7 +27,7 @@ subroutine Ice_strength ()
 
    peri = Periodic_x + Periodic_y
 
-   if ( (Rheology .eq. 1) .or. (Rheology .eq. 4)) then
+   if (Rheology .eq. 1) then
       
       !FSTD: changing the domain of calculation
       ! do i = 1, nx
@@ -54,6 +54,18 @@ subroutine Ice_strength ()
 !              endif
 !            enddo
 !         enddo
+
+   elseif (Rheology .eq. 4) then 
+      do i = 0, nx+1
+         do j = 0, ny+1
+            if (maskC(i,j) .eq. 1) then
+               Pp(i,j) = 2d0 * Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ) )
+               Pp(i,j) = Pp(i,j) / 2d0
+               Pt(i,j) = 2d0* Tens * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ) )  
+               Pt(i,j) = Pt(i,j) / 2.0d0 
+            endif
+         enddo
+      enddo
 
    endif
 
@@ -94,6 +106,7 @@ subroutine Ice_strength ()
 
       enddo
    endif
+
 
       ! If periodicBC in x, y or both
       ! if (peri .ne. 0) call periodicBC(Pt, Pp)

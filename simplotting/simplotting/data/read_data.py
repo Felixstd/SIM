@@ -78,9 +78,23 @@ def read_data(expno, start, dates, outputdir, MuPhi = True):
         k+=1
     return data_dict
 
-
-
-
+def read_data_var(var, expno, start, dates, outputdir):
     
+    data_dict = {
+        'variable_date': [],
+    }
     
+    for k, date in enumerate(dates, start=start):
+        # List of file prefixes and associated keys
+        files_info = [
+            (var, 'variable_date'),
+        ]
+        
+        for prefix, key in files_info:
+            filename = f"{outputdir}{prefix}{date}{('_k{:04d}'.format(k) + '.' + expno) if 'sig' in prefix or prefix in ['div', 'shear'] else '.' + expno}"
+            
+            data_dict[key].append(np.loadtxt(filename, dtype=None))
+        
+        k+=1
+    return data_dict
     

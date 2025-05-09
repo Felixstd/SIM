@@ -148,13 +148,13 @@ subroutine ViscousCoeff_method1(utp,vtp)
      if (peri .ne. 0) call periodicBC(utp,vtp)
      
       !Original
-   !   do i = 1, nx
-   !      do j = 1, ny
+     do i = 1, nx
+        do j = 1, ny
 
    !FSTD Modification
    !need to go -1 and +1 for the PBC
-     do i = 0, nx+1
-        do j = 0, ny+1
+   !   do i = 0, nx+1
+   !      do j = 0, ny+1
 
            if ( maskC(i,j) .eq. 1 ) then
                   
@@ -296,6 +296,190 @@ subroutine ViscousCoeff_method1(utp,vtp)
         endif
 
      enddo
+
+     if (Periodic_x .eq. 1) then
+    !--- Periodic in x---!
+        i = 0
+        do j = 0, ny+1 
+
+            if (maskC(i,j) .eq. 1) then
+                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+                
+                dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -            &
+                                ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) / &
+                                ( 4d0 * Deltax )
+
+
+                if (j .eq. 0) then
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -         &
+                                ( utp(i,ny+2) + utp(i+1,ny+2) ) ) / &
+                                ( 4d0 * Deltax )
+                else
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                ( utp(i,j-1) + utp(i+1,j-1) ) ) /  &
+                                ( 4d0 * Deltax )
+                endif
+                
+               if ( rheo .eq. 1 ) then ! ellipse, jfl p.892
+                     
+                  deno = sqrt(( dudx **2 + dvdy **2 )*(1.0d0 + ell_2) &
+                        + 2.0d0 * dudx * dvdy * (1.0d0 - ell_2) &
+                        + ell_2 * ( dvdx + dudy ) ** 2 )
+
+                  if ( regularization .eq. 'tanh' ) then
+
+                     deno = max( deno, 1d-20 )
+                     
+                     zetaC(i,j) =  ( (Pp(i,j)+Pt(i,j))/denomin ) &
+                           *( tanh(denomin*(1/deno)))
+                     ! zetaC(i, j) = 1d12
+                           
+                     P(i,j) = ((( Pp(i,j)-Pt(i,j))/denomin ) &
+                           *tanh(denomin*(1/deno))) *deno 
+
+                  endif
+                  etaC(i,j)  = zetaC(i,j) * ell_2
+
+               endif
+            endif
+        enddo
+
+        i = nx+1
+        do j = 0, ny+1 
+
+            if (maskC(i,j) .eq. 1) then
+                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+                
+                dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -           &
+                                ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /  &
+                                ( 4d0 * Deltax )
+
+
+                if (j .eq. 0) then
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -         &
+                                ( utp(i,ny+2) + utp(i+1,ny+2) ) ) / &
+                                ( 4d0 * Deltax )
+                else
+                    dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                ( utp(i,j-1) + utp(i+1,j-1) ) ) /  &
+                                ( 4d0 * Deltax )
+                endif
+                
+               if ( rheo .eq. 1 ) then ! ellipse, jfl p.892
+                     
+                  deno = sqrt(( dudx **2 + dvdy **2 )*(1.0d0 + ell_2) &
+                        + 2.0d0 * dudx * dvdy * (1.0d0 - ell_2) &
+                        + ell_2 * ( dvdx + dudy ) ** 2 )
+
+                  if ( regularization .eq. 'tanh' ) then
+
+                     deno = max( deno, 1d-20 )
+                     
+                     zetaC(i,j) =  ( (Pp(i,j)+Pt(i,j))/denomin ) &
+                           *( tanh(denomin*(1/deno)))
+                     ! zetaC(i, j) = 1d12
+                           
+                     P(i,j) = ((( Pp(i,j)-Pt(i,j))/denomin ) &
+                           *tanh(denomin*(1/deno))) *deno 
+                  endif
+                  etaC(i,j)  = zetaC(i,j) * ell_2
+               endif
+            endif
+        enddo
+
+    else 
+        !--- Open Boundary Conditions (Neumann BC) in x ---!
+        i = 0
+        do j = 0, ny+1 
+
+            if (maskC(i,j) .eq. 1) then
+
+               zetaC(i,j) = 0d0
+               etaC(i,j) = 0d0
+
+               !  dudx = 0d0
+               !  dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+                
+               !  dvdx = 0d0
+
+               !  if (j .eq. 0) then
+               !      dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+               !                  ( utp(i,ny+2) + utp(i+1,ny+2) ) ) /     &
+               !                  ( 4d0 * Deltax )
+               !  else
+               !      dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+               !                  ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+               !                  ( 4d0 * Deltax )
+               !  endif
+                
+               ! if ( rheo .eq. 1 ) then ! ellipse, jfl p.892
+                     
+               !    deno = sqrt(( dudx **2 + dvdy **2 )*(1.0d0 + ell_2) &
+               !          + 2.0d0 * dudx * dvdy * (1.0d0 - ell_2) &
+               !          + ell_2 * ( dvdx + dudy ) ** 2 )
+
+               !    if ( regularization .eq. 'tanh' ) then
+
+               !       deno = max( deno, 1d-20 )
+                     
+               !       zetaC(i,j) =  ( (Pp(i,j)+Pt(i,j))/denomin ) &
+               !             *( tanh(denomin*(1/deno)))
+               !       ! zetaC(i, j) = 1d12
+                           
+               !       P(i,j) = ((( Pp(i,j)-Pt(i,j))/denomin ) &
+               !             *tanh(denomin*(1/deno))) *deno 
+               !    endif
+               !    etaC(i,j)  = zetaC(i,j) * ell_2
+               ! endif
+            endif
+        enddo
+
+        i = nx+1
+        do j = 0, ny+1 
+
+            if (maskC(i,j) .eq. 1) then
+
+               zetaC(i,j) = 0d0
+               etaC(i,j) = 0d0
+               !  dudx = 0d0
+               !  dvdx = 0d0
+               !  dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+                
+               !  if (j .eq. 0) then
+               !      dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+               !                  ( utp(i,ny+2) + utp(i+1,ny+2) ) ) /     &
+               !                  ( 4d0 * Deltax )
+               !  else
+               !      dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
+               !                  ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+               !                  ( 4d0 * Deltax )
+               !  endif
+               ! if ( rheo .eq. 1 ) then ! ellipse, jfl p.892
+                     
+               !    deno = sqrt(( dudx **2 + dvdy **2 )*(1.0d0 + ell_2) &
+               !          + 2.0d0 * dudx * dvdy * (1.0d0 - ell_2) &
+               !          + ell_2 * ( dvdx + dudy ) ** 2 )
+
+               !    if ( regularization .eq. 'tanh' ) then
+
+               !       deno = max( deno, 1d-20 )
+                     
+               !       zetaC(i,j) =  ( (Pp(i,j)+Pt(i,j))/denomin ) &
+               !             *( tanh(denomin*(1/deno)))
+               !       ! zetaC(i, j) = 1d12
+                           
+               !       P(i,j) = ((( Pp(i,j)-Pt(i,j))/denomin ) &
+               !             *tanh(denomin*(1/deno))) *deno 
+               !    endif
+               !    etaC(i,j)  = zetaC(i,j) * ell_2
+               ! endif
+            endif
+        enddo
+
+
+    endif
    
    ! FSTD: removing this. because PBC are already applied. 
    !   if (peri .ne. 0) call periodicBC(etaC,zetaC)
@@ -398,11 +582,6 @@ subroutine ViscousCoeff_method2(utp,vtp)
 
      do i = 1, nx
         do j = 1, ny    
-   !   do i = 0, nx+1
-   !    do j = 0, ny+1          
-
-      ! do i = 0, nx+1
-      !    do j = 0, ny+1  
 
            if ( maskC(i,j) .eq. 1 ) then
                   
@@ -1607,7 +1786,10 @@ subroutine MuPhiCoeff (utp, vtp)
    pnode      = 0d0
 
    ! if (mu_phi) then
-   !    call shear(utp, vtp)
+   ! call shear_inv(utp, vtp)
+   ! call Ice_strength()
+   ! call inertial_number()
+   ! call angle_friction_mu()
    ! endif
 
    ! if (peri .ne. 0) call periodicBC2(Pp)
@@ -1628,24 +1810,25 @@ subroutine MuPhiCoeff (utp, vtp)
             elseif (regularization .eq. 'tanh') then
 
                      ! if ((dilatancy .eqv. .true.) .or. (mu_phi .eqv. .false.)) then
-               if ((dilatancy .eqv. .true.)) then
+               ! if ((dilatancy .eqv. .true.)) then
 
-                  zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b ) / (shear_max * 2d08))
-                  etaC(i, j)  = eta_max * tanh(mu_I(i, j) * Pp(i, j) / (shear_max * eta_max))
-                  ! print*, zetaC(i, j)
+               !    zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b ) / (shear_max * 2d08))
+               !    etaC(i, j)  = eta_max * tanh(mu_I(i, j) * Pp(i, j) / (shear_max * eta_max))
+               !    ! print*, zetaC(i, j)
                      
-               elseif (mu_phi .eqv. .false.) then
-                  ! zetaC(i, j) = eta_max * tanh(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / (shear_max * eta_max))
-                  ! etaC(i, j)  = eta_max * tanh((mu_I(i, j) / 2) * Pp(i, j) / (shear_max * eta_max))
+               ! elseif (mu_phi .eqv. .false.) then
+               !    ! zetaC(i, j) = eta_max * tanh(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / (shear_max * eta_max))
+               !    ! etaC(i, j)  = eta_max * tanh((mu_I(i, j) / 2) * Pp(i, j) / (shear_max * eta_max))
 
-                  etaC(i, j) = eta_max
-                  zetaC(i,j) = eta_max
+               !    etaC(i, j) = eta_max
+               !    zetaC(i,j) = eta_max
                   
-               else
-                  zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b + mu_I(i, j) / 2 ) / (shear_max * 2d08))
+               ! else
+                  ! zetaC(i, j) = 2d08*Pp(i, j) * tanh(( mu_b + mu_I(i, j) / 2 ) / (shear_max * 2d08))
+                  zetaC(i,j ) = 2d08*Pp(i, j) * tanh((mu_b) / (shear_max * 2d08))
                   etaC(i, j)  = eta_max * tanh((mu_I(i, j) / 2) * Pp(i, j) / (shear_max * eta_max))
 
-               endif
+               ! endif
 
             endif
                   
@@ -1655,16 +1838,22 @@ subroutine MuPhiCoeff (utp, vtp)
       enddo
    enddo
 
+
+   !---- For open boundaries set to 0 ----!
    do i = 1, nx+1
 
       if (maskC(i,0) .eq. 1 .and. Periodic_y .eq. 0) then
          etaC(i,1)  = 0d0
          zetaC(i,1) = 0d0
+         ! etaC(i,0)  = 0d0
+         ! zetaC(i,0) = 0d0
       endif
             
       if (maskC(i,ny+1) .eq. 1 .and. Periodic_y .eq. 0) then
          etaC(i,ny)  = 0d0
          zetaC(i,ny) = 0d0
+         ! etaC(i,ny+1)  = 0d0
+         ! zetaC(i,ny+1) = 0d0
       endif
         
    enddo
@@ -1674,11 +1863,15 @@ subroutine MuPhiCoeff (utp, vtp)
       if (maskC(0,j) .eq. 1 .and. Periodic_x .eq. 0) then   
          etaC(1,j)  = 0d0
          zetaC(1,j) = 0d0
+         etaC(0,j)  = 0d0
+         zetaC(0,j) = 0d0
       endif
          
       if (maskC(nx+1,j) .eq. 1 .and. Periodic_x .eq. 0) then  
          etaC(nx,j)  = 0d0
          zetaC(nx,j) = 0d0
+         etaC(nx+1,j)  = 0d0
+         zetaC(nx+1,j) = 0d0
       endif
 
    enddo

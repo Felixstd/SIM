@@ -1,4 +1,18 @@
-With new strain and new I
+With mu-phi
+With winds half the domain at 10 m/s
+With viscous method 1 
+no walls at the sides
+0 angle in the winds
+changed called to periodic BC
+based experiment
+Removed the explicit call to shear
+addec conditions for periodicity in x
+changed the periodic boundary conditions to be 
+zero at the outer boundary for eta and zeta, 
+shear is 0 at the outer boundary
+with advection
+RIGHT ZETA
+
 
 &option_nml
     Dynamic  = .true.
@@ -42,7 +56,7 @@ With new strain and new I
 /
 
 &numerical_param_nml
-    Deltat    = 300
+    Deltat    = 150
     gamma_nl = 1d-4
     NLmax = 400     
     OLmax = 500
@@ -62,9 +76,9 @@ With new strain and new I
     Cdwater = 5.5d-03
     f = 1.46d-04
     d_average = 1d3
-    mu_0      = 0.1
+    mu_0      = 0.4
     mu_infty  = 0.8
-    mu_b      = 1
+    mu_b      = 1d0
     c_phi     = 1
     I_0       = 1d-3
     Phi_0     = 1 

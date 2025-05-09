@@ -114,7 +114,7 @@
                   call SIC_2_PHI()
                endif
 
-               call shear_inv(uice, vice)
+               call shear_inv(un1, vn1)
                call Ice_strength()
                call inertial_number()
                call angle_friction_mu()
@@ -181,7 +181,7 @@
                   
 
                   elseif (Rheology .eq. 4) then
-                     call shear_inv(uice, vice)                     
+                     ! call shear_inv(uice, vice)                     
                      call Ice_strength()
                      call inertial_number()
                      call angle_friction_mu()
@@ -208,6 +208,7 @@
                call Funk(xtp,rhs,Fu)
 
                res = sqrt(DOT_PRODUCT(Fu,Fu)) ! L2norm  
+               print*, DOT_PRODUCT(Fu,Fu)
                
                if (k.eq. 1) NLtol = gamma_nl * res
 
@@ -334,7 +335,11 @@
          if ( Rheology .eq. 3) then !update stress history and damage
             kd = 1d0
             call stress_strain_MEB(uice, vice, date, kd, expno)
-                  
+
+         elseif ( Rheology .eq. 4) then !update stress history and damage
+               call shear_inv(uice, vice)    
+               call inertial_number()
+               call angle_friction_mu()
          endif               
 
 !------------------------------------------------------------------------       

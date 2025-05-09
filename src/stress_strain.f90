@@ -156,8 +156,13 @@
 
                      ! FSTD: changed the sign 
                      ! sigI(i,j)   = -1d0*( dudx + dvdy )*zetaCf(i,j)+Pf(i,j)
-                     sigI(i,j)   = ( dudx + dvdy )*zetaCf(i,j)-Pf(i,j)
-
+                     if (dilatancy) then
+                        sigI(i,j)   = ( dudx + dvdy )*zetaCf(i,j)-&
+                                    (Pf(i,j) + (zetaCf(i, j) - etaC(i,j))*shearC_I(i, j)*tan_psi(i, j))
+                     else 
+                        sigI(i,j)   = ( dudx + dvdy )*zetaCf(i,j)-Pf(i,j)
+                     endif
+                     
                      sigII(i,j) = sqrt(( dudx - dvdy )**2d0 &
                         + ( dudy + dvdx )**2d0 )*etaCf(i,j)
    

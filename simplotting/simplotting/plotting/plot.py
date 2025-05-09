@@ -107,7 +107,11 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
         
         print('Plotting: ', date)
         
-        divergence, shear = divergence_tot[k], shearI_tot[k]*86400
+        divergence = divergence_tot[k]
+        if MuPhi:
+            shear = shearI_tot[k]*86400
+        else:
+            shear = shear_tot[k]
         # shear = shearI_tot[k]*86400
         h, A, p = h_tot[k], A_tot[k], p_tot[k]
         sigI, sigII = sigI_tot[k], sigII_tot[k]
@@ -298,6 +302,17 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
         fig.supylabel('y (km)', fontsize = 16)
         # fig.tight_layout()
         plt.savefig(figdir+expno+'/shear_div_{}.png'.format(date))
+        
+        fig = plt.figure(figsize=(5, 3))
+        ax1 = plt.axes()
+        plot_colormesh(ax1, dx, fig, X2, Y2, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-6, vmin=-1e-1, vmax=1e-1), 
+            r'$\dot{\epsilon}_{\mathrm{I}} \text{ (day}^{-1})$', None, None)
+       
+        plt.subplots_adjust(hspace = 0.1)
+        ax1.set_xlabel('x (km)', fontsize = 16)
+        ax1.set_ylabel('y (km)', fontsize = 16)
+        # fig.tight_layout()
+        plt.savefig(figdir+expno+'/div_{}.png'.format(date))
 
         
         plt.close()

@@ -53,7 +53,7 @@ def inertial_number(shear, p) :
     for i in range(len(p)): 
         
         if p[i] < P_min:
-            I[i] = 1e6
+            I[i] = 1
         else:
             I[i] = d_mean * abs(shear[i]) * np.sqrt(H * rhoice / p[i])
 
@@ -74,10 +74,12 @@ def pressure(shear, phi):
     
     for i in range(len(shear)): 
         
-        if (phi[i] - Phi_0) < 1e-7:
-            p[i] = p_max
-        else:
-            p[i] = np.nanmin([p_max, rhoice * H * (shear[i] / (phi[i] - Phi_0))**2 * d_mean**2])
+        p[i] = 27.3e3*1*np.exp(-20)
+        
+        # if (phi[i] - Phi_0) < 1e-7:
+        #     p[i] = p_max
+        # else:
+        #     p[i] = np.nanmin([p_max, rhoice * H * (shear[i] / (phi[i] - Phi_0))**2 * d_mean**2])
     return p
 
 @njit()
@@ -139,7 +141,7 @@ Nx = 200
 delta_x = L /(Nx -1)
 delta_x_2 = delta_x**2
 
-Nt = 100
+Nt = 1000
 # delta_t = 3
 # T_tot = delta_t*Nt
 T_tot = 50000
@@ -152,14 +154,14 @@ delta_t = 1
 
 H = 0.1
 rhoice = 900
-d_mean = delta_x/2
+d_mean = 1e3
 Phi_0 = 1
 c_phi = 0.5
 mu_0 = 0.1
-mu_infty = 0.43
-I_0 = 6.7e-3
-tau = 0.09
-mu_b = 0.3
+mu_infty = 0.8
+I_0 = 1e-3
+tau = 0
+mu_b = 0.5
 
 x = np.arange(0, L + delta_x, delta_x)
 t_tot = np.arange(0, T_tot, delta_t)
@@ -247,7 +249,7 @@ shear_muphi = np.zeros((Nx, Nt+1))
 u_muphi[:, 0] = np.ones_like(x)*1e-8
 
 
-p_init = np.ones_like(x)*1e-8
+p_init = np.ones_like(x)*0
 
 
 p_muphi[:, 0] = p_init
@@ -260,7 +262,7 @@ phi_muphi[:, 0] = dilatancy(I_muphi[:, 0])
 i = 0
 for n in range(Nt):
     
-    p_muphi[:, n] = pressure(shear_muphi[:, n], phi_muphi[:, n])
+    # p_muphi[:, n] = pressure(shear_muphi[:, n], phi_muphi[:, n])
     
     
     zeta = zeta_muphi(mu_muphi[:, n], mu_b, shear_muphi[:, n], p_muphi[:, n])
@@ -282,7 +284,7 @@ for n in range(Nt):
     
     print('iteration : ', i)
 
-    
+    p_muphi[:, n+1] = pressure(shear_muphi[:, n], phi_muphi[:, n])
     shear_muphi[:, n+1] = first_derive_taylor_h2(u_muphi[:, n+1], delta_x)
     I_muphi[:, n+1] = inertial_number(shear_muphi[:, n+1], p_muphi[:, n])
     phi_muphi[:, n+1] = dilatancy(I_muphi[:, n+1])
