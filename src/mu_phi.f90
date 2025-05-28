@@ -53,7 +53,11 @@ subroutine inertial_number
                         inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*2d0*shearC_I(i, j), highI)
                     else
                         ! Computing inertial number
-                        inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shearC_I(i, j), highI)
+                        if (h(i, j) < 1e-3) then    
+                            inertial(i,j) = 1d0
+                        else
+                            inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shearC_I(i, j), highI)
+                        endif
                     endif
             endif
         enddo
@@ -258,6 +262,10 @@ subroutine shear_inv(utp, vtp)
 !----- stresses and strain rates at the grid center -------------------------   
 
                 dudy1(i, j) = dudy
+                dudx1(i, j) = dudx
+                dvdx1(i, j) = dvdx
+                dvdy1(i, j) = dvdy
+
                 if (devstrain) then
 
                     shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
@@ -401,7 +409,7 @@ subroutine shear_inv(utp, vtp)
                         endif
 
                     endif
-                    
+
                     if (devstrain) then
 
                         shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
@@ -450,7 +458,6 @@ subroutine shear_inv(utp, vtp)
 
 
     endif
-
 
     !--- Boundary Conditions in Y ---!
     

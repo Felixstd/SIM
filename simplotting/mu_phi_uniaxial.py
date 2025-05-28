@@ -71,8 +71,8 @@ for i, expno in enumerate(expnos):
             divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
                 datadict.values()
                 
-        shear = shear_tot[0]
-        print('shear',np.vstack([shear[100:, 1],shear[100:, -2]]).T)
+        shear = shearI_tot[0]
+        print('shear',np.vstack([shear[100:, 0],shear[100:, -2]]).T)
         u = u_tot[0]
         v = v_tot[0]
         

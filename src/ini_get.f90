@@ -58,7 +58,7 @@ subroutine ini_get (restart, expno_r, restart_date)
 
 
 !     Uniaxial loading experiment: set bands of open water at the top and sides
-            if (Water_Col) then
+            if (uniaxial .and. Water_Col) then
 
                if (step_water) then
 
@@ -120,7 +120,13 @@ subroutine ini_get (restart, expno_r, restart_date)
                   endif
                
                endif
+            
+            elseif (shear_test .and. Water_Col) then
 
+               if ((nx == 500) .and. (ny == 200)) then
+                     if (j .gt. 180) h(i,j) = 0d0
+                     if (j .gt. 180) A(i,j) = 0d0 
+               endif
 
             
             endif

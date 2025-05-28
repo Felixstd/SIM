@@ -180,6 +180,17 @@
 
 ! Mu(I) - Phi(I) rheology (rheology = 4)
 
+      !--Experiment Parameters --!
+      inclined   = .false.
+      step_water = .true.
+      Water_Col  = .true.
+
+      !--Rheology Parameter --!
+      Phi_eq     = .false.
+      A2Phi      = .false.
+      devstrain = .false.
+      dilatancy = .false.
+      mu_phi    = .true.
       d_average  = 1d4
       I_0        = 1e-4
       K_div      = 2
@@ -194,11 +205,7 @@
       c_1        = 1d-02
       c_2        = 1/4
       phi_f_micro = 20
-      Water_Col  = .true.
-      Phi_eq     = .false.
-      step_water = .true.
-      A2Phi      = .false.
-      devstrain = .false.
+
       ! d = 200
       theta =  0d0*pi/180
       intercept_2 = 200

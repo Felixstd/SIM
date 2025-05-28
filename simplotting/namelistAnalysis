@@ -1,5 +1,5 @@
 [Experiment]
-expno      = 15
+expno      = 42
 savevar     = 0
 plot_fields = 1
 dilat       = 0
@@ -12,19 +12,19 @@ tracers_transect = 0
 start_year    = 1990
 start_month   = 1
 start_day     = 1
-start_hour    = 1
-start_minute  = 0
+start_hour    = 0
+start_minute  = 10
 end_year   = 1990
 end_month  = 1
-end_day    = 4
+end_day    = 1
 end_hour   = 0
-end_minute = 0
+end_minute = 20
 start_k    = 1
-Dtminute  = 60
+Dtminute  = 10
 
 [Rheology]
-muphi = 0
-mub   = 0
+muphi = 1
+mub   = 1
 mu0 = 0.1
 muinf = 0.8
 dx    = 10
