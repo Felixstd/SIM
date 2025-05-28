@@ -85,10 +85,8 @@ subroutine Ice_strength ()
 
             !---- Removed the setting P at the open boundary -----!
             !---- Changed the index here ----!
-            ! Pp(i,ny+1)  = 0d0
-            ! Pt(i,ny+1)  = 0d0    ! Pt(i, 1) replaced by Pt(i, ny)
-            Pp(i,ny)  = 0d0
-            Pt(i,ny)  = 0d0    ! Pt(i, 1) replaced by Pt(i, ny)
+            Pp(i,ny+1)  = 0d0
+            Pt(i,ny+1)  = 0d0    ! Pt(i, 1) replaced by Pt(i, ny)
          endif
 
       enddo
