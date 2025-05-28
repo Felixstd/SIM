@@ -54,7 +54,7 @@ MODULE muphi
   IMPLICIT NONE
 
   LOGICAL :: devstrain, Water_Col, A2Phi
-  LOGICAL :: Phi_eq, adv_mu, step_water, correction, mu_phi_form, correction_plus, correction_minus
+  LOGICAL :: step_water, Phi_eq
   DOUBLE PRECISION :: mu_0, mu_infty 
   DOUBLE PRECISION :: c_phi
   DOUBLE PRECISION :: I_0

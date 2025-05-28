@@ -211,29 +211,10 @@ subroutine bvect (utp,vtp,rhs)
 
                if ((dilatancy .eqv. .true.) .and. (rheology .eq. 4)) then
 
-                  if (mu_phi_form) then
-
-                     if (correction_minus) then
-                        bu(i,j) = bu_ind(i,j) - (P(i,j)+zetaC(i, j)*shearC_I(i,j)*tan_psi(i,j) - &
-                              (P(i-1,j)+(zetaC(i-1, j))*shearC_I(i-1,j)*tan_psi(i-1,j))) / Deltax + & ! P is the replacement pressure 
-                                 CdwC1(i,j) * ( uwatnd(i,j) * costheta_w - &
-                                    vwavg(i,j)  * sintheta_w   )
-                     
-                     elseif (correction_plus) then
-                        bu(i,j) = bu_ind(i,j) - (P(i,j)-zetaC(i, j)*shearC_I(i,j)*tan_psi(i,j) - &
-                              (P(i-1,j)-(zetaC(i-1, j))*shearC_I(i-1,j)*tan_psi(i-1,j))) / Deltax + & ! P is the replacement pressure 
-                                 CdwC1(i,j) * ( uwatnd(i,j) * costheta_w - &
-                                    vwavg(i,j)  * sintheta_w   )
-                     endif
-
-                  else 
-
                      bu(i,j) = bu_ind(i,j) - (P(i,j)+(zetaC(i, j)-etaC(i,j))*shearC_I(i,j)*tan_psi(i,j) - &
                            (P(i-1,j)+(zetaC(i-1, j)-etaC(i-1,j))*shearC_I(i-1,j)*tan_psi(i-1,j) )) / Deltax + & ! P is the replacement pressure 
                               CdwC1(i,j) * ( uwatnd(i,j) * costheta_w - &
                                  vwavg(i,j)  * sintheta_w   )
-                  
-                  endif
                   
                else
                   bu(i,j) = bu_ind(i,j) - ( P(i,j) - P(i-1,j) ) / Deltax + & ! P is the replacement pressure 
@@ -286,28 +267,12 @@ subroutine bvect (utp,vtp,rhs)
             if (solver .le. 2) then ! Picard or JFNK
                   
                if ((dilatancy .eqv. .true.) .and. (rheology .eq. 4)) then
-                  if (mu_phi_form) then
-
-                     if (correction_minus) then
-                        bv(i,j) = bv_ind(i,j) - (P(i,j)+zetaC(i, j)*shearC_I(i,j)*tan_psi(i,j) - &
-                              (P(i,j-1)+zetaC(i,j-1)*shearC_I(i,j-1)*tan_psi(i,j-1)) ) / Deltax + & ! P is the replacement pressure 
-                                 CdwC1(i,j) * ( uwatnd(i,j) * costheta_w - &
-                                    vwavg(i,j)  * sintheta_w   )
-
-                     elseif (correction_plus) then
-                        bv(i,j) = bv_ind(i,j) - (P(i,j)-zetaC(i, j)*shearC_I(i,j)*tan_psi(i,j) - &
-                              (P(i,j-1)-zetaC(i,j-1)*shearC_I(i,j-1)*tan_psi(i,j-1)) ) / Deltax + & ! P is the replacement pressure 
-                                 CdwC1(i,j) * ( uwatnd(i,j) * costheta_w - &
-                                    vwavg(i,j)  * sintheta_w   )
-                     endif
                   
-                  else
-                     bv(i,j) = bv_ind(i,j) - (P(i,j)+(zetaC(i, j)-etaC(i,j))*shearC_I(i,j)*tan_psi(i,j) - &
+                  bv(i,j) = bv_ind(i,j) - (P(i,j)+(zetaC(i, j)-etaC(i,j))*shearC_I(i,j)*tan_psi(i,j) - &
                            (P(i,j-1)+(zetaC(i,j-1)-etaC(i,j-1))*shearC_I(i,j-1)*tan_psi(i,j-1)) ) / Deltax + & ! P is the replacement pressure 
                               CdwC1(i,j) * ( uwatnd(i,j) * costheta_w - &
                                  vwavg(i,j)  * sintheta_w   )
 
-                  endif
                else
                   bv(i,j) = bv_ind(i,j) - ( P(i,j) - P(i,j-1) ) / Deltax + & ! P is the replacement pressure
                      CdwC2(i,j) * ( vwatnd(i,j) * costheta_w + &

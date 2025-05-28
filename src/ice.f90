@@ -182,8 +182,6 @@ PROGRAM ice
 	      date_step = delta_init(millis=int(Deltat*1000))
       endif
 
-      print*, 'adv_mu', adv_mu
-      print*, 'Correction', correction
       print*, 'mu_phi, dilatation', mu_phi, dilatancy
 
          

@@ -28,15 +28,11 @@ Here, P(i, ny)=0
     inclined = .false.
     dilatancy = .false.
     mu_phi    = .true.
-    adv_mu    = .false.
-    mu_phi_form = .false.
-    correction  = .false.
     step_water = .false.
     Water_Col  = .false.
     A2Phi       = .false.
-    correction_plus = .false.
-    correction_minus = .false.
     devstrain = .false.
+    Phi_eq    = .false.
 /
 
 &numerical_param_nml
