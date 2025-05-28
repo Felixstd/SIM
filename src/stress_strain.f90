@@ -318,9 +318,9 @@
          write(15,*) ( sigIInorm(i,j), i = 0, nx+1 )
          write(16,200) ( sig1norm(i,j), i = 0, nx+1 )
          write(17,200) ( sig2norm(i,j), i = 0, nx+1 )
-         write(18,200) ( div(i,j), i = 0, nx+1 )
-         write(19,200) ( shear(i,j), i = 0, nx+1 )
-         write(20,300) ( zetaCout(i,j), i = 0, nx+1 )
+         write(18,*) ( div(i,j), i = 0, nx+1 )
+         write(19,*) ( shear(i,j), i = 0, nx+1 )
+         write(20,*) ( zetaCout(i,j), i = 0, nx+1 )
       enddo
 
       do m=12,20

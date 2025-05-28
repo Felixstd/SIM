@@ -228,8 +228,8 @@ subroutine bvect (utp,vtp,rhs)
 
                   else 
 
-                     bu(i,j) = bu_ind(i,j) - (P(i,j)-(zetaC(i, j)-etaC(i,j))*shearC_I(i,j)*tan_psi(i,j) - &
-                           (P(i-1,j)-(zetaC(i-1, j)-etaC(i-1,j))*shearC_I(i-1,j)*tan_psi(i-1,j) )) / Deltax + & ! P is the replacement pressure 
+                     bu(i,j) = bu_ind(i,j) - (P(i,j)+(zetaC(i, j)-etaC(i,j))*shearC_I(i,j)*tan_psi(i,j) - &
+                           (P(i-1,j)+(zetaC(i-1, j)-etaC(i-1,j))*shearC_I(i-1,j)*tan_psi(i-1,j) )) / Deltax + & ! P is the replacement pressure 
                               CdwC1(i,j) * ( uwatnd(i,j) * costheta_w - &
                                  vwavg(i,j)  * sintheta_w   )
                   

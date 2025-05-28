@@ -156,10 +156,10 @@
 
       elseif (((nx == 200) .and. (ny == 500)) .or. ((nx == 500) .and. (ny == 500)) &
                .or. ((nx == 500) .and. (ny == 200))) then
-         ! Deltax     = 2d03
-         ! Deltax     = 1d03*2
          Deltax     = 1d03*10
-         ! Deltax = 25
+
+      elseif ((nx == 1000) .and. (ny == 400)) then
+         Deltax = 5d03
 
       elseif (((nx == 200) .or. (nx == 400)) .and. (ny == 1000) .or. (ny == 600)) then
          ! Deltax     =  2d03           !  Uniaxial loading (Ringeisen et al., 2019).
@@ -194,18 +194,15 @@
       c_1        = 1d-02
       c_2        = 1/4
       phi_f_micro = 20
-      Pres_f     = .true.
-      Pres_c     = .true.
-      Pres_sum   = .true.
       Water_Col  = .true.
       Phi_eq     = .false.
       adv_mu     = .true.
       step_water = .true.
       correction = .false.
       A2Phi      = .false.
-      P_dilat    = .false.
       correction_plus = .true.
       correction_minus = .false.
+      devstrain = .false.
       ! d = 200
       theta =  0d0*pi/180
       intercept_2 = 200
@@ -431,8 +428,8 @@ subroutine read_namelist
            ideal, Rheology, IMEX, BDF, visc_method, solver,     &
            BasalStress, uniaxial, shear_test, inclined, dilatancy, mu_phi,  &
            Water_Col, Phi_eq, adv_mu, step_water, correction,   &
-           A2Phi, mu_phi_form, Pres_f, Pres_c, Pres_sum, P_dilat,&
-           correction_plus, correction_minus
+           A2Phi, mu_phi_form, correction_plus, correction_minus, &
+           devstrain
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub
@@ -670,7 +667,8 @@ subroutine read_namelist
          enddo
          close(1)
       
-      elseif ((nx == 500) .and. (ny == 200)) then
+      elseif (((nx == 500) .and. (ny == 200)) .or. &
+              ((nx == 1000) .and. (ny == 400))) then
          do i = 0, nx+1
             do j = 0, ny+1
                maskC(i,j) = 1

@@ -49,6 +49,13 @@ bin/*
 # Forcing
 forcing
 
+#Outputs
+simplotting/Tracers_Experiments/
+
+A_time_*
+sigII_time_*
+sigI_time_*
+
 # for projects that use SCons for building: http://http://www.scons.org/
 .sconsign.dblite
 

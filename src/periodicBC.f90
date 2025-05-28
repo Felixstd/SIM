@@ -36,7 +36,7 @@
 
         if (Periodic_y .eq. 1) then
         
-          do i = 1, nx+1 ! periodic in y
+          do i = 0, nx+1 ! periodic in y
                v(i,0)    = v(i,ny)
                v(i,ny+1) = v(i,1)
                v(i,ny+2) = v(i,2)
@@ -47,7 +47,7 @@
         endif
          
         if (Periodic_x .eq. 1) then        
-          do j = 1, ny+1 ! periodic in x
+          do j = 0, ny+1 ! periodic in x
                v(0,j)    = v(nx,j)
                v(nx+1,j) = v(1,j)
                v(nx+2,j) = v(2,j)
@@ -56,6 +56,10 @@
                u(nx+2,j) = u(2,j)
           enddo
         endif
+
+        ! do j = 0, ny+1
+        !   print*, 'inside', u(0, j), u(nx,j ), u(nx,j )-u(0, j)
+        ! enddo
 
 
         return

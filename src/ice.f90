@@ -155,16 +155,16 @@ PROGRAM ice
       print *, 'Posting date, time?'
 
       datestring=''
-      DO i=1,1000
+      DO i=1,5000
          READ (*,'(a19)') datestring
          IF (datestring == 'stop') EXIT         
          post_date(i) = str2dt(datestring)
          print *, 'postdate ', datetime_str(post_date(i))
       END DO
 
-
       startdate =  datetime_str_6(start_date)
       enddate =   datetime_str_6(end_date)
+      print*, enddate
       ! e.g. start_date = 1990-01-01-00-00, startdate = 010190 (old stuff)
 
       call get_default           ! get default settings and parameters
@@ -183,7 +183,6 @@ PROGRAM ice
       endif
 
       print*, 'adv_mu', adv_mu
-      print*, 'P_sum, P_f, P_c', Pres_sum, Pres_f, Pres_c
       print*, 'Correction', correction
       print*, 'mu_phi, dilatation', mu_phi, dilatancy
 
@@ -266,6 +265,7 @@ PROGRAM ice
 
 
          if (tstep .eq. 1) call info_file (expno)
+         print*, post_date(k), now_date
          if (now_date .eq. post_date(k)) then
             write(*,*) k, ' -- Calling sea-ice_post'
             call sea_ice_post (now_date, expno)

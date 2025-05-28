@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import scipy.integrate as inte
 import cmocean
-import scienceplots
+# import scienceplots
 
 from random import randint
-plt.style.use('science')
+plt.style.use(['/aos/home/fstdenis/SIM/simplotting/science.mplstyle'])
 
 def wind_forcing(data_dict, N, dy, Ny, time, figdir, MuPhi = True):
     """
@@ -276,23 +276,23 @@ def velocity_transects(data_dict, dates, dx,figdir, expno, MuPhi = True):
     date_list = []
     lines = []
     for k, date in enumerate(dates):
-        if k % 10 == 0 :
-            u, v       = u_tot[k], v_tot[k]
-            uair, vair = uair_tot[k],  vair_tot[k]
-            
-            uair = uair[:, :-1]
-            u = u[:, :-1]
-            vair = vair[:-1, :]
-            v = v[:-1, :]
-            
-            color = '#%06X' % randint(0, 0xFFFFFF)
-            line = ax1.plot(u[:, Half_domain], X2, color = color, linestyle = '-',)
-            ax3.plot(uair[:, Half_domain], X2, color = color, linestyle = '--')
-            
-            ax2.plot(v[:, Half_domain], X2, color = color, linestyle = '-', label = 'v') 
-            ax4.plot(vair[:, Half_domain], X2, color = color, linestyle = '--')
-            date_list.append(date)
-            lines.append(line[0])
+        # if k % 10 == 0 :
+        u, v       = u_tot[k], v_tot[k]
+        uair, vair = uair_tot[k],  vair_tot[k]
+        
+        uair = uair[:, :-1]
+        u = u[:, :-1]
+        vair = vair[:-1, :]
+        v = v[:-1, :]
+        
+        color = '#%06X' % randint(0, 0xFFFFFF)
+        line = ax1.plot(u[:, Half_domain], X2, color = color, linestyle = '-',)
+        ax3.plot(uair[:, Half_domain], X2, color = color, linestyle = '--')
+        
+        ax2.plot(v[:, Half_domain], X2, color = color, linestyle = '-', label = 'v') 
+        ax4.plot(vair[:, Half_domain], X2, color = color, linestyle = '--')
+        date_list.append(date)
+        lines.append(line[0])
             
     ax3.set_xlabel(r'$u$ (m/s)')
     ax4.set_xlabel(r'$v$ (m/s)')
@@ -306,15 +306,59 @@ def velocity_transects(data_dict, dates, dx,figdir, expno, MuPhi = True):
 # Add text in figure coordinates
     plt.figtext(0.5, 0.5, 'Wind', ha='center', va='center')
 
-    fig.legend(lines, date_list, loc = 'outside center right', bbox_to_anchor = (1.3, 0.5))
-    plt.savefig(figdir+expno+'/velocitytransect.png')
+    # fig.legend(lines, date_list, loc = 'outside center right', bbox_to_anchor = (1.3, 0.5))
+    plt.savefig(figdir+expno+'/velocitytransect.png'.format(date))
     
     
+def tracers_transect(data_dict, dates, dx,figdir, expno, MuPhi = True):
+    
+    if MuPhi:
         
+        divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot, sigI_tot, sigII_tot, zeta_tot,eta_tot, \
+            uair_tot, vair_tot, muI_tot, phi_tot, I_tot, shearI_tot, Pmax_tot, Peq_tot = data_dict.values()
     
-       
+    else: 
+        
+        divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
+            data_dict.values()
+    
+    Nx2, Ny2 = np.shape(u_tot[0])
+    
+    X2, Y2 =  np.arange(0, Nx2)*dx/1e3,  np.arange(0, Ny2-1)*dx/1e3
+
+    
+    Half_domain = Nx2//2
     
     
+    colors = ['0C5DA5', '00B945', 'FF9500', 'FF2C00', '845B97', 'forestgreen', 'orangered']
+    fig, (ax1, ax2) =  plt.subplots(1, 2, sharey = True, figsize = (5, 4))
+    axs = [ax1, ax2]
+    for ax in axs:
+        ax.grid()
+
+    date_list = []
+    lines = []
+    for k, date in enumerate(dates):
+        # if k % 10 == 0 :
+        h, A       = h_tot[k][1:-1, 1:-1], A_tot[k][1:-1, 1:-1]
+        
+        color = '#%06X' % randint(0, 0xFFFFFF)
+        line = ax1.plot(h[:, Half_domain], X2, color = color, linestyle = '-',)
+        
+        ax2.plot(A[:, Half_domain], X2, color = color, linestyle = '-', label = 'v') 
+        date_list.append(date)
+        lines.append(line[0])
+            
+    ax1.set_xlabel(r'$h$ (m)')
+    ax2.set_xlabel(r'$A$')
+    plt.suptitle('Sea Ice')
+    
+    ax1.set_ylabel(r'$y$ (km)')
+    
+    plt.subplots_adjust(hspace=0.5)
+
+    # fig.legend(lines, date_list, loc = 'outside center right', bbox_to_anchor = (1.3, 0.5))
+    plt.savefig(figdir+expno+'/tracers_transect.png')
     
     
     

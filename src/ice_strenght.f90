@@ -60,9 +60,7 @@ subroutine Ice_strength ()
          do j = 0, ny+1
             if (maskC(i,j) .eq. 1) then
                Pp(i,j) = 2d0 * Pstar * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ) )
-               Pp(i,j) = Pp(i,j) / 2d0
                Pt(i,j) = 2d0* Tens * h(i,j) * dexp(-C * ( 1d0 - A(i,j) ) )  
-               Pt(i,j) = Pt(i,j) / 2.0d0 
             endif
          enddo
       enddo
@@ -84,8 +82,13 @@ subroutine Ice_strength ()
          endif
 
          if (maskC(i,ny+1) .eq. 1) then             
+
+            !---- Removed the setting P at the open boundary -----!
+            !---- Changed the index here ----!
+            ! Pp(i,ny+1)  = 0d0
+            ! Pt(i,ny+1)  = 0d0    ! Pt(i, 1) replaced by Pt(i, ny)
             Pp(i,ny)  = 0d0
-            Pt(i,ny)   = 0d0    ! Pt(i, 1) replaced by Pt(i, ny)
+            Pt(i,ny)  = 0d0    ! Pt(i, 1) replaced by Pt(i, ny)
          endif
 
       enddo

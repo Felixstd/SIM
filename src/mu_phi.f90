@@ -49,10 +49,12 @@ subroutine inertial_number
 
                     ! Capping the pressure to eliminate singularities
                     Press = max(Pp(i, j), 1d-20)
-
-                    ! Computing inertial number
-                    inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*2d0*shearC_I(i, j), highI)
-
+                    if (devstrain) then 
+                        inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*2d0*shearC_I(i, j), highI)
+                    else
+                        ! Computing inertial number
+                        inertial(i, j) = min(SQRT(rhoice * h(i, j)/Pp(i, j)) * d_average*shearC_I(i, j), highI)
+                    endif
             endif
         enddo
     enddo
@@ -111,32 +113,10 @@ subroutine angle_friction_mu
 
     do i = 0, nx+1
         do j = 0, ny+1
+
             if (maskC(i,j) .eq. 1) then
-
-                ! if ((mu_phi .eqv. .true.) .and. (dilatancy .eqv. .true.)) then
-                !     if (h(i,j) < 1e-2) then
-                ! !     ! if (h(i,j) < 1e-6) then
-
-                ! ! !     !     !UNTIL 23
-                !             mu_I(i, j) = 0d0
-                            
-
-                !     else 
-                !         if (A2Phi) then 
-
-                !             diff_A = max(1d-20, 0.90-Phi_A(i, j))
-
-                !         else 
-                !             diff_A = max(1d-20, 1-A(i, j))
-
-                !         endif
-
-                !         mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/diff_A + 1 )
-                !     endif
-                
-                ! else 
                     mu_I(i, j) = mu_0 +  ( mu_infty - mu_0 ) / ( (I_0*c_phi)/inertial(i, j) + 1 )
-                ! endif
+
             endif
         
         enddo
@@ -178,6 +158,7 @@ subroutine shear_inv(utp, vtp)
 
     use datetime, only: datetime_type
     use ellipse
+    use muphi
     
     implicit none
 
@@ -193,6 +174,7 @@ subroutine shear_inv(utp, vtp)
     character filename*64
 
     double precision dudx, dvdy, dudy, dvdx, land, lowA, summaskC
+    double precision dudy1(0:nx+2,0:ny+2), dudx1(0:nx+2,0:ny+2), dvdy1(0:nx+2,0:ny+2), dvdx1(0:nx+2,0:ny+2)
     double precision, intent(in):: utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
 
     peri = Periodic_x + Periodic_y
@@ -215,6 +197,7 @@ subroutine shear_inv(utp, vtp)
         do j = 1, ny
             
             if ( maskC(i,j) .eq. 1 ) then
+                    
                   
                     dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
                     dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
@@ -240,12 +223,21 @@ subroutine shear_inv(utp, vtp)
                     print *, 'WARNING: irregular grid cell case1', i, j
                     
                 endif
-
                
                 if     ( maskC(i,j+1) + maskC(i,j-1) .eq. 2 ) then
-                    dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                    !---- For open boundary condition at the top ----!
+                    if (j .eq. ny) then 
+
+                        if (Periodic_y .eq. 0) then
+                            dudy = (utp(i, j) + utp(i+1, j) - &
+                                   (utp(i, j-1) + utp(i+1, j-1)))/(4d0*Deltax)
+                    
+                        endif
+                    else
+                        dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
                             ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
                             ( 4d0 * Deltax )
+                    endif
                      
                 elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
                     dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
@@ -262,15 +254,22 @@ subroutine shear_inv(utp, vtp)
                     print *, 'WARNING: irregular grid cell case2',i,j
                      
                 endif
-                  
+
 !----- stresses and strain rates at the grid center -------------------------   
 
-                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
-                        + ( dudy + dvdx )**2d0) !- 1/2d0*(dudx + dvdy)**2))
+                dudy1(i, j) = dudy
+                if (devstrain) then
 
-                ! shearC_I(i, j) = sqrt((dudx**2+dudy**2+2*(1/2*(dudy+dvdx))**2 - 1/2*(dudx+dudy)**2))
-                ! div_I(i, j) = (dudx + dvdy)
-            
+                    shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
+                            + ( dudy + dvdx )**2d0 - (dudx + dudy)**2d0))
+                    if (((( dudx - dvdy )**2d0 &  
+                            + ( dudy + dvdx )**2d0)) < ((dudx + dudy)**2d0)) then
+                        print*, 'shear problem'
+                    endif
+                else 
+                    shearC_I(i,j) = sqrt((dudx - dvdy )**2d0 &  
+                            + ( dudy + dvdx )**2d0)
+                endif
             else
                 shearC_I(i,j) = land
 
@@ -278,330 +277,152 @@ subroutine shear_inv(utp, vtp)
 
         enddo
     enddo
+    
 
     !------ Boundary Conditions ------!
     ! print*, 'MASKC' , maskC(0,ny+1)
     !----- Boundary Conditions in X ---!
     if (Periodic_x .eq. 1) then
-    !--- Periodic in x---!
-        i = 0
-        do j = 0, ny+1 
+        
+        if (Periodic_y .eq. 0) then
+            
+            !------- i = 0 --------!
+            i = 0
+            do j = 1, ny
 
-            if (maskC(i,j) .eq. 1) then
-                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-                ! dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
-                
-                if (j.eq. 0) then
-                    if (Periodic_y .eq. 0) then
-                        if (maskC(i, j+1) .eq. 1) then
-                            dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                        endif
-
-                    else 
-                        if (maskC(i,j+1) + maskC(i,ny+1) .eq. 2) then
-                            dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                            ( utp(i,ny+2) + utp(i+1,ny+2) ) ) /     &
-                            ( 4d0 * Deltax )
-                        elseif (maskC(i,j+1) - maskC(i,ny+1) .eq. 1 ) then
-                            dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                        elseif (maskC(i,j+1) - maskC(i,ny+1) .eq. -1) then
-                            dudy = ( -1d0 * ( utp(i,ny+2) + utp(i+1,ny+2) ) - &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                        endif
-                    endif
-
+                if (maskC(i,j) .eq. 1) then
+                    dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
                     dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
 
-                    if (( maskC(i+1,j) + maskC(nx+1,j) .eq. 2 )) then
-                        dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-                            ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) /      &
+                    dvdx =  ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                            ( vtp(nx-1,j) + vtp(nx-1,j+1) ) ) /      &
                             ( 4d0 * Deltax )
-                     
-                    elseif ( maskC(i+1,j) - maskC(nx+1,j) .eq. 1 ) then
-                        dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-                            3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-                            ( 6d0 * Deltax )
-                
-                    elseif ( maskC(i+1,j) - maskC(nx+1,j) .eq. -1 ) then
-                        dvdx = ( -1d0 * ( vtp(nx+2,j) + vtp(nx+2,j+1) ) - &
-                            3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-                            ( 6d0 * Deltax )
-                    endif
 
-
-                elseif (j .eq. ny+1) then
-                    if (Periodic_y .eq. 0) then 
-                        if (maskC(i, j-1) .eq. 1) then
-                            dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                            ! print*, 'here'
-                        endif
-                        
-                        dvdy = ( vtp(i,j) - vtp(i,j-1) ) / Deltax
-
-                        if (( maskC(i+1,j) + maskC(nx+1,j) .eq. 2 )) then
-                            dvdx = ( ( vtp(i+1,j) + vtp(i+1,j-1) ) -        &
-                            ( vtp(nx+2,j) + vtp(nx+2,j-1) ) ) /      &
-                            ( 4d0 * Deltax )
-                     
-                        elseif ( maskC(i+1,j) - maskC(nx+1,j) .eq. 1 ) then
-                            dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j-1) ) +  &
-                            3d0 * ( vtp(i,j)   + vtp(i,j-1) ) ) /  &
-                            ( 6d0 * Deltax )
-                
-                        elseif ( maskC(i+1,j) - maskC(nx+1,j) .eq. -1 ) then
-                            dvdx = ( -1d0 * ( vtp(nx+2,j) + vtp(nx+2,j-1) ) - &
-                            3d0 * ( vtp(i,j)   + vtp(i,j-1) ) ) / &
-                            ( 6d0 * Deltax )
-                        endif
-                    
-                    else
-                        if (maskC(i,0) + maskC(i,j-1) .eq. 2) then
-                            dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                            ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
-                            ( 4d0 * Deltax )
-                     
-                        elseif (maskC(i,0) - maskC(i,j-1) .eq. 1 ) then
-                            dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                     
-                        elseif  (maskC(i,0) - maskC(i,j-1) .eq. -1)  then
-                            dudy = ( -1d0 * ( utp(i,0) + utp(i+1,0) ) - &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                        
-                        endif
-
-                        dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
-
-                    endif
-                else         
-                    if     ( maskC(i,j+1) + maskC(i,j-1) .eq. 2 ) then
-                        dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                            ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
-                            ( 4d0 * Deltax )
-                     
-                    elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
+                    !----- dudy (i = 0)------!
+                    if (j.eq. 1) then 
+                    !------ This is assuming a wall at the bottom -------!
                         dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
                             3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
                             ( 6d0 * Deltax )
-                     
-                    elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. -1 ) then
-                        dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                    endif
                     
-                    dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
-
-                    if (( maskC(i+1,j) + maskC(nx+1,j) .eq. 2 )) then
-                        dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-                            ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) /      &
-                            ( 4d0 * Deltax )
-                     
-                    elseif ( maskC(i+1,j) - maskC(nx+1,j) .eq. 1 ) then
-                        dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-                            3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-                            ( 6d0 * Deltax )
-                
-                    elseif ( maskC(i+1,j) - maskC(nx+1,j) .eq. -1 ) then
-                        dvdx = ( -1d0 * ( vtp(nx+2,j) + vtp(nx+2,j+1) ) - &
-                            3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-                            ( 6d0 * Deltax )
-                    endif
-                endif
-
-
-                ! if ((j .eq. 0) .and. maskC(i, 0) .eq. 1) then
-                !     dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -         &
-                !                 ( utp(i,ny+2) + utp(i+1,ny+2) ) ) / &
-                !                 ( 4d0 * Deltax )
-                ! else
-                !     dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                !                 ( utp(i,j-1) + utp(i+1,j-1) ) ) /  &
-                !                 ( 4d0 * Deltax )
-                ! endif
-                ! shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
-                !         + ( dudy + dvdx )**2d0 - 1/2d0*(dudx + dvdy)**2d0))
-                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
-                        + ( dudy + dvdx )**2d0)
-                ! shearC_I(i,j) =        sqrt((dudx**2+dudy**2+2*(1/2*(dudy+dvdx))**2 - 1/2*(dudx+dudy)**2))
-            else
-            !  print*, 'here land ', i, j
-                shearC_I(i,j) = land
-
-            endif
-        enddo
-
-        i = nx+1
-        do j = 0, ny+1 
-
-            if (maskC(i,j) .eq. 1) then
-                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-                ! dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
-
-                if (j.eq. 0) then
-                    if (Periodic_y .eq. 0) then
-                        if (maskC(i, j+1) .eq. 1) then
-                            dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                        endif
-
-
                     else 
-                        if (maskC(i,j+1) + maskC(i,ny+1) .eq. 2) then
-                            dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                            ( utp(i,ny+2) + utp(i+1,ny+2) ) ) /     &
-                            ( 4d0 * Deltax )
-                        elseif (maskC(i,j+1) - maskC(i,ny+1) .eq. 1 ) then
-                            dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                        elseif (maskC(i,j+1) - maskC(i,ny+1) .eq. -1) then
-                            dudy = ( -1d0 * ( utp(i,ny+2) + utp(i+1,ny+2) ) - &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                        endif
-                    endif
+                        if ( maskC(i,j+1) + maskC(i,j-1) .eq. 2 ) then
+                            !---- For open boundary condition at the top ----!
+                            if (j .eq. ny) then 
 
+                                if (Periodic_y .eq. 0) then
+                                    dudy = (utp(i, j) + utp(i+1, j) - &
+                                            (utp(i, j-1) + utp(i+1, j-1)))/(4d0*Deltax)
+                    
+                                endif
+                            else
+                                dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                        ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+                                        ( 4d0 * Deltax )
+                            endif
+
+                        elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
+                            dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
+                                3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                                ( 6d0 * Deltax )
+                        
+                        elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. -1 ) then
+                            dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
+                                3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                                ( 6d0 * Deltax )
+                        endif
+                    endif 
+
+                    if (devstrain) then
+
+                        shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
+                            + ( dudy + dvdx )**2d0 - (dudx + dudy)**2d0))
+                    else 
+                        shearC_I(i,j) = sqrt((dudx - dvdy )**2d0 &  
+                            + ( dudy + dvdx )**2d0)
+                    endif
+                else
+
+                    shearC_I(i,j) = land
+
+                endif
+            enddo
+
+            !-------- i = nx+1 --------!
+            i = nx+1
+            do j = 1, ny
+
+                if (maskC(i,j) .eq. 1) then
+                    dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
                     dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
 
-                                    
-                    if (( maskC(0,j) + maskC(i-1,j) .eq. 2 )) then
-                        dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-                                ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
-                                ( 4d0 * Deltax )
-                        
-                    elseif ( maskC(0,j) - maskC(i-1,j) .eq. 1 ) then
-                        dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-                                3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-                                ( 6d0 * Deltax )
-                    
-                    elseif ( maskC(0,j) - maskC(i-1,j) .eq. -1 ) then
-                        dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
-                                3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-                                ( 6d0 * Deltax )
-                    endif
-
-
-                elseif (j .eq. ny+1) then
-                    if (Periodic_y .eq. 0) then 
-                        if (maskC(i, j-1) .eq. 1) then
-                            dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                        endif
-
-                        dvdy = ( vtp(i,j) - vtp(i,j-1) ) / Deltax
-
-                                        
-                        if (( maskC(0,j) + maskC(i-1,j) .eq. 2 )) then
-                            dvdx = ( ( vtp(i+1,j) + vtp(i+1,j-1) ) -        &
-                                    ( vtp(i-1,j) + vtp(i-1,j-1) ) ) /      &
-                                    ( 4d0 * Deltax )
-                            
-                        elseif ( maskC(0,j) - maskC(i-1,j) .eq. 1 ) then
-                            dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j-1) ) +  &
-                                    3d0 * ( vtp(i,j)   + vtp(i,j-1) ) ) /  &
-                                    ( 6d0 * Deltax )
-                        
-                        elseif ( maskC(0,j) - maskC(i-1,j) .eq. -1 ) then
-                            dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j-1) ) - &
-                                    3d0 * ( vtp(i,j)   + vtp(i,j-1) ) ) / &
-                                    ( 6d0 * Deltax )
-                        endif
-
-                    else
-                        if (maskC(i,0) + maskC(i,j-1) .eq. 2) then
-                            dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                            ( utp(i,j+1) + utp(i+1,j+1) ) ) /     &
+                    dvdx =  ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                            ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
                             ( 4d0 * Deltax )
-                     
-                        elseif (maskC(i,0) - maskC(i,j-1) .eq. 1 ) then
-                            dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                     
-                        elseif  (maskC(i,0) - maskC(i,j-1) .eq. -1)  then
-                            dudy = ( -1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) - &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
+
+                    !----- dudy -----!
+
+                    if (j .eq. 1) then
                         
-                        endif
-
-                        dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
-
-                    endif
-                else 
-                    if     ( maskC(i,j+1) + maskC(i,j-1) .eq. 2 ) then
-                        dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                            ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
-                            ( 4d0 * Deltax )
-                     
-                    elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
+                        !----- Forward Spatial Derivative at the Boundary -----!
+                        
                         dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
                             3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
                             ( 6d0 * Deltax )
-                     
-                    elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. -1 ) then
-                        dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
-                            3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
-                            ( 6d0 * Deltax )
-                    endif
 
-                    dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+                    else 
 
-                    if (( maskC(0,j) + maskC(i-1,j) .eq. 2 )) then
-                        dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-                                ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
-                                ( 4d0 * Deltax )
-                        
-                    elseif ( maskC(0,j) - maskC(i-1,j) .eq. 1 ) then
-                        dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-                                3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-                                ( 6d0 * Deltax )
+
+                        if (( maskC(i,j+1) + maskC(i,j-1) .eq. 2 )) then
+                            !---- For open boundary condition at the top ----!
+                            if (j .eq. ny) then 
+
+                                if (Periodic_y .eq. 0) then
+                                    dudy = (utp(i, j) + utp(i+1, j) - &
+                                            (utp(i, j-1) + utp(i+1, j-1)))/(4*Deltax)
                     
-                    elseif ( maskC(0,j) - maskC(i-1,j) .eq. -1 ) then
-                        dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
-                                3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
+                                endif
+                            else
+                                dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                        ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+                                        ( 4d0 * Deltax )
+                            endif
+
+
+                        elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
+                            dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
+                                3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
                                 ( 6d0 * Deltax )
+                        
+                        elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. -1 ) then
+                            dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
+                                3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                                ( 6d0 * Deltax )
+                        endif
+
                     endif
+                    
+                    if (devstrain) then
 
-                endif
-                ! if (j .eq. 0) then
-                !     dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -         &
-                !                 ( utp(i,ny+2) + utp(i+1,ny+2) ) ) / &
-                !                 ( 4d0 * Deltax )
-                ! else
-                !     dudy = (( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                !                 ( utp(i,j-1) + utp(i+1,j-1) ) ) /  &
-                !                 ( 4d0 * Deltax )
-                ! endif
+                        shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
+                            + ( dudy + dvdx )**2d0 - (dudx + dudy)**2d0))
+                    else 
+                        shearC_I(i,j) = sqrt((dudx - dvdy )**2d0 &  
+                            + ( dudy + dvdx )**2d0)
+                    endif
                 
-                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
-                        + ( dudy + dvdx )**2d0 )
-                ! shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
-                !         + ( dudy + dvdx )**2d0 - 1/2d0*(dudx + dvdy)**2d0))
+                else
+                    shearC_I(i,j) = land
+                
+                endif
 
-            else
-                shearC_I(i,j) = land
-                ! print*, 'here land ', i, j
-
-            endif
-        enddo
+            enddo
+        endif
 
     else 
         !--- Open Boundary Conditions (Neumann BC) in x ---!
         i = 0
-        do j = 0, ny+1 
+        do j = 1, ny 
 
             if (maskC(i,j) .eq. 1) then
                 dudx = 0d0
@@ -614,7 +435,7 @@ subroutine shear_inv(utp, vtp)
         enddo
 
         i = nx+1
-        do j = 0, ny+1 
+        do j = 1, ny 
 
             if (maskC(i,j) .eq. 1) then
                 dudx = 0d0
@@ -635,272 +456,12 @@ subroutine shear_inv(utp, vtp)
     
     if (Periodic_y .eq. 1) then
     !--- Periodic (Dirichlet BC) in y ---!
-
-
-        j = 0
-        do i = 0, nx+1 
-            if (maskC(i,j) .eq. 1) then
-                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-                dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
-                
-
-                if (i .eq. 0) then
-                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-                            ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) /      &
-                            ( 4d0 * Deltax )
-                else
-
-                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-                            ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
-                            ( 4d0 * Deltax )
-
-                endif
-
-                dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                            ( utp(i,ny+2) + utp(i+1,ny+2) ) ) /     &
-                            ( 4d0 * Deltax )
-
-                
-                ! shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
-                !         + ( dudy + dvdx )**2d0 - 1/2d0*(dudx + dvdy)**2))
-                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
-                        + ( dudy + dvdx )**2d0)
-
-            else
-                shearC_I(i,j) = land
-
-            endif
-        enddo
-            
-        j = ny+1
-        do i = 0, nx+1 
-            if (maskC(i,j) .eq. 1) then
-                dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-                dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
-                
-
-                if (i .eq. 0) then
-                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-                            ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) /      &
-                            ( 4d0 * Deltax )
-                else
-
-                    dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-                            ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
-                            ( 4d0 * Deltax )
-
-                endif
-
-                dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
-                            ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
-                            ( 4d0 * Deltax )
-
-                
-                ! shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
-                !         + ( dudy + dvdx )**2d0 )
-                ! shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
-                !         + ( dudy + dvdx )**2d0 - 1/2d0*(dudx + dvdy)**2))
-                shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
-                        + ( dudy + dvdx )**2d0)
-                        
-            else
-                shearC_I(i,j) = land
-
-            endif
-        enddo
-
-    else
-    
-    !     !--- Neumann BC in y ---!
-        j = 0
-        do i = 0, nx+1
-            if (maskC(i,j) .eq. 1) then
-                dvdy = 0d0
-                dudy = 0d0
-                dudx = 0d0
-                dvdx = 0d0
-                shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
-                        + ( dudy + dvdx )**2d0 - 1/2d0*(dudx + dvdy)**2d0))
-
-            else 
-                shearC_I(i,j) = land
-            endif
-        enddo
-        j = ny+1
-        do i = 0, nx+1 
-            if (maskC(i,j) .eq. 1) then
-                dvdy = 0d0
-                dudy = 0d0
-                dudx = 0d0
-                dvdx = 0d0
-                shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
-                        + ( dudy + dvdx )**2d0 - 1/2d0*(dudx + dvdy)**2d0))
-            else 
-                shearC_I(i,j) = land
-            endif
-        enddo
+    !------- Not debugged -------!
+        print*, 'Stop not implemented'
+        stop
 
     endif
 
-    !---- For the B grid (at the nodes) ----!
-    do j = 1, ny+1 
-        do i = 1, nx+1
-
-           summaskC = maskC(i-1,j) + maskC(i,j) + & 
-                maskC(i,j-1) + maskC(i-1,j-1)
-
-           if (summaskC .ge. 2) then
-
-              if (summaskC .eq. 4) then
-! oo
-! oo normal
-                 dudy = ( utp(i,j) - utp(i,j-1) ) / Deltax !case 1 
-                 dvdx = ( vtp(i,j) - vtp(i-1,j) ) / Deltax
-		     
-                 dudx = ( (utp(i+1,j) + utp(i+1,j-1)) * maskB(i+1,j) - &
-                      (utp(i-1,j) + utp(i-1,j-1)) * maskB(i-1,j) ) / (4d0*Deltax)
-                 
-                 dvdy = ( (vtp(i-1,j+1) + vtp(i,j+1)) * maskB(i,j+1) - &
-                      (vtp(i-1,j-1) + vtp(i,j-1)) * maskB(i,j-1) ) / (4d0*Deltax)
-                     
-                     
-              elseif (summaskC .eq. 3) then 
-
-                 if (maskC(i-1,j) .eq. 0) then !case 2
-! xo
-! oo    
-                    dudy = (-3d0*utp(i,j-1) + utp(i,j-2)/3d0) / Deltax
-                    dvdx = (3d0*vtp(i,j) - vtp(i+1,j)/3d0) / Deltax
-
-                    dudx = ( utp(i+1,j) + utp(i+1,j-1) - &
-                         ( utp(i+2,j) + utp(i+2,j-1) ) * maskB(i+2,j)/4d0 ) / Deltax
-		       
-                    dvdy = ( -vtp(i-1,j-1) - vtp(i,j-1) + &
-                         ( vtp(i-1,j-2) + vtp(i,j-2) ) * maskB(i,j-2)/4d0 ) / Deltax
-                        
-                 elseif (maskC(i,j) .eq. 0) then !case 3
-! ox
-! oo           
-                    dudy = (-3d0*utp(i,j-1) + utp(i,j-2)/3d0) / Deltax
-                    dvdx = (-3d0*vtp(i-1,j) + vtp(i-2,j)/3d0) / Deltax
-                        
-                    dudx = ( -utp(i-1,j) - utp(i-1,j-1) + &
-                         ( utp(i-2,j) + utp(i-2,j-1) ) * maskB(i-2,j)/4d0 ) / Deltax
-		       
-                    dvdy = ( -vtp(i-1,j-1) - vtp(i,j-1) + &
-                         ( vtp(i-1,j-2) + vtp(i,j-2) ) * maskB(i,j-2)/4d0 ) / Deltax
-
-                 elseif (maskC(i,j-1) .eq. 0) then !case 5
-! oo                                                          
-! ox
-                    dudy = (3d0*utp(i,j) - utp(i,j+1)/3d0) / Deltax
-                    dvdx = (-3d0*vtp(i-1,j) + vtp(i-2,j)/3d0) / Deltax
-
-                    dudx = ( -utp(i-1,j) - utp(i-1,j-1) + &
-                         ( utp(i-2,j) + utp(i-2,j-1) ) * maskB(i-2,j)/4d0 ) / Deltax
-
-                    dvdy = ( vtp(i-1,j+1) + vtp(i,j+1) - &
-                         ( vtp(i-1,j+2) + vtp(i,j+2) ) * maskB(i,j+2)/4d0 ) / Deltax
-    
-                 elseif (maskC(i-1,j-1) .eq. 0) then !case 4
-! oo                                                            
-! xo      
-                    dudy = (3d0*utp(i,j) - utp(i,j+1)/3d0) / Deltax
-                    dvdx = (3d0*vtp(i,j) - vtp(i+1,j)/3d0) / Deltax
-                        
-                    dudx = ( utp(i+1,j) + utp(i+1,j-1) - &
-                         ( utp(i+2,j) + utp(i+2,j-1) ) * maskB(i+2,j)/4d0 ) / Deltax
-
-                    dvdy = ( vtp(i-1,j+1) + vtp(i,j+1) - &
-                         ( vtp(i-1,j+2) + vtp(i,j+2) ) * maskB(i,j+2)/4d0 ) / Deltax
-
-                 else
-
-                    print *, 'wowowo1'
-                    stop
-
-                 endif !summaskC .eq. 3
-                 
-              elseif (summaskC .eq. 2) then !case 7
-                     
-                 if (maskC(i-1,j) .eq. 0 .and. &
-                      maskC(i-1,j-1) .eq. 0) then
-! xo
-! xo
-                    dudy = 0d0
-                    dvdx = (3d0*vtp(i,j) - vtp(i+1,j)/3d0) / Deltax
-                        
-                    dudx = ( utp(i+1,j) + utp(i+1,j-1) - &
-                         ( utp(i+2,j) + utp(i+2,j-1) ) * maskB(i+2,j)/4d0 ) / Deltax
-		      
-                    dvdy = 0d0
-
-                 elseif(maskC(i,j) .eq. 0 .and. & !case 6
-                      maskC(i,j-1) .eq. 0) then
-! ox
-! ox                                                                           
-                    dudy = 0d0
-                    dvdx = (-3d0*vtp(i-1,j) + vtp(i-2,j)/3d0) / Deltax
-                        
-                    dudx = ( -utp(i-1,j) - utp(i-1,j-1) + &
-                         ( utp(i-2,j) + utp(i-2,j-1) ) * maskB(i-2,j)/4d0 ) / Deltax
-
-                    dvdy = 0d0
-
-                 elseif(maskC(i-1,j) .eq. 0 .and. & !case 8           
-                      maskC(i,j) .eq. 0) then
-! xx
-! oo
-                    dudy = (-3d0*utp(i,j-1) + utp(i,j-2)/3d0) / Deltax
-                    dvdx = 0d0
-                    dudx = 0d0
-                    dvdy = ( -vtp(i-1,j-1) - vtp(i,j-1) + &
-                         ( vtp(i-1,j-2) + vtp(i,j-2) ) * maskB(i,j-2)/4d0 ) / Deltax
-
-                 elseif(maskC(i,j-1) .eq. 0 .and. & !case 9
-                      maskC(i-1,j-1) .eq. 0) then
-! oo                                                                     
-! xx                                          
-                    dudy = (3d0*utp(i,j) - utp(i,j+1)/3d0) / Deltax
-                    dvdx = 0d0
-                    dudx = 0d0
-                    dvdy = ( vtp(i-1,j+1) + vtp(i,j+1) - &
-                         ( vtp(i-1,j+2) + vtp(i,j+2) ) * maskB(i,j+2)/4d0 ) / Deltax
-                        
-
-                 elseif(maskC(i-1,j) .eq. 0 .and. & !case 15
-                      maskC(i,j-1) .eq. 0) then
-! xo                                                                    
-! ox                    ! don't do anything (could be improved)                                        
-                        
-			
-                 elseif(maskC(i,j) .eq. 0 .and. & !case 16
-                      maskC(i-1,j-1) .eq. 0) then
-! ox                                                                      
-! xo                    ! don't do anything (could be improved)                                                     
-			
-                 else
-
-                    print *, 'wowowo2'
-                    stop
-
-                 endif  !summaskC .eq. 2
-
-              else
-                 print *, 'wowowo3'
-                 stop
-
-              endif
-
-            shearB_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
-                       + ( dudy + dvdx )**2d0 )
-        endif
-    enddo
-    enddo
-            
-
-    ! if (peri .ne. 0) call periodicBC(shearC_I, shearB_I)
-    ! print*, 'shear ar 1, ny+1', shearC_I(1, ny+1), shearC_I(0, ny+1),shearC_I(nx+1, ny+1)
     return
 end subroutine shear_inv
 
@@ -1195,198 +756,3 @@ subroutine non_dimensional_shear
 
 end subroutine non_dimensional_shear
 
-               ! dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-        ! j = 0
-        ! do i = 0, nx+1
-        !     if (maskC(i,j ) .eq. 1) then
-        !         if (i .eq. 0) then
-
-        !         if (Periodic_x .eq. 1) then 
-        !             if (( maskC(i+1,j) + maskC(nx+1,j) .eq. 2 )) then
-        !                 dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-        !                 ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) /      &
-        !                 ( 4d0 * Deltax )
-                    
-        !             elseif ( maskC(i+1,j) - maskC(nx+1,j) .eq. 1 ) then
-        !                 dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-        !                 3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-        !                 ( 6d0 * Deltax )
-            
-        !             elseif ( maskC(i+1,j) - maskC(nx+1,j) .eq. -1 ) then
-        !                 dvdx = ( -1d0 * ( vtp(nx+2,j) + vtp(nx+2,j+1) ) - &
-        !                 3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-        !                 ( 6d0 * Deltax )
-        !             endif
-        !         else
-        !             if (maskC(i+1,j) .eq. 1) then
-        !                 dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-        !                 3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-        !                 ( 6d0 * Deltax )
-        !             endif
-        !         endif
-
-        !         dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-                
-        !         elseif (i .eq. nx+1) then
-        !             if (Periodic_x .eq. 1) then 
-        !                 if (( maskC(0,j) + maskC(i-1,j) .eq. 2 )) then
-        !                     dvdx = ( ( vtp(0,j) + vtp(0,j+1) ) -        &
-        !                     ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
-        !                     ( 4d0 * Deltax )
-                     
-        !                 elseif ( maskC(0,j) + maskC(i-1,j) .eq. 1 ) then
-        !                     dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-        !                     3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-        !                     ( 6d0 * Deltax )
-                
-        !                 elseif ( maskC(0,j) + maskC(i-1,j) .eq. -1 ) then
-        !                     dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
-        !                     3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-        !                     ( 6d0 * Deltax )
-        !                 endif
-
-        !                 dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-                                            
-        !             else
-        !                 if (maskC(i-1,j) .eq. 1) then
-        !                     dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
-        !                     3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-        !                     ( 6d0 * Deltax )
-        !                 endif
-
-        !                 dudx = ( utp(i,j) - utp(i-1,j) ) / Deltax
-        !             endif
-        !         else 
-                
-        !             if (( maskC(i+1,j) + maskC(i-1,j) .eq. 2 )) then
-        !                 dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-        !                         ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
-        !                         ( 4d0 * Deltax )
-                        
-        !             elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. 1 ) then
-        !                 dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-        !                         3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-        !                         ( 6d0 * Deltax )
-                    
-        !             elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. -1 ) then
-        !                 dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
-        !                         3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-        !                         ( 6d0 * Deltax )
-        !             endif
-                    
-        !             dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-        !         endif
-
-
-        !         shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
-        !                 + ( dudy + dvdx )**2d0 )
-
-        !     else
-        !         shearC_I(i, j) = land
-        !     endif
-        ! enddo
-            
-        ! j = ny+1
-        ! do i = 0, nx+1 
-        !     if (maskC(i,j) .eq. 1) then
-        !         ! print*, 'here'
-        !         dvdy = 0d0
-        !         dudy = 0d0
-        !         ! dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-
-        !         if (i.eq. 0) then
-        !             if (Periodic_x .eq. 1) then 
-        !                 if (( maskC(i+1,j) + maskC(nx+1,j) .eq. 2 )) then
-        !                     dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-        !                     ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) /      &
-        !                     ( 4d0 * Deltax )
-                     
-        !                 elseif ( maskC(i+1,j) - maskC(nx+1,j) .eq. 1 ) then
-        !                     dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-        !                     3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-        !                     ( 6d0 * Deltax )
-                
-        !                 elseif ( maskC(i+1,j) - maskC(nx+1,j) .eq. -1 ) then
-        !                     dvdx = ( -1d0 * ( vtp(nx+2,j) + vtp(nx+2,j+1) ) - &
-        !                     3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-        !                     ( 6d0 * Deltax )
-        !                 endif
-        !             else
-        !                 if (maskC(i+1,j) .eq. 1) then
-        !                     dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-        !                     3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-        !                     ( 6d0 * Deltax )
-        !                 endif
-        !             endif
-
-        !             dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-
-
-                
-        !         elseif (i .eq. nx+1) then
-        !             if (Periodic_x .eq. 1) then 
-        !                 if (( maskC(0,j) + maskC(i-1,j) .eq. 2 )) then
-        !                     dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-        !                     ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
-        !                     ( 4d0 * Deltax )
-                     
-        !                 elseif ( maskC(0,j) + maskC(i-1,j) .eq. 1 ) then
-        !                     dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-        !                     3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-        !                     ( 6d0 * Deltax )
-                
-        !                 elseif ( maskC(0,j) + maskC(i-1,j) .eq. -1 ) then
-        !                     dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
-        !                     3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-        !                     ( 6d0 * Deltax )
-        !                 endif
-
-        !                 dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-        !             else
-        !                 if (maskC(i-1,j) .eq. 1) then
-        !                     dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
-        !                     3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-        !                     ( 6d0 * Deltax )
-        !                 endif
-        !                 dudx = ( utp(i,j) - utp(i-1,j) ) / Deltax
-        !             endif
-        !         else 
-                
-        !             if (( maskC(i+1,j) + maskC(i-1,j) .eq. 2 )) then
-        !                 dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-        !                         ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
-        !                         ( 4d0 * Deltax )
-                        
-        !             elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. 1 ) then
-        !                 dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
-        !                         3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
-        !                         ( 6d0 * Deltax )
-                    
-        !             elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. -1 ) then
-        !                 dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
-        !                         3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
-        !                         ( 6d0 * Deltax )
-        !             endif
-                    
-        !             dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
-        !         endif
-                
-        !         ! if (i .eq. 0) then
-        !         !     dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-        !         !             ( vtp(nx+2,j) + vtp(nx+2,j+1) ) ) /      &
-        !         !             ( 4d0 * Deltax )
-        !         ! else
-
-        !         !     dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
-        !         !             ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
-        !         !             ( 4d0 * Deltax )
-
-        !         ! endif
-
-        !         shearC_I(i,j) = sqrt(( dudx - dvdy )**2d0 &  
-        !                 + ( dudy + dvdx )**2d0 )
-                        
-        !     else
-        !         shearC_I(i, j) = land
-        !     endif
-        ! enddo

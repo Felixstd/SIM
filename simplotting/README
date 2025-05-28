@@ -1,0 +1,29 @@
+Package used to analyse the outputs from the McGill SIM model. 
+
+The following directories are where we can find the different model outputs for different types of experiments
+
+#------- MuPhi -------#
+#---- Uniaxial Tests ----#
+outputdir = "/storage/fstdenis/output_sim_MuPhi_Runs_Tests_Dilat/"
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_Runs_Tests_Dilat/'
+
+#---- Shear Tests ----#
+outputdir = "/storage/fstdenis/output_sim_MuPhi_Runs_ShearExperiments/"
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuPhi_Runs_ShearExperiments/'
+
+
+#------- Mu -------#
+outputdir = "/storage/fstdenis/output_sim/output_mu_ShearExperiments/"
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/Mu_ShearExperiments/'
+
+#------- Mu Periodic Boundary Conditions -------#
+outputdir = "/storage/fstdenis/output_sim_mu_PeriodicBC/"
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/Mu_PeriodicBC/'
+
+#------- Mu Periodic Boundary Conditions -------#
+outputdir = "/storage/fstdenis/output_sim/"
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/VP_PeriodicBC/'
+
+#------- Mu Parameter Sensibility -------#
+outputdir = "/storage/fstdenis/output_sim/"
+figdir = '/storage/fstdenis/Experiments_Results_MuPhi/MuCompressibleParameters/'

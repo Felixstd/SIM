@@ -148,7 +148,7 @@
             vl  = vice
 
             !Location 
-            call variable_post(uice, vice, date, 1, expno, k)
+            ! call variable_post(uice, vice, date, 1, expno, k)
 
 !------- Initialize stuff for tolerance and FGMRES its count -------------
 
@@ -163,7 +163,7 @@
                uk2  = uice ! uk2 is u^k-2, uk1 is u^k-1 = uice here
                vk2  = vice
 
-               call variable_post(uk2, vk2, date, 2, expno, k)
+               ! call variable_post(uk2, vk2, date, 2, expno, k)
 
                call transformer (uice,vice,xtp,1)
 
@@ -181,7 +181,7 @@
                   
 
                   elseif (Rheology .eq. 4) then
-                     ! call shear_inv(uice, vice)                     
+                     call shear_inv(uice, vice)                     
                      call Ice_strength()
                      call inertial_number()
                      call angle_friction_mu()
@@ -202,13 +202,12 @@
 
                call ViscousCoefficient(uice,vice)
                call bvect (ul,vl,rhs) ! forms b(ul)
-               call variable_post(ul, vl, date, 3, expno, k)
-               call variable_post(etaC, zetaC, date, 5, expno, k)
+               ! call variable_post(ul, vl, date, 3, expno, k)
+               ! call variable_post(etaC, zetaC, date, 5, expno, k)
 
                call Funk(xtp,rhs,Fu)
 
                res = sqrt(DOT_PRODUCT(Fu,Fu)) ! L2norm  
-               print*, DOT_PRODUCT(Fu,Fu)
                
                if (k.eq. 1) NLtol = gamma_nl * res
 
@@ -269,8 +268,10 @@
                      call shear_inv(uice, vice)                     
                      call Ice_strength()
                      call inertial_number()
-                     call divergence_muphi()
                      call angle_friction_mu()
+                     if (dilatancy) then
+                        call divergence_muphi
+                     endif
                      
                   else
                   
@@ -360,7 +361,8 @@
 
          if (IMEX .eq. 0) then ! already done with IMEX 1 and 2
             call advection ( un1, vn1, uice, vice, hn2, An2, hn1, An1, h, A )
-            call variable_post(A, h, date, 4, expno, k)
+            ! call variable_post(A, h, date, 4, expno, k)
+
 
             ! elseif (Rheology .eq. 3) then
             !     call advection ( un1, vn1, uice, vice, dummy, dummy,dummy, Dam1, dummy, Dam) 
