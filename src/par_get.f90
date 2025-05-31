@@ -138,6 +138,7 @@
       inclined   = .false.
       dilatancy  = .false.
       mu_phi     = .true.
+      windtype  = 'inclination'
 !------------------------------------------------------------------------
 !     Grid parameters: resolution
 !------------------------------------------------------------------------      
@@ -156,7 +157,7 @@
 
       elseif (((nx == 200) .and. (ny == 500)) .or. ((nx == 500) .and. (ny == 500)) &
                .or. ((nx == 500) .and. (ny == 200))) then
-         Deltax     = 1d03*10
+         Deltax     = 10*1d3
 
       elseif ((nx == 1000) .and. (ny == 400)) then
          Deltax = 5d03
@@ -430,7 +431,7 @@ subroutine read_namelist
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,     &
            BasalStress, uniaxial, shear_test, inclined, dilatancy, mu_phi,  &
-           Water_Col, step_water, A2Phi , devstrain, Phi_eq
+           Water_Col, step_water, A2Phi , devstrain, Phi_eq, windtype
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub

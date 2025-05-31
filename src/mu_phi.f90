@@ -261,17 +261,12 @@ subroutine shear_inv(utp, vtp)
 
 !----- stresses and strain rates at the grid center -------------------------   
 
-                dudy1(i, j) = dudy
-                dudx1(i, j) = dudx
-                dvdx1(i, j) = dvdx
-                dvdy1(i, j) = dvdy
-
                 if (devstrain) then
 
-                    shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
-                            + ( dudy + dvdx )**2d0 - (dudx + dudy)**2d0))
-                    if (((( dudx - dvdy )**2d0 &  
-                            + ( dudy + dvdx )**2d0)) < ((dudx + dudy)**2d0)) then
+                    shearC_I(i,j) = sqrt(1/2d0*(dudx**2d0 + dvdy**2d0 + &
+                                    2d0*(1/2d0*(dudy+dvdx)**2) - 1/2d0*(dudx + dudy)**2d0))
+                    if ((dudx**2d0 + dvdy**2d0 + &
+                                    2d0*(1/2d0*(dudy+dvdx)**2)) < ((dudx + dudy)**2d0)) then
                         print*, 'shear problem'
                     endif
                 else 
@@ -343,11 +338,15 @@ subroutine shear_inv(utp, vtp)
 
                     if (devstrain) then
 
-                        shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
-                            + ( dudy + dvdx )**2d0 - (dudx + dudy)**2d0))
+                        shearC_I(i,j) = sqrt(1/2d0*(dudx**2d0 + dvdy**2d0 + &
+                                        2d0*(1/2d0*(dudy+dvdx)**2) - 1/2d0*(dudx + dudy)**2d0))
+                        if ((dudx**2d0 + dvdy**2d0 + &
+                                        2d0*(1/2d0*(dudy+dvdx)**2)) < ((dudx + dudy)**2d0)) then
+                            print*, 'shear problem'
+                        endif
                     else 
-                        shearC_I(i,j) = sqrt((dudx - dvdy )**2d0 &  
-                            + ( dudy + dvdx )**2d0)
+                            shearC_I(i,j) = sqrt((dudx - dvdy )**2d0 &  
+                                + ( dudy + dvdx )**2d0)
                     endif
                 else
 
@@ -412,13 +411,16 @@ subroutine shear_inv(utp, vtp)
 
                     if (devstrain) then
 
-                        shearC_I(i,j) = sqrt(1/2d0*(( dudx - dvdy )**2d0 &  
-                            + ( dudy + dvdx )**2d0 - (dudx + dudy)**2d0))
+                        shearC_I(i,j) = sqrt(1/2d0*(dudx**2d0 + dvdy**2d0 + &
+                                        2d0*(1/2d0*(dudy+dvdx)**2) - 1/2d0*(dudx + dudy)**2d0))
+                        if ((dudx**2d0 + dvdy**2d0 + &
+                                        2d0*(1/2d0*(dudy+dvdx)**2)) < ((dudx + dudy)**2d0)) then
+                            print*, 'shear problem'
+                        endif
                     else 
-                        shearC_I(i,j) = sqrt((dudx - dvdy )**2d0 &  
-                            + ( dudy + dvdx )**2d0)
+                            shearC_I(i,j) = sqrt((dudx - dvdy )**2d0 &  
+                                + ( dudy + dvdx )**2d0)
                     endif
-                
                 else
                     shearC_I(i,j) = land
                 

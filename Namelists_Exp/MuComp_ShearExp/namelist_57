@@ -34,7 +34,6 @@ Here, P(i, ny)=0
     A2Phi       = .false.
     devstrain = .false.
     Phi_eq    = .false.
-    windtype      = 'cos'
 /
 
 &numerical_param_nml
@@ -60,7 +59,7 @@ Here, P(i, ny)=0
     d_average = 1d3
     mu_0      = 0.1
     mu_infty  = 0.8
-    mu_b      = 0.5d0
+    mu_b      = 1d0
     c_phi     = 1
     I_0       = 1d-6
     Phi_0     = 1 

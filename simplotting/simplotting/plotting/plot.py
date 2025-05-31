@@ -6,6 +6,7 @@ import matplotlib.path as mpath
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.lines as mlines
+import matplotlib.ticker as ticker
 
 import cmocean
 # import scienceplots
@@ -419,7 +420,11 @@ def dilatation(netcdfdir, expnos, Parameters):
             dilatation_time.append(dilat)
             
         ax.plot(time, dilatation_time, label = r'$\mu_b = {}$'.format(mubs[i]))
-
+    # ax.set_ylim(0.108, 0.109)
+    formatter = ticker.ScalarFormatter(useMathText=True)
+    formatter.set_scientific(True)
+    formatter.set_powerlimits((-np.inf, np.inf))  # Always use scientific notation
+    ax.yaxis.set_major_formatter(formatter)
     ax.set_ylabel(r'$\overline{1-A}$')
     ax.set_xlabel(r'Time (days)')
     ax.set_title(r'$\Delta x = {}$ km'.format(int(Parameters.dx/1000)))

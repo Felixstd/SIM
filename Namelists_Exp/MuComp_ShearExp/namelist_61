@@ -34,7 +34,6 @@ Here, P(i, ny)=0
     A2Phi       = .false.
     devstrain = .false.
     Phi_eq    = .false.
-    windtype      = 'cos'
 /
 
 &numerical_param_nml

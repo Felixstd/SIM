@@ -167,6 +167,7 @@
             jj = 0d0
             do j = 1, ny+1
 
+
                if (inclined) then
                   vair(i, j) = -wspeed*rampfactor*cos(theta)
                   uair(i, j) = -wspeed*rampfactor*sin(theta)
@@ -185,18 +186,22 @@
                
                elseif (shear_test) then
                   if (j .gt. 100) then 
-                     ! uair(i, j) = wspeed*rampfactor
-                     ! vair(i, j) = 0d0
-                     uair(i, j) = wspeed*rampfactor*cos(theta*PI/180d0)
-                     vair(i, j) = -wspeed**rampfactor*sin(theta*PI/180d0)
-                  ! !    
-                  endif
-                  ! uair(i, j) = wspeed*rampfactor*(1-abs(1-2*jj/dble(ny)))
 
-                  ! ! uair(i, j) = wspeed*rampfactor*jj/dble(ny)
-                  ! vair(i, j) = 0d0
-                  ! uair(i, j) = wspeed*rampfactor*cos(theta)
-                  ! vair(i, j) = -wspeed**rampfactor*sin(theta)
+                     if (windtype .eq. 'cos') then 
+                        uair(i, j) = -0.1*cos(real(i)*PI/(nx/2d0)) + 10
+                        vair(i, j) = 0d0
+
+                     elseif (windtype .eq. 'gauss') then 
+
+                        uair(i, j) = 9+dexp(-(real(i)-real(nx)/2d0)**2d0/10d0)
+                    
+                     else
+
+                        uair(i, j) = wspeed*rampfactor*cos(theta*PI/180d0)
+                        vair(i, j) = -wspeed**rampfactor*sin(theta*PI/180d0)
+                     endif
+
+                  endif
                
                else 
                   uair(i,j) = rampfactor*wspeed
@@ -310,6 +315,7 @@
       imax = 0
       jmax = 0
       ncell = 0
+
 
       do j=1,ny+1
          do i=1,nx+1

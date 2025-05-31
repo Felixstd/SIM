@@ -66,6 +66,7 @@ MODULE muphi
   DOUBLE PRECISION :: c_1, c_2
   DOUBLE PRECISION :: phi_f_micro
   DOUBLE PRECISION :: theta
+  character(LEN=20):: windtype
 
 
 
