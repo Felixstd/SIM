@@ -185,18 +185,10 @@
                
                elseif (shear_test) then
                   if (j .gt. 100) then 
-                     ! uair(i, j) = wspeed*rampfactor
-                     ! vair(i, j) = 0d0
                      uair(i, j) = wspeed*rampfactor*cos(theta*PI/180d0)
                      vair(i, j) = -wspeed**rampfactor*sin(theta*PI/180d0)
                   ! !    
                   endif
-                  ! uair(i, j) = wspeed*rampfactor*(1-abs(1-2*jj/dble(ny)))
-
-                  ! ! uair(i, j) = wspeed*rampfactor*jj/dble(ny)
-                  ! vair(i, j) = 0d0
-                  ! uair(i, j) = wspeed*rampfactor*cos(theta)
-                  ! vair(i, j) = -wspeed**rampfactor*sin(theta)
                
                else 
                   uair(i,j) = rampfactor*wspeed

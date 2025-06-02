@@ -33,6 +33,7 @@ Here, P(i, ny)=0
     A2Phi       = .false.
     devstrain = .false.
     Phi_eq    = .false.
+    watersides = .true.
 /
 
 &numerical_param_nml

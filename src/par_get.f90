@@ -184,6 +184,7 @@
       inclined   = .false.
       step_water = .true.
       Water_Col  = .true.
+      watersides = .false.
 
       !--Rheology Parameter --!
       Phi_eq     = .false.
@@ -430,7 +431,7 @@ subroutine read_namelist
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,     &
            BasalStress, uniaxial, shear_test, inclined, dilatancy, mu_phi,  &
-           Water_Col, step_water, A2Phi , devstrain, Phi_eq
+           Water_Col, step_water, A2Phi , devstrain, Phi_eq, watersides
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub

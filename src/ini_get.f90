@@ -126,6 +126,13 @@ subroutine ini_get (restart, expno_r, restart_date)
                if ((nx == 500) .and. (ny == 200)) then
                      if (j .gt. 180) h(i,j) = 0d0
                      if (j .gt. 180) A(i,j) = 0d0 
+
+                     if (watersides) then 
+                        if (i .lt. 50) h(i,j) = 0d0
+                        if (i .lt. 50) A(i,j) = 0d0 
+                        if (i .gt. 450) h(i,j) = 0d0
+                        if (i .gt. 450) A(i,j) = 0d0 
+                     endif
                endif
 
             
