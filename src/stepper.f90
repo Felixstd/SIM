@@ -110,18 +110,19 @@
             
             elseif (Rheology .eq. 4) then
 
-               if (A2Phi) then
-                  call SIC_2_PHI()
-               endif
+               ! if (A2Phi) then
+               !    call SIC_2_PHI()
+               ! endif
 
-               call shear_inv(un1, vn1)
+               ! call shear_inv(un1, vn1)
                call Ice_strength()
-               call inertial_number()
-               call angle_friction_mu()
+               ! call inertial_number()
+               ! call angle_friction_mu()
                
-               if (dilatancy) then
-                  call divergence_muphi
-               endif
+               ! if (dilatancy) then
+               !    call divergence_muphi
+               ! endif
+
 
                
 

@@ -13,7 +13,6 @@ class TimeUtility:
     def __init__(self, configuration = None):
         
         if configuration != None:
-            
             self.StartYear    = int(configuration['start_year'])
             self.StartMonth   = int(configuration['start_month'])
             self.StartDay     = int(configuration['start_day'])
@@ -28,7 +27,7 @@ class TimeUtility:
             
             self.StartDate = datetime(self.StartYear,self.StartMonth,self.StartDay, hour = self.StartHour, minute = self.StartMinute )
             self.EndDate   = datetime(self.EndYear,self.StartMonth,self.EndDay, hour = self.EndHour, minute = self.EndMinute )
-            
+
             self.ndays     = int((self.EndDate - self.StartDate).days +1)
             self.nsteps    = int(int((self.EndDate - self.StartDate).days)*24.0*60/self.dt + int((self.EndDate - self.StartDate).seconds/(60*self.dt) +1))
             

@@ -7,9 +7,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scienceplots
 
-plt.style.use('science')
-plt.rcParams.update({'font.size': 15})
-plt.rc('axes', labelsize=15) 
+plt.style.use('/aos/home/fstdenis/SIM/simplotting/science.mplstyle')
+# plt.rcParams.update({'font.size': 15})
+# plt.rc('axes', labelsize=15) 
+# plt.rcParams['text.usetex'] = False
 
 #%%
 def friction_coefficient_jop(I, mu_infty, mu_0, I_0): 
@@ -92,15 +93,15 @@ phi = concentration(I)
 
 # --  Code to make figure 3 of the paper -- #
 
-plt.figure(figsize = (5.5, 4))
+plt.figure(figsize = (6, 4))
 ax = plt.axes()
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 
 fill_y = np.linspace(0.1, 0.9,1000 )
 
-plt.fill_betweenx(fill_y, 0, 5e-4, color = (0.584, 0.584, 1.0), alpha = 0.5)
-plt.fill_betweenx(fill_y, 5e-4, 1,  color = (0.580, 1.0, 1.0), alpha = 0.5)
+# plt.fill_betweenx(fill_y, 0, 5e-4, color = (0.584, 0.584, 1.0), alpha = 0.5)
+# plt.fill_betweenx(fill_y, 5e-4, 1,  color = (0.580, 1.0, 1.0), alpha = 0.5)
 
 plt.axvline(I_0, ymax = mu_j_i_0,
             color = 'r')
@@ -114,26 +115,34 @@ plt.scatter(I_0, mu_j_i_0, color = 'r', zorder = 2)
 
 
 ticks_y = [mu_0, mu_infty]
-ax.set_yticks(ticks_y)
-ax.set_yticklabels([r'$\mu_0$', r'$\mu_\infty$'])
+ax.set_yticks(ticks_y, labels =[r'$\mu_0$', r'$\mu_\infty$'] )
+ax.tick_params(axis='y', which='minor', left=False)
+# ax.set_yticklabels([r'$\mu_0$', r'$\mu_\infty$'])
+# plt.yticks(np.arange(2), [200, 400, 600, 800, 'inf'])
+ax.text(0.022, 1.05, 'Quasi-Static', transform=ax.transAxes, fontsize=13,
+        verticalalignment='top', horizontalalignment='left')
 
-ax.text(0.03, 1.05, 'Quasi-Static', transform=ax.transAxes, fontsize=15,
+# ax.text(0.03, 0.55, 'Pack Ice', transform=ax.transAxes, fontsize=15,
+#         verticalalignment='top')
+
+ax.text(0.52, 1.05, 'Dense-Inertial', transform=ax.transAxes, fontsize=13,
+        verticalalignment='top', horizontalalignment='center')
+
+ax.text(0.78, 1.05, 'Collisional', transform=ax.transAxes, fontsize=13,
         verticalalignment='top')
 
-ax.text(0.37, 1.05, 'Dense-Inertial', transform=ax.transAxes, fontsize=15,
-        verticalalignment='top')
+# ax.text(0.8, 0.55, 'Marginal Ice Zone', transform=ax.transAxes, fontsize=15,
+#         verticalalignment='top')
 
-ax.text(0.8, 1.05, 'Collisional', transform=ax.transAxes, fontsize=15,
-        verticalalignment='top')
-
-ax.text(0.52, 0.5, r'$(I_0, \mu(I_0))$', transform=ax.transAxes, fontsize=15,
+ax.text(0.52, 0.5, r'$(I_0, \mu(I_0))$', transform=ax.transAxes, fontsize=13,
         verticalalignment='top')
 
 
 plt.xscale('log')
+plt.minorticks_on()
 plt.xlabel('$I$')
 plt.ylabel(r'$\mu$')
-plt.savefig('mu.png')#, dpi = 500, bbox_inches = 'tight')
+plt.savefig('mu.png', dpi = 500, bbox_inches = 'tight')
 
 
 plt.figure()

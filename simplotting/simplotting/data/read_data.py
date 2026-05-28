@@ -20,7 +20,7 @@ def read_data(expno, start, dates, outputdir, MuPhi = True):
     Returns:
         data_dict
     """
-    
+    print(dates)
         # Initialize lists
     data_dict = {
         'divergence_dates': [],

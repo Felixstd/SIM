@@ -21,9 +21,9 @@ warnings.filterwarnings("ignore")
 
 config_exp = configparser.ConfigParser()
 config_exp.read('./namelistAnalysis')
-
 #---- Setting the Dates ----#
 Dates_Config = TimeUtility(configuration = config_exp['Time'])
+
 dates_pre = list(TimeUtility.dates_analysis(Dates_Config, nmax = Dates_Config.nsteps))
 dates = [date.strftime('%Y_%m_%d_%H_%M_%S') for date in dates_pre ]
 
@@ -62,10 +62,10 @@ for i, expno in enumerate(expnos):
                                    MuPhi = Parameters.muphi)
             
         if Parameters.muphi:
-            
+
             divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot, sigI_tot, sigII_tot, zeta_tot,eta_tot, \
                 uair_tot, vair_tot, muI_tot, phi_tot, I_tot, shearI_tot, Pmax_tot, Peq_tot = datadict.values()
-        
+            print(np.shape(zeta_tot[0]))
         else: 
             
             divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
@@ -163,6 +163,26 @@ if Parameters.plotsingle:
                         1-A, 
                         'A', 
                         Parameters.figdir+'{}/SeaIceConc/A_{}.png'.format(expno, dates[i]))
+
+eta = eta_tot[0][1:-1, 1:-1]
+u = u_tot[0]
+
+eta[200-21:, :]
+
+print(u[200-20, :])
+plt.figure()
+plt.plot(np.arange(0, 501), u[200-20, :], label = '20')
+# plt.plot(np.arange(0, 501), u[200-21, :], label = '21')
+# plt.plot(np.arange(0, 501), u[200-22, :], label = '22')
+# plt.plot(np.arange(0, 501), u[200-19, :], label = '19')
+# plt.plot(np.arange(0, 501), u[200-18, :], label = '18')
+# plt.plot(np.arange(0, 501), u[200-17, :], label = '17')
+plt.legend()
+plt.savefig('u_topice_78.png')
+
+
+
+
 
 u = u_exp[0] - u_exp[1]
 v = v_exp[0] - v_exp[1]

@@ -1751,7 +1751,7 @@ subroutine MuPhiCoeff (utp, vtp)
 
    integer i, j, peri, rheo
    double precision deno, lowA, p_over_shear, munode, pnode,summaskC
-   double precision eta_max, shear_max, dudx, dudy, dvdx, dvdy
+   double precision eta_max, shear_max, dudx, dudy, dvdx, dvdy, Inertial_num, mu_fric
    double precision utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
    
    lowA = 0d0
@@ -1784,33 +1784,304 @@ subroutine MuPhiCoeff (utp, vtp)
 
 
    if (peri .ne. 0) call periodicBC(utp, vtp)
-   
-   do i = 0, nx+1
-      do j = 0, ny+1
-         if ( maskC(i, j) .eq. 1) then
 
-            shear_max = max(1d-20, shearC_I(i, j))
+   do i = 1, nx
+        do j = 1, ny
+            
+            if ( maskC(i,j) .eq. 1 ) then
+                    
+               dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+               dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
 
-            if (regularization .eq. 'capping') then
+                  
+               if (( maskC(i+1,j) + maskC(i-1,j) .eq. 2 )) then
+                  dvdx = ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                           ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
+                           ( 4d0 * Deltax )
+                     
+               elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. 1 ) then
+                  dvdx = ( 1d0 * ( vtp(i+1,j) + vtp(i+1,j+1) ) +  &
+                           3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) /  &
+                           ( 6d0 * Deltax )
+                
+               elseif ( maskC(i+1,j) - maskC(i-1,j) .eq. -1 ) then
+                  dvdx = ( -1d0 * ( vtp(i-1,j) + vtp(i-1,j+1) ) - &
+                           3d0 * ( vtp(i,j)   + vtp(i,j+1) ) ) / &
+                           ( 6d0 * Deltax )
+                  
+               elseif ( maskC(i+1,j) + maskC(i-1,j) .eq. 0 ) then
+                  
+                  print *, 'WARNING: irregular grid cell case1', i, j
+                  
+               endif
+            
+               if     ( maskC(i,j+1) + maskC(i,j-1) .eq. 2 ) then
+                  !---- For open boundary condition at the top ----!
+                  if (j .eq. ny) then 
 
-               etaC(i, j)  = min((mu_I(i, j) / 2 ) * Pp(i, j) / shearC_I(i, j), eta_max)
-               zetaC(i, j) = min(( mu_b + mu_I(i, j) / 2 ) * Pp(i, j) / shearC_I(i, j), 2d08*Pp(i, j))
+                     if (Periodic_y .eq. 0) then
+                           dudy = (utp(i, j) + utp(i+1, j) - &
+                                 (utp(i, j-1) + utp(i+1, j-1)))/(4d0*Deltax)
+                  
+                     endif
+                  else
+                     dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                           ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+                           ( 4d0 * Deltax )
+                  endif
+                  
+               elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
+                  dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
+                           3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                           ( 6d0 * Deltax )
+                     
+               elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. -1 ) then
+                  dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
+                           3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                           ( 6d0 * Deltax )
+                     
+               elseif ( maskC(i,j+1) + maskC(i,j-1) .eq. 0 ) then
+                  
+                  print *, 'WARNING: irregular grid cell case2',i,j
+                  
+               endif
 
-            elseif (regularization .eq. 'tanh') then
+               shear_max = max(1d-20, sqrt((dudx - dvdy )**2d0 &  
+                            + ( dudy + dvdx )**2d0))
+
+               Inertial_num = max(d_average*shear_max*sqrt(rhoice*h(i, j)/Pp(i, j)), 1d0)
+
+               mu_fric = max(mu_0 + (mu_infty - mu_0)/(I_0/Inertial_num + 1), mu_0)
+
+
+               if (regularization .eq. 'capping') then
+
+                  etaC(i, j)  = min((mu_fric / 2 ) * Pp(i, j) / shear_max, eta_max/4d0)
+                  zetaC(i, j) = min(( mu_b ) * Pp(i, j) / shear_max, eta_max)
+
+               elseif (regularization .eq. 'tanh') then
 
                   zetaC(i,j ) = 2d08*Pp(i, j) * tanh((mu_b) / (shear_max * 2d08))
-                  etaC(i, j)  = eta_max * tanh((mu_I(i, j) / 2) * Pp(i, j) / (shear_max * eta_max))
+                  ! zetaC(i, j) = 1d8
+                  ! etaC(i, j)  = 1d8
+                  etaC(i, j)  = eta_max * tanh((mu_fric / 2) * Pp(i, j) / (shear_max * eta_max))
+               endif
 
+               P(i,j) = Pp(i, j) 
             endif
-                  
-            P(i,j) = Pp(i, j)
+               
+!----- stresses and strain rates at the grid center -------------------------   
+        enddo
+   enddo
+    
 
-         endif
+    !------ Boundary Conditions ------!
+    ! print*, 'MASKC' , maskC(0,ny+1)
+    !----- Boundary Conditions in X ---!
+   if (Periodic_x .eq. 1) then
+      
+      if (Periodic_y .eq. 0) then
+         
+         !------- i = 0 --------!
+         i = 0
+         do j = 1, ny
+
+               if (maskC(i,j) .eq. 1) then
+                  dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                  dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+
+                  dvdx =  ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                           ( vtp(nx-1,j) + vtp(nx-1,j+1) ) ) /      &
+                           ( 4d0 * Deltax )
+
+                  !----- dudy (i = 0)------!
+                  if (j.eq. 1) then 
+                  !------ This is assuming a wall at the bottom -------!
+                     dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
+                           3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                           ( 6d0 * Deltax )
+                  
+                  else 
+                     if ( maskC(i,j+1) + maskC(i,j-1) .eq. 2 ) then
+                           !---- For open boundary condition at the top ----!
+                           if (j .eq. ny) then 
+
+                              if (Periodic_y .eq. 0) then
+                                 dudy = (utp(i, j) + utp(i+1, j) - &
+                                          (utp(i, j-1) + utp(i+1, j-1)))/(4d0*Deltax)
+                  
+                              endif
+                           else
+                              dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                       ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+                                       ( 4d0 * Deltax )
+                           endif
+
+                     elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
+                           dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
+                              3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                              ( 6d0 * Deltax )
+                     
+                     elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. -1 ) then
+                           dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
+                              3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                              ( 6d0 * Deltax )
+                     endif
+                  endif 
+
+
+                  shear_max = max(1d-20, sqrt((dudx - dvdy )**2d0 &  
+                              + ( dudy + dvdx )**2d0))
+
+                  Inertial_num = max(d_average*shear_max*sqrt(rhoice*h(i, j)/Pp(i, j)), 1d0)
+
+                  mu_fric = max(mu_0 + (mu_infty - mu_0)/(I_0/Inertial_num + 1), mu_0)
+
+
+                  if (regularization .eq. 'capping') then
+
+                     etaC(i, j)  = min((mu_fric / 2 ) * Pp(i, j) / shear_max, eta_max/4d0)
+                     zetaC(i, j) = min(( mu_b ) * Pp(i, j) / shear_max, eta_max)
+
+                  elseif (regularization .eq. 'tanh') then
+
+                     zetaC(i,j ) = 2d08*Pp(i, j) * tanh((mu_b) / (shear_max * 2d08))
+                     ! zetaC(i, j) = 1d8
+                     ! etaC(i, j)  = 1d8
+                     etaC(i, j)  = eta_max * tanh((mu_fric / 2) * Pp(i, j) / (shear_max * eta_max))
+                  endif
+
+                  P(i,j) = Pp(i, j) 
+                  endif
+            
+         enddo
+
+         !-------- i = nx+1 --------!
+         i = nx+1
+         do j = 1, ny
+
+               if (maskC(i,j) .eq. 1) then
+                  dudx = ( utp(i+1,j) - utp(i,j) ) / Deltax
+                  dvdy = ( vtp(i,j+1) - vtp(i,j) ) / Deltax
+
+                  dvdx =  ( ( vtp(i+1,j) + vtp(i+1,j+1) ) -        &
+                           ( vtp(i-1,j) + vtp(i-1,j+1) ) ) /      &
+                           ( 4d0 * Deltax )
+
+                  !----- dudy -----!
+
+                  if (j .eq. 1) then
+                     
+                     !----- Forward Spatial Derivative at the Boundary -----!
+                     
+                     dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
+                           3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                           ( 6d0 * Deltax )
+
+                  else 
+
+
+                     if (( maskC(i,j+1) + maskC(i,j-1) .eq. 2 )) then
+                           !---- For open boundary condition at the top ----!
+                           if (j .eq. ny) then 
+
+                              if (Periodic_y .eq. 0) then
+                                 dudy = (utp(i, j) + utp(i+1, j) - &
+                                          (utp(i, j-1) + utp(i+1, j-1)))/(4*Deltax)
+                  
+                              endif
+                           else
+                              dudy = ( ( utp(i,j+1) + utp(i+1,j+1) ) -        &
+                                       ( utp(i,j-1) + utp(i+1,j-1) ) ) /     &
+                                       ( 4d0 * Deltax )
+                           endif
+
+
+                     elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. 1 ) then
+                           dudy = ( 1d0 * ( utp(i,j+1) + utp(i+1,j+1) ) +  &
+                              3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                              ( 6d0 * Deltax )
+                     
+                     elseif ( maskC(i,j+1) - maskC(i,j-1) .eq. -1 ) then
+                           dudy = ( -1d0 * ( utp(i,j-1) + utp(i+1,j-1) ) - &
+                              3d0 * ( utp(i,j)   + utp(i+1,j) ) ) / &
+                              ( 6d0 * Deltax )
+                     endif
+
+                  endif
+
+                  shear_max = max(1d-20, sqrt((dudx - dvdy )**2d0 &  
+                              + ( dudy + dvdx )**2d0))
+
+                  Inertial_num = max(d_average*shear_max*sqrt(rhoice*h(i, j)/Pp(i, j)), 1d0)
+
+                  mu_fric = max(mu_0 + (mu_infty - mu_0)/(I_0/Inertial_num + 1), mu_0)
+
+
+                  if (regularization .eq. 'capping') then
+
+                     etaC(i, j)  = min((mu_fric / 2 ) * Pp(i, j) / shear_max, eta_max/4d0)
+                     zetaC(i, j) = min(( mu_b ) * Pp(i, j) / shear_max, eta_max)
+
+                  elseif (regularization .eq. 'tanh') then
+
+                     zetaC(i,j ) = 2d08*Pp(i, j) * tanh((mu_b) / (shear_max * 2d08))
+                     ! zetaC(i, j) = 1d8
+                     ! etaC(i, j)  = 1d8
+                     etaC(i, j)  = eta_max * tanh((mu_fric / 2) * Pp(i, j) / (shear_max * eta_max))
+                  endif
+
+                  P(i,j) = Pp(i, j) 
+               endif
+         enddo
+      endif
+
+   endif
+
+   do i = 1, nx+1
+      do j = 1, ny+1
+
+         deno = max ( maskC(i,j) + maskC(i-1,j) + maskC(i,j-1) +   &
+               maskC(i-1,j-1), 1) 
+            
+         etaB(i,j)  = ( etaC(i,j) + etaC(i-1,j) + etaC(i,j-1) +    &
+               etaC(i-1,j-1) ) / deno
+         
       enddo
    enddo
+       
 
+   endif
 
-   !---- For open boundaries set to 0 ----!
+end subroutine MuPhiCoeff
+
+   ! do i = 0, nx+1
+   !    do j = 0, ny+1
+   !       if ( maskC(i, j) .eq. 1) then
+
+   !          shear_max = max(1d-20, shearC_I(i, j))
+
+   !          if (regularization .eq. 'capping') then
+
+   !             etaC(i, j)  = min((mu_I(i, j) / 2 ) * Pp(i, j) / shearC_I(i, j), eta_max)
+   !             zetaC(i, j) = min(( mu_b ) * Pp(i, j) / shearC_I(i, j), 2d08*Pp(i, j))
+
+   !          elseif (regularization .eq. 'tanh') then
+
+   !                zetaC(i,j ) = 2d08*Pp(i, j) * tanh((mu_b) / (shear_max * 2d08))
+   !                ! zetaC(i, j) = 1d8
+   !                ! etaC(i, j)  = 1d8
+   !                etaC(i, j)  = eta_max * tanh((mu_I(i, j) / 2) * Pp(i, j) / (shear_max * eta_max))
+
+   !          endif
+                  
+   !          P(i,j) = Pp(i, j)
+
+   !       endif
+   !    enddo
+   ! enddo
+
+      !---- For open boundaries set to 0 ----!
    !---- Removed this part because    ----!
    !---- the ice strength is already  ----!
    !---- set to 0 at the boundaries   ----!
@@ -1841,21 +2112,3 @@ subroutine MuPhiCoeff (utp, vtp)
 !      endif
 
 !   enddo
-
-   do i = 1, nx+1
-      do j = 1, ny+1
-
-         deno = max ( maskC(i,j) + maskC(i-1,j) + maskC(i,j-1) +   &
-               maskC(i-1,j-1), 1) 
-            
-         etaB(i,j)  = ( etaC(i,j) + etaC(i-1,j) + etaC(i,j-1) +    &
-               etaC(i-1,j-1) ) / deno
-         
-      enddo
-   enddo
-       
-
-   endif
-
-end subroutine MuPhiCoeff
-

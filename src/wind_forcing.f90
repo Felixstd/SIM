@@ -346,12 +346,12 @@
 
       endif
 
-      ! if (peri .ne. 0) then
-      !    call periodicBC(R1, R2)
-      !    call periodicBC(R1n, R2n)
-      !    call periodicBC(uair, vair)
-      !    call periodicBC(uuair, uvair)
-      ! endif
+      if (peri .ne. 0) then
+         call periodicBC(R1, R2)
+         call periodicBC(R1n, R2n)
+         call periodicBC(uair, vair)
+         call periodicBC(uuair, uvair)
+      endif
 
       return
       end

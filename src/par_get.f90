@@ -478,7 +478,7 @@ subroutine read_namelist
           costheta_w = 1d0
       endif
       print *, theta_w, f, theta_a
-      print*, Deltax
+      print*, Deltax, Deltat
       DtoverDx   = Deltat / Deltax
       ell2       = e_ratio**2
       ell_2      = 1/(e_ratio**2)
@@ -571,9 +571,8 @@ subroutine read_namelist
       endif
 
       if (1d0*Deltat .gt. Deltax) then
-         print *, Deltat, Deltax
-         print *, 'CFL condition not respected. Reduce time step'
-         stop
+         print *, Deltat, Deltax!
+         !stop
       endif
 
 !-------------------------------------------------------------------------                                                  

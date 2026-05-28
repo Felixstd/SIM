@@ -33,7 +33,7 @@ def generate_input(expno, start_str, start_time, end_str, restart, endmin, timei
 
 expno = 42
 
-output = generate_input(expno, '1990-01-01:00:10:00', [1990, 1, 1, 0, 0, 0], '1990-01-05:00:00:00', 0, 4*24*60,60 )
+output = generate_input(expno, '1990-01-01:00:00:00', [1990, 1, 1, 0, 0, 0], '1990-06-01:00:00:00', 0, 151*24*60,24*60 )
 
-with open("input5days", "w") as file:
+with open("input6months", "w") as file:
     file.write(output)

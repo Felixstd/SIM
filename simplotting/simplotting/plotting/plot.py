@@ -49,6 +49,7 @@ def plot_colormesh(ax, dx, fig, X, Y, Field, cmap, norm, label, xlabel, ylabel):
         # ax.axvline(20*dx/1e3, color = 'pink', zorder = 3)
         # ax.axvline(180*dx/1e3, color = 'pink', zorder = 3)
         ax.set_xticks(np.arange(0, Ny, 100)*dx/1e3)
+        ax.set_yticks(np.arange(0, Nx, 50)*dx/1e3)
         # cax = fig.add_axes([ax.get_position().x1+0.01,ax.get_position().y0,0.02,ax.get_position().height])
         cbar = fig.colorbar(pc, ax = ax)
         cbar.set_label(label = label, fontsize = 16)
@@ -145,20 +146,20 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
         
         
         if Shear:
-            fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2, figsize=(11, 6))
+            fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2, figsize=(10, 4))
         else:
             fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2, figsize=(6, 7))
         plot_colormesh(ax1, dx, fig, X, Y, 1-A, cmocean.cm.ice, colors.LogNorm(vmin=1e-6, vmax=1e-1), r'$1-A$', None, None)
         plot_colormesh(ax2, dx, fig, X, Y, h-1, cmocean.cm.balance, colors.SymLogNorm(linthresh  = 1e-4, vmin=-1e-2, vmax=1e-2), r'$h-1$', None, None)
     
-        plot_colormesh(ax3, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-6, vmin=-1e-1, vmax=1e-1), 
+        plot_colormesh(ax3, dx, fig, X, Y, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-4, vmin=-1e-1, vmax=1e-1), 
             r'$\dot{\epsilon}_\mathrm{I}$ (day$^{-1}$)', None, None)
         plot_colormesh(ax4, dx, fig, X, Y, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-7, vmax=1e-1), 
             r'$\dot{\epsilon}_\mathrm{II}$ (day$^{-1}$)', None, None) 
     
-        plt.subplots_adjust(hspace = 0.1)
+        plt.subplots_adjust(hspace = 0.5, wspace = 0.3)
         fig.supxlabel('$x$ (km)')
-        fig.supylabel('$y$ (km)')
+        fig.supylabel('$y$ (km)', x = 0.04)
         # fig.tight_layout()
         plt.savefig(figdir+expno+'/deformations_{}.png'.format(date))
 

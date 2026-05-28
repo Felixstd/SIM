@@ -1,12 +1,13 @@
 Removed the condition at which eta and zeta need to be set to 0 at ny i there is an open boundary 
 Removed also the condition on P everywhere
 Here, P(i, ny)=0
-
+wint periodicity called in winds. 
+with eta and zeta constants
 &option_nml
     Dynamic  = .true.
     ThermoDyn  = .false.
     linearization = 'Zhang'
-    regularization = 'tanh'
+    regularization = 'capping'
     ini_guess = 'previous time step'
     adv_scheme = 'upwind'
     Airtemp = 'specified'
@@ -34,12 +35,12 @@ Here, P(i, ny)=0
     A2Phi       = .false.
     devstrain = .false.
     Phi_eq    = .false.
-    windtype      = 'cos'
+    windtype      = 'constant'
 /
 
 &numerical_param_nml
     Deltat    = 300
-    gamma_nl = 1d-4
+    gamma_nl = 1d-6
     NLmax = 400     
     OLmax = 500
     Nsub  = 120  
@@ -60,9 +61,9 @@ Here, P(i, ny)=0
     d_average = 1d3
     mu_0      = 0.1
     mu_infty  = 0.8
-    mu_b      = 0.5d0
+    mu_b      = 10d0
     c_phi     = 1
-    I_0       = 1d-6
+    I_0       = 1d-3
     Phi_0     = 1 
     c_1       = 1d-02 
     c_2       = 0.25
