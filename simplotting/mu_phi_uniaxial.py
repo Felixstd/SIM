@@ -71,8 +71,7 @@ for i, expno in enumerate(expnos):
             divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
                 datadict.values()
                 
-        shear = shearI_tot[0]
-        print('shear',np.vstack([shear[100:, 0],shear[100:, -2]]).T)
+        # shear = shearI_tot[0]
         u = u_tot[0]
         v = v_tot[0]
         
@@ -124,16 +123,23 @@ for i, expno in enumerate(expnos):
 
     # #---------- Plotting ----------#
     if Parameters.plotfields:
-        plot.uniaxial(dates, 
-                  expno, 
-                  datadict, 
-                  Parameters.dx, 
-                  Parameters.figdir, 
-                  Parameters.mu0, 
-                  Parameters.muinf, 
-                  Parameters.microangle, 
-                  MuPhi = Parameters.muphi, 
-                  log = log)
+        if Parameters.uniaxial:
+            plot.uniaxial(dates, 
+                    expno, 
+                    datadict, 
+                    Parameters.dx, 
+                    Parameters.figdir, 
+                    Parameters.mu0, 
+                    Parameters.muinf, 
+                    Parameters.microangle, 
+                    MuPhi = Parameters.muphi, 
+                    log = log)
+            
+        else:
+            plot.plot_pan_arctic(expno,datadict, dates, 
+                                Parameters.dx,'divergence',
+                                Parameters.Nx, Parameters.Ny, 
+                                Parameters.figdir)
     
 
 #     mean_mu_time, mean_div_time, mean_shear_time = analysis.mean_values(dates, datadict, dx, dt)
@@ -164,30 +170,25 @@ if Parameters.plotsingle:
                         'A', 
                         Parameters.figdir+'{}/SeaIceConc/A_{}.png'.format(expno, dates[i]))
 
-eta = eta_tot[0][1:-1, 1:-1]
-u = u_tot[0]
-
-eta[200-21:, :]
-
-print(u[200-20, :])
-plt.figure()
-plt.plot(np.arange(0, 501), u[200-20, :], label = '20')
-# plt.plot(np.arange(0, 501), u[200-21, :], label = '21')
-# plt.plot(np.arange(0, 501), u[200-22, :], label = '22')
-# plt.plot(np.arange(0, 501), u[200-19, :], label = '19')
-# plt.plot(np.arange(0, 501), u[200-18, :], label = '18')
-# plt.plot(np.arange(0, 501), u[200-17, :], label = '17')
-plt.legend()
-plt.savefig('u_topice_78.png')
+# print(u[200-20, :])
+# plt.figure()
+# plt.plot(np.arange(0, 501), u[200-20, :], label = '20')
+# # plt.plot(np.arange(0, 501), u[200-21, :], label = '21')
+# # plt.plot(np.arange(0, 501), u[200-22, :], label = '22')
+# # plt.plot(np.arange(0, 501), u[200-19, :], label = '19')
+# # plt.plot(np.arange(0, 501), u[200-18, :], label = '18')
+# # plt.plot(np.arange(0, 501), u[200-17, :], label = '17')
+# plt.legend()
+# plt.savefig('u_topice_78.png')
 
 
 
 
 
-u = u_exp[0] - u_exp[1]
-v = v_exp[0] - v_exp[1]
-eps = np.finfo(u.dtype).eps
-print(np.float64(np.sqrt(np.sum(v**2))), eps)
+# u = u_exp[0] - u_exp[1]
+# v = v_exp[0] - v_exp[1]
+# eps = np.finfo(u.dtype).eps
+# print(np.float64(np.sqrt(np.sum(v**2))), eps)
 
 # print(np.shape(v), np.shape(u))
 # x_u = np.arange(501) + 0.5  # 0.5 to 499.5 (500 values)

@@ -23,6 +23,7 @@ class namelist:
         self.plotsingle = int(configuration_exp['plot_single'])
         self.veltransect = int(configuration_exp['velocity_transect'])
         self.tracertransect = int(configuration_exp['tracers_transect'])
+        self.uniaxial = int(configuration_exp['uniaxial_exp'])
         
         #------ Rheology ------#
         self.muphi      = int(configuration_rheo['muphi'])
