@@ -24,9 +24,11 @@
         use ice_albedo
         use numerical_VP
         use numerical_EVP
+        use numerical_CG
         use solver_choice
         use basal_param
         use grid_angle
+        use nonlocalVP
         
         implicit none
         
@@ -61,6 +63,7 @@
       Pstar      =  27.5d03           ! ice yield stress [N/m2] 
       Tens       =  0d0               ! sea ice tensile strength [N/m2] #mp#
       e_ratio    = 2.0d0              ! ellipse aspect ratio 
+      l_coop     = 40000
       
 ! Triangle (rheology = 2)       
       !phi        =  30d0             ! internal angle of friction
@@ -137,7 +140,8 @@
       shear_test = .false.
       inclined   = .false.
       dilatancy  = .false.
-      mu_phi     = .true.
+      mu_phi     = .false.
+      nonlocal   = .false.
       windtype  = 'inclination'
 !------------------------------------------------------------------------
 !     Grid parameters: resolution
@@ -220,14 +224,17 @@
 
       wjac  = 0.575d0
       ! wsor  = 2d0           ! relaxation parameter for SOR precond
-      wlsor = 0.9d0           ! relaxation parameter for SOR precond
-      ! wlsor = 1.3d0
+      ! wlsor = 0.9d0           ! relaxation parameter for SOR precond
+      wlsor = 1.3d0
       ! wlsor = 0.6d0
-      ! wsor  = 0.95d0           ! relaxation parameter for SOR precond
-      wsor  = 0.85d0           ! relaxation parameter for SOR precond
+      wsor  = 0.95d0           ! relaxation parameter for SOR precond
+      ! wsor  = 0.85d0           ! relaxation parameter for SOR precond
       kjac  = 10               !
       ksor  = 10               ! nb of ite of precond SOR
       klsor = 10               ! nb of ite of precond line SOR
+
+      kmax = 300
+      gamma_cg = 1d-04
 
       gamma_nl = 1d-03         ! nonlinear convergence criterion for JFNK 
       ! gamma_nl = 1d-01        ! nonlinear convergence criterion for JFNK 
