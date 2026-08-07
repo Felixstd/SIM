@@ -72,3 +72,10 @@ MODULE muphi
 
 END MODULE muphi
 
+
+MODULE nonlocalVP 
+
+  DOUBLE PRECISION :: l_coop
+
+END MODULE nonlocalVP
+
