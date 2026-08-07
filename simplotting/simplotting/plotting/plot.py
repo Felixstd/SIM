@@ -52,7 +52,7 @@ def plot_colormesh(ax, dx, fig, X, Y, Field, cmap, norm, label, xlabel, ylabel):
         ax.set_yticks(np.arange(0, Nx, 50)*dx/1e3)
         # cax = fig.add_axes([ax.get_position().x1+0.01,ax.get_position().y0,0.02,ax.get_position().height])
         cbar = fig.colorbar(pc, ax = ax)
-        cbar.set_label(label = label, fontsize = 16)
+        cbar.set_label(label = label)
         # ax.invert_yaxis()
         if xlabel:
             ax.set_xlabel(xlabel)
@@ -111,11 +111,12 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
 
     X2, Y2 =  np.arange(0, Nx2)*dx/1e3,  np.arange(0, Ny2-1)*dx/1e3
     
-    
-    for k, date in enumerate(dates):
+    ks = np.arange(0, len(dates),2)
+    i = 0
+    for date in enumerate(dates[::2]):
         
         print('Plotting: ', date)
-        
+        k = ks[i]
         divergence = divergence_tot[k][1:-1, 1:-1]
         if MuPhi:
             shear = shearI_tot[k][1:-1, 1:-1]*86400
@@ -287,20 +288,22 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
         fig.supylabel('y (km)', fontsize = 16)
         # fig.tight_layout()
         plt.savefig(figdir+expno+'/tracers_{}.png'.format(date))
-        
+        plt.close()
         
         # fig, ((ax1, ax2)) = plt.subplots(1,2, figsize=(8, 6))
-        fig, ((ax1, ax2)) = plt.subplots(2,1, figsize=(8, 6))
+        fig, ((ax1, ax2)) = plt.subplots(2,1, figsize=(2, 5))
         plot_colormesh(ax1, dx, fig, X2, Y2, divergence, cmocean.cm.balance, colors.SymLogNorm(1e-6, vmin=-1e-1, vmax=1e-1), 
             r'$\dot{\epsilon}_{\mathrm{I}}$ (day$^{-1}$)', None, None)
         plot_colormesh(ax2, dx, fig, X2, Y2, shear, cmocean.cm.amp, colors.LogNorm(vmin=1e-4, vmax=1e-2), 
             r'$\dot{\epsilon}_{\mathrm{II}}$ (day$^{-1}$)', None, None) 
        
         plt.subplots_adjust(hspace = 0.1)
-        fig.supxlabel('x (km)', fontsize = 16)
-        fig.supylabel('y (km)', fontsize = 16)
+        fig.supxlabel('x (km)')
+        fig.supylabel('y (km)')
         # fig.tight_layout()
         plt.savefig(figdir+expno+'/shear_div_{}.png'.format(date))
+        
+        plt.close()
         
         fig = plt.figure(figsize=(5, 3))
         ax1 = plt.axes()
@@ -315,6 +318,7 @@ def uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPh
 
         
         plt.close()
+        i+=1
             
 def totdef_uniaxial(dates, expno, data_dict, dx, figdir, mu_0, mu_infty,angle_phi, MuPhi = True, log = True):
     
@@ -607,3 +611,168 @@ def plot_data_panarctic(figdir, datadict, dates, nx, ny, resolution, MuPhi = Tru
         pan_arctic_plot(ax1, fig, divergence*60*60*24, [-5e-1, 1e-1], lat, lon, "round",cmocean.cm.amp, r'$\dot{\epsilon}_I$ (day$^{-1}$)')
         pan_arctic_plot(ax2, fig, shear*60*60*24, [0, 1e1], lat, lon, "round",cmocean.cm.amp, r'$\dot{\epsilon}_{II}$ (day$^{-1}$)')
         plt.savefig(figdir+'deformation_{}.png'.format(date))
+        
+        
+def mask_data(var, mask):
+    
+    varplot = np.zeros(var.shape)
+    varplot[:,:]=var[:,:]
+    varplot[mask==0]=np.nan
+    varplot = np.ma.masked_invalid(varplot)
+    
+    return varplot
+    
+    
+    
+    
+    
+def plot_pan_arctic(expno,datadict, dates, 
+                    resolution, datatype,
+                    nx, ny, 
+                    figdir):
+    
+    
+    filemask="/aos/home/fstdenis/SIM/simplotting/simplotting/plotting/mask"+str(int(resolution/1e3))+"_1_0_1.dat"
+    mask = np.genfromtxt(filemask, dtype=None)
+    print(mask)
+    
+    x0 = np.arange(nx + 2) * resolution/1e3 - 2500
+    y0 = np.arange(ny + 2) * resolution/1e3 - 2250
+
+    lon, lat = coordinates(x0, y0)
+    
+    divergence_tot, shear_tot, h_tot, A_tot, p_tot, u_tot, v_tot,sigI_tot, sigII_tot, zeta_tot, eta_tot, uair_tot, vair_tot = \
+            datadict.values()
+    
+    
+    for k, date in enumerate(dates):
+        
+        print('Plotting date: ', date)
+        
+        divergence, shear = divergence_tot[k], shear_tot[k]
+        h, A, p = h_tot[k], A_tot[k], p_tot[k]
+        u, v = u_tot[k], v_tot[k]
+
+
+        hplot = np.zeros(h.shape)
+        hplot[:,:]=h[:,:]
+        hplot[mask==0]=np.nan
+        hplot = np.ma.masked_invalid(hplot)
+        
+        fig = plt.figure()
+        # fig.patch.set_facecolor("None")
+        ax = plt.subplot(1, 1, 1, projection=ccrs.NorthPolarStereo())
+
+
+        # Limit the map to 65 degrees latitude and above.
+        ax.set_extent([-180, 180, 65, 90], crs=ccrs.PlateCarree())
+        
+        print(datatype)
+        if datatype == "A":
+            
+            Aplot = mask_data(A,mask)
+            
+            print("Aplot min/max:", np.nanmin(Aplot), np.nanmax(Aplot))
+            print("Aplot all masked?:", Aplot.mask.all())
+            print("Aplot shape:", Aplot.shape)
+            print("lon shape:", lon.shape, "lat shape:", lat.shape)
+
+            # Check the mask itself
+            print("mask unique values:", np.unique(mask))  
+            # Should be 0 and 1 — if it's all 0, everything gets masked
+            print("mask sum (number of valid cells):", mask.sum())
+            
+            print("lon range:", lon.min(), lon.max())
+            print("lat range:", lat.min(), lat.max())
+            
+            print(np.any(np.isnan(lon)), np.any(np.isinf(lon)))
+            print(np.any(np.isnan(Aplot)), np.any(np.isinf(lat)))
+            
+            print("Aplot shape:", Aplot.shape)
+            print("lon shape:", lon.shape)
+            
+            # ax.add_feature(cfeature.OCEAN, color="black", zorder=0)
+            cf = ax.pcolormesh(
+                lon,
+                lat,
+                Aplot[1:,1:],
+                norm=colors.Normalize(vmin=0.95, vmax=1),
+                cmap=cmocean.cm.ice,
+                transform=ccrs.PlateCarree(),
+                zorder=1,
+            )
+
+        # for thickness
+        elif datatype == "h":
+            hplot = mask_data(h, mask)
+            bot = 0
+            top = 1
+            
+            cf = ax.pcolormesh(
+                lon,
+                lat,
+                hplot[1:,1:],
+                cmap=plt.cm.inferno,
+                norm=colors.Normalize(vmin=bot, vmax=top),
+                transform=ccrs.PlateCarree(),
+                zorder=1,
+            )
+
+        # for temperature
+
+        # for deformation rates
+        elif datatype in ["shear"]:
+            
+            shearplot = mask_data(shear,mask)
+            ax.add_feature(cfeature.OCEAN, color="white", zorder=0)
+            cf = ax.pcolormesh(
+                lon,
+                lat,
+                shearplot[1:,1:],
+                # np.where(self.load(datatype="A") > 0.15, formated_data, np.NaN),
+                cmap=cmocean.cm.thermal,
+                norm=colors.Normalize(vmin=0, vmax=0.1),
+                transform=ccrs.PlateCarree(),
+                zorder=1,
+            )
+
+        elif datatype == "divergence":
+            divergenceplot = mask_data(divergence,mask)
+            ax.add_feature(cfeature.OCEAN, color="white", zorder=0)
+            cf = ax.pcolormesh(
+                lon,
+                lat,
+                divergenceplot[1:,1:],
+                # np.where(self.load(datatype="A") > 0.15, formated_data, np.NaN),
+                cmap=cmocean.cm.curl,
+                norm=colors.Normalize(vmin=-0.3, vmax=0.3),
+                transform=ccrs.PlateCarree(),
+                zorder=1,
+            )
+            
+        ax.add_feature(cfeature.LAND, zorder=3)
+        ax.coastlines(resolution="50m", zorder=4)
+        cbar = fig.colorbar(cf)
+        cbar.ax.set_ylabel(datatype, rotation=-90, va="bottom")
+        fig.savefig(figdir+expno+'/'+datatype+'_{}.png'.format(date))
+
+        # # for viscosity
+        # elif self.datatype == "viscosity":
+        #     print(formated_data.shape)
+        #     cf = ax.pcolormesh(
+        #         lon,
+        #         lat,
+        #         formated_data,
+        #         # np.where(self.load(datatype="A") > 0.15, formated_data, np.NaN),
+        #         cmap=cmocean.cm.amp,
+        #         transform=ccrs.PlateCarree(),
+        #         zorder=1,
+        #     )
+        
+
+    
+    
+
+
+
+
