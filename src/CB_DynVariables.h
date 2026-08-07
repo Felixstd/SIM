@@ -16,6 +16,7 @@
                 vn1      (0:nx+2,0:ny+2), &
                 un2      (0:nx+2,0:ny+2), &
                 vn2      (0:nx+2,0:ny+2), &
+                Pp_loc   (0:nx+2,0:ny+2), &
                 Pp       (0:nx+2,0:ny+2), &
                 Pt       (0:nx+2,0:ny+2), & 
                 P        (0:nx+2,0:ny+2), &
@@ -81,6 +82,7 @@
                 vn1,            & ! previous time level solution
                 un2,            & ! previous time level solution
                 vn2,            & ! previous time level solution
+                Pp_loc,         &
                 Pp,             & ! ice compressive strength
                 Pt,             & ! ice tensile strength
                 P,              & ! replacement pressure
