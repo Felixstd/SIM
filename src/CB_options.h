@@ -15,7 +15,8 @@
                 shear_test,     &
                 inclined,       &
                 dilatancy,      &
-                mu_phi
+                mu_phi,         &
+                nonlocal
 
       character(LEN=20)         &
                 BndyCond,       &
@@ -47,6 +48,7 @@
                 inclined,       & ! Inlcined domain
                 dilatancy,      & ! Dilatancy law or not 
                 mu_phi,         & ! Flavor of mu rheology. if true mu(I)-phi(I) if false mu(I)
+                nonlocal,       & ! Usage of the nonlocal ice strength
                 AirTemp,        & ! specified, MonthlyMean
                 OcnTemp,        & ! specified, MonthlyMean
                 Wind,           & ! specified, MonthlyMean
