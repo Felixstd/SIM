@@ -1,0 +1,68 @@
+&option_nml
+    Dynamic  = .true.
+    ThermoDyn  = .true.
+    linearization = 'Zhang'
+    regularization = 'capping'
+    ini_guess = 'previous time step'
+    adv_scheme = 'upwind'
+    Airtemp = 'MonthlyMean'
+    OcnTemp = 'calculated'
+    Wind = '6hours'
+    RampupWind = .false.
+    RampupForcing = .false.
+    Current = 'YearlyMean'
+    Periodic_x = 0
+    Periodic_y = 0
+    ideal = .false.
+    Rheology = 1
+    IMEX = 0
+    BDF = 0
+    visc_method = 2
+    solver = 1
+    BasalStress = .false.
+    uniaxial = .false.
+    shear_test = .false.
+    inclined = .false.
+    dilatancy = .false.
+    mu_phi    = .false.
+    nonlocal = .true.
+    step_water = .false.
+    Water_Col  = .false.
+    A2Phi       = .false.
+    devstrain = .false.
+    Phi_eq    = .false.
+    windtype      = 'constant'
+/
+
+&numerical_param_nml
+    Deltat    = 3600
+    gamma_nl = 1d-2
+    NLmax = 200     
+    OLmax = 500
+    Nsub  = 120  
+/
+
+&phys_param_nml
+    Pstar  = 27.5d3
+    C = 20.0
+    k1 = 8.0
+    k2 = 15d0
+    e_ratio = 2.0
+    rhoair   =  1.3d0      
+    rhoice   =  9d02               
+    rhowater =  1026d0 
+    Cdair = 1.2d-03
+    Cdwater = 5.5d-03
+    f = 1.46d-04
+    d_average = 1d3
+    mu_0      = 0.1
+    mu_infty  = 0.8
+    mu_b      = 10d0
+    c_phi     = 1
+    I_0       = 1d-3
+    Phi_0     = 1 
+    c_1       = 1d-02 
+    c_2       = 0.25
+    theta     = 0d0
+/
+
