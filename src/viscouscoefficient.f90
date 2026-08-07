@@ -670,6 +670,8 @@ subroutine ViscousCoeff_method2(utp,vtp)
 
                     P(i,j) = ((Pp(i,j) - Pt(i,j)) / denoT) * deno 
 
+                  !   zetaC(i,j) = min(Pp(i,j)/(deno+denomin), 2*10d8*Pp(i,j))
+
                  else
                         
                     print *, 'WRONG REGULARIZATION'
@@ -919,9 +921,9 @@ subroutine ViscousCoeff_method2(utp,vtp)
                  if ( regularization .eq. 'tanh' ) then
 
                     deno = max( deno, 1d-20 )
-                  !   etaB(i,j) = ell_2 * ( pnode/denomin ) &
-                  !        *(tanh( denomin*(1/deno)) )
-                    etaB(i,j) = 1d12
+                    etaB(i,j) = ell_2 * ( pnode/denomin ) &
+                         *(tanh( denomin*(1/deno)) )
+                  !   etaB(i,j) = 1d12
 
                  elseif ( regularization .eq. 'Kreysher' ) then
 
