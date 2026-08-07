@@ -105,29 +105,11 @@
 !------- Calc ice strength and part of b vector if IMEX=0 -----------------
 
          if ( IMEX .eq. 0 ) then
-            if ((Rheology < 3)) then
-               call Ice_strength()
-            
-            elseif (Rheology .eq. 4) then
-
-               ! if (A2Phi) then
-               !    call SIC_2_PHI()
-               ! endif
-
-               ! call shear_inv(un1, vn1)
-               call Ice_strength()
-               ! call inertial_number()
-               ! call angle_friction_mu()
-               
-               ! if (dilatancy) then
-               !    call divergence_muphi
-               ! endif
-
-
-               
-
+            call Ice_strength()
+            if (nonlocal) then 
+               call nonlocal_ice_strength
             endif
-
+            
             if (solver .le. 2) then ! Picard or JFNK
                call bvect_ind ! function of h ( not directly f(u) )
             endif

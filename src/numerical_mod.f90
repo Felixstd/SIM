@@ -9,6 +9,13 @@ MODULE numerical_VP
 
 END MODULE Numerical_VP
 
+MODULE numerical_CG
+
+  integer :: kmax
+  double precision :: gamma_cg
+
+END MODULE numerical_CG
+
 MODULE numerical_EVP
 
   IMPLICIT NONE
