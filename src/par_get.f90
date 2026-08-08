@@ -586,7 +586,7 @@ subroutine read_namelist
 ! print info of the run for the output txt file                                                                                        
 !-------------------------------------------------------------------------                                                      
  
-      print *,
+      print *, '**** RUN PARAMETERS ****'
       print *, 'Rheology      =   ', Rheology
       print *, 'Pstar         =   ', Pstar
       print *, 'linearization =   ', linearization
@@ -598,7 +598,7 @@ subroutine read_namelist
       print *, 'Wind          =   ', Wind
       print *, 'AirTemp       =   ', AirTemp
       print *, 'OcnTemp       =   ', OcnTemp
-      print *,
+      print *, '*******************************'
       print *, 'time step [s] =   ', Deltat
       print *, 'Resolution [m] =   ', Deltax
       print *, 'Basal', BasalStress
