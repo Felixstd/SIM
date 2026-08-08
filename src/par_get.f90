@@ -691,7 +691,7 @@ subroutine read_namelist
             enddo
          enddo
          print*,  'MASKC', maskC(1,ny+1)
-         write (filename,'("/storage/fstdenis/output_sim/mask.dat")') 
+         write (filename,'("./output/mask.dat")') 
          open (1, file = filename, status = 'unknown')
          do j = 0, ny+1               ! land mask                                                                
          write (1, *) ( maskC(i,j), i = 0, nx+1 )

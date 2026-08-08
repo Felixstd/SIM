@@ -267,47 +267,47 @@
       endif
 
       write (filename,&
-      '("/storage/fstdenis/output_sim/sigI",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+      '("./output/sigI",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
            year, month, day, hour, minute, second, k, expno
       open (12, file = filename, status = 'unknown')
 
       write (filename, &
-      '("/storage/fstdenis/output_sim/sigII",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+      '("./output/sigII",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
            year, month, day, hour, minute, second, k, expno
       open (13, file = filename, status = 'unknown')
 
       write (filename,&
-      '("/storage/fstdenis/output_sim/sigInorm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+      '("./output/sigInorm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
            year, month, day, hour, minute, second, k, expno
       open (14, file = filename, status = 'unknown')
 
       write (filename,&
-      '("/storage/fstdenis/output_sim/sigIInorm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+      '("./output/sigIInorm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
            year, month, day, hour, minute, second, k, expno
       open (15, file = filename, status = 'unknown')
 
       write (filename,&
-      '("/storage/fstdenis/output_sim/sig1norm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+      '("./output/sig1norm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
            year, month, day, hour, minute, second, k, expno
       open (16, file = filename, status = 'unknown')
 
       write (filename,&
-      '("/storage/fstdenis/output_sim/sig2norm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+      '("./output/sig2norm",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
            year, month, day, hour, minute, second, k, expno
       open (17, file = filename, status = 'unknown')
 
       write (filename,&
-      '("/storage/fstdenis/output_sim/div",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+      '("./output/div",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
            year, month, day, hour, minute, second, k, expno
       open (18, file = filename, status = 'unknown')
 
       write (filename,&
-      '("/storage/fstdenis/output_sim/shear",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+      '("./output/shear",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
            year, month, day, hour, minute, second, k, expno
       open (19, file = filename, status = 'unknown')
 
       write (filename,&
-      '("/storage/fstdenis/output_sim/zetaC",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
+      '("./output/zetaC",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,"_k",i4.4,".",i2.2)') &
            year, month, day, hour, minute, second, k, expno
       open (20, file = filename, status = 'unknown')
 
