@@ -1,5 +1,6 @@
 from glob import glob
-
+import platform
+import os
 # This file sets up the compilation environment for the sea ice model and its libraries.
 
 # Refer questions to 
@@ -38,7 +39,8 @@ include = Dir('#/include')
 libs = Dir('#/libs')
 FC = F90 = 'gfortran'
 
-env = Environment(LIBPATH=[libs],
+env = Environment(ENV=os.environ,
+                  LIBPATH=[libs],
                   FORTRANMODDIR=[include,], 
                   FORTRANMODDIRPREFIX='-J', 
                   F90PATH=[include,], 
@@ -66,11 +68,24 @@ if int(DEBUG):
 #           NetCDF4 Librairies
 # ---------------------------------------
 
-env.Append(LIBPATH='/usr/lib64')
-env.Append(LIBPATH='/usr/lib64/gfortran/modules')
-env.Append(F90PATH='/usr/include')
-env.Append(F90PATH='/usr/lib64/gfortran/modules')
+# env.Append(LIBPATH='/usr/lib64')
+# env.Append(LIBPATH='/usr/lib64/gfortran/modules')
+# env.Append(F90PATH='/usr/include')
+env.Append(LIBPATH='/opt/homebrew/opt')
+env.Append(LIBPATH='/opt/homebrew/opt/gfortran/modules')
+if platform.system() == 'Darwin':
+    # macOS via Homebrew
+    env.Append(F90PATH=['/opt/homebrew/opt/netcdf-fortran/include'])
+    env.Append(LIBPATH=['/opt/homebrew/opt/netcdf-fortran/lib',
+                         '/opt/homebrew/opt/netcdf/lib'])
+    env.Append(F90PATH=['/opt/homebrew/opt/hdf5/include'])
+    env.Append(LIBPATH=['/opt/homebrew/opt/hdf5/lib'])
+else:
+    # fjord / Linux
+    env.Append(F90PATH=['/usr/include', '/usr/lib64/gfortran/modules'])
+    env.Append(LIBPATH=['/usr/lib64', '/usr/lib64/gfortran/modules'])
 
+env.Append(LIBS=['netcdff', 'netcdf'])
 # ----------------------------------------
 #             Create Executables
 # ----------------------------------------
