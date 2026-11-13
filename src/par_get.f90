@@ -82,6 +82,7 @@
       pi        =  4d0 * datan(1d0)  ! pi
       theta_cor = datan(sin(phi*pi/180d0))*180d0/pi  ! Stress correction path angle if using generalized MEB
 
+! Mohr-Coulomb Teardrop rheology (rheology = 4)   
 
 !------------------------------------------------------------------------
 !     set run parameters (dynamic - thermodynamic - options - domain)
@@ -111,7 +112,7 @@
       BndyCond   = 'noslip'          ! noslip
       Periodic_x = 0		     ! 0:open, 1:periodic at lateral boundaries
       Periodic_y = 0		     ! 0:open, 1:periodic at lateral boundaries
-      Rheology   = 1                 ! ellipse = 1, triangle = 2, MEB = 3
+      Rheology   = 1                 ! ellipse = 1, triangle = 2, MEB = 3, MCTD = 4
       linearization = 'Zhang'        ! Tremblay, Zhang
       regularization = 'tanh'        ! tanh, Kreyscher, capping
       visc_method = 2                ! see viscousCoeff routine for details
@@ -465,7 +466,7 @@ subroutine read_namelist
       endif
 
       if ( Rheology .ne. 1 .and. Rheology .ne. 2 .and.                 &
-           Rheology .ne. 3) then
+           Rheology .ne. 3 .and. Rheology .ne. 4) then
          print *, 'Wrong Rheology chosen by user'
          stop
       endif
