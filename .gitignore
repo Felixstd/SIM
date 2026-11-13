@@ -35,12 +35,19 @@ zoupa
 
 # Output Folder
 output/*
+output
+output_postfiles
+
 
 ### SCons ###
 build/
 
 # Namelist
 namelistSIM
+namelist
+
+#input files
+input
 
 # Bin
 bin/*
@@ -54,4 +61,12 @@ config.log
 
 # .ipynb checkpoints
 .ipynb_checkpoints
+
+# vscode files 
+.vscode/*
+
+#python files
+*.pyc
+
+
 
