@@ -55,28 +55,29 @@
 
 subroutine ViscousCoefficient(utp,vtp)
  
-  implicit none
+   implicit none
 
-  include 'parameter.h'
-  include 'CB_options.h'
+   include 'parameter.h'
+   include 'CB_options.h'
   
   double precision utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
-  if (Rheology .eq. 3) then
-     call MEBcoeff
-  elseif (visc_method .eq. 1) then
-     call ViscousCoeff_method1(utp,vtp)
-  elseif (visc_method .eq. 2) then
-     call ViscousCoeff_method2(utp,vtp)
-  elseif (visc_method .eq. 3 .or. visc_method .eq. 4) then
-     call ViscousCoeff_method3_and_4(utp,vtp)
-  else
-     print *, 'Wrong setting of visc_method'
-     stop
-  endif
-
-  call etaB_at_open_boundaries
   
-  return
+   if (Rheology .eq. 3) then
+      call MEBcoeff
+   elseif (visc_method .eq. 1) then
+      call ViscousCoeff_method1(utp,vtp)
+   elseif (visc_method .eq. 2) then
+      call ViscousCoeff_method2(utp,vtp)
+   elseif (visc_method .eq. 3 .or. visc_method .eq. 4) then
+      call ViscousCoeff_method3_and_4(utp,vtp)
+   else
+      print *, 'Wrong setting of visc_method'
+      stop
+   endif  
+
+   call etaB_at_open_boundaries
+  
+   return
 end subroutine ViscousCoefficient
 
 !************************************************************************
