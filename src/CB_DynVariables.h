@@ -3,44 +3,47 @@
 !========================================================================
 
 
-      double precision                       &
-                h        (0:nx+2,0:ny+2),    &
-                A        (0:nx+2,0:ny+2),    &
-		hn1      (0:nx+2,0:ny+2),    &
-		An1      (0:nx+2,0:ny+2),    &
-                hn2      (0:nx+2,0:ny+2),    &
-                An2      (0:nx+2,0:ny+2),    & 
-                uice     (0:nx+2,0:ny+2), &
-                vice     (0:nx+2,0:ny+2), &
-                un1      (0:nx+2,0:ny+2), &
-                vn1      (0:nx+2,0:ny+2), &
-                un2      (0:nx+2,0:ny+2), &
-                vn2      (0:nx+2,0:ny+2), &
-                Pp       (0:nx+2,0:ny+2), &
-                Pt       (0:nx+2,0:ny+2), & 
-                P        (0:nx+2,0:ny+2), &
-                Pf       (0:nx+2,0:ny+2), &
-                etaC     (0:nx+2,0:ny+2), &
-                etaB     (0:nx+2,0:ny+2), &
-                zetaC    (0:nx+2,0:ny+2), &
-                etaCf    (0:nx+2,0:ny+2), &
-                etaBf    (0:nx+2,0:ny+2), &
-                zetaCf   (0:nx+2,0:ny+2), &
-                GammaMEB (0:nx+2,0:ny+2), &
-                GammaMEB_B (0:nx+2,0:ny+2), &
-                dam      (0:nx+2,0:ny+2), &
-                damB     (0:nx+2,0:ny+2), &
-                dam1     (0:nx+2,0:ny+2), &
-                damB1    (0:nx+2,0:ny+2), &
-                dfactor  (0:nx+2,0:ny+2), &
-                dfactorB (0:nx+2,0:ny+2), &
-                CoheC    (0:nx+2,0:ny+2), &
-                sigcC    (0:nx+2,0:ny+2), &
-                sigtC    (0:nx+2,0:ny+2), &
-                sigxy    (0:nx+2,0:ny+2), &
-                sigxyB   (0:nx+2,0:ny+2), &
-                sigxx    (0:nx+2,0:ny+2), &
-                sigyy    (0:nx+2,0:ny+2)
+      double precision                     &
+                h         (0:nx+2,0:ny+2), &
+                A         (0:nx+2,0:ny+2), &
+		hn1       (0:nx+2,0:ny+2), &
+		An1       (0:nx+2,0:ny+2), &
+                hn2       (0:nx+2,0:ny+2), &
+                An2       (0:nx+2,0:ny+2), & 
+                uice      (0:nx+2,0:ny+2), &
+                vice      (0:nx+2,0:ny+2), &
+                un1       (0:nx+2,0:ny+2), &
+                vn1       (0:nx+2,0:ny+2), &
+                un2       (0:nx+2,0:ny+2), &
+                vn2       (0:nx+2,0:ny+2), &
+                Pp        (0:nx+2,0:ny+2), &
+                Pt        (0:nx+2,0:ny+2), & 
+                P         (0:nx+2,0:ny+2), &
+                Pf        (0:nx+2,0:ny+2), &
+                etaC      (0:nx+2,0:ny+2), &
+                etaB      (0:nx+2,0:ny+2), &
+                zetaC     (0:nx+2,0:ny+2), &
+                etaCf     (0:nx+2,0:ny+2), &
+                etaBf     (0:nx+2,0:ny+2), &
+                zetaCf    (0:nx+2,0:ny+2), &
+                GammaMEB  (0:nx+2,0:ny+2), &
+                GammaMEB_B(0:nx+2,0:ny+2), &
+                dam       (0:nx+2,0:ny+2), &
+                damB      (0:nx+2,0:ny+2), &
+                dam1      (0:nx+2,0:ny+2), &
+                damB1     (0:nx+2,0:ny+2), &
+                dfactor   (0:nx+2,0:ny+2), &
+                dfactorB  (0:nx+2,0:ny+2), &
+                CoheC     (0:nx+2,0:ny+2), &
+                sigcC     (0:nx+2,0:ny+2), &
+                sigtC     (0:nx+2,0:ny+2), &
+                sigxy     (0:nx+2,0:ny+2), &
+                sigxyB    (0:nx+2,0:ny+2), &
+                sigxx     (0:nx+2,0:ny+2), &
+                sigyy     (0:nx+2,0:ny+2), &
+                phi_micro (0:nx+2,0:ny+2), &
+                delta_d   (0:nx+2,0:ny+2), &
+                dilat_coef(0:nx+2,0:ny+2)
 
 
       common/DynVariables/      &
@@ -80,7 +83,10 @@
                 sigxy,          & ! shear stress at center
                 sigxyB,         & ! shear stress at node
                 sigxx,          & ! normal stress at center
-                sigyy             ! normal stress at center
+                sigyy,          & ! normal stress at center
+                phi_micro,      &
+                delta_d,        &
+                dilat_coef
 
 
 
