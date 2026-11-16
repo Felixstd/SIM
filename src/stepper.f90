@@ -161,6 +161,13 @@
                   
                endif
 
+               if (Rheology .eq. 4 ) then 
+                  
+                  call micro_friction
+                  call dilatation_angle
+
+               endif 
+
                call ViscousCoefficient(uice,vice)
                call bvect (ul,vl,rhs) ! forms b(ul)
                call Funk(xtp,rhs,Fu)
