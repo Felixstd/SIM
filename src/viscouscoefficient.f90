@@ -90,7 +90,10 @@ end subroutine ViscousCoefficient
 !************************************************************************
     
 subroutine ViscousCoeff_method1(utp,vtp)
+
   use ellipse
+  use MC_teardrop
+
   implicit none
 
   include 'parameter.h'
@@ -102,9 +105,13 @@ subroutine ViscousCoeff_method1(utp,vtp)
   integer i, j, rheo, peri
 
   double precision dudx, dvdy, dudy, dvdx, deno, denoT, denomin
+  double precision eII, eI, sigI, l, phi_macro, mu
+  double precision gamma_over_d, gamma_over_d_2
+  double precision etamaxTD, zetamaxTD, zeta, eta, smallNbr
   double precision utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
 
   denomin = 2d-09 ! Hibler, 1979
+  smallNbr = 1e-20
   rheo = Rheology ! define local variable to speed up the code
   peri = Periodic_x + Periodic_y ! =1 if we have periodic conditions
 
@@ -253,7 +260,67 @@ subroutine ViscousCoeff_method1(utp,vtp)
               elseif ( rheo .eq. 2 ) then ! triangle, jfl p.1124
 
                  stop
-                   
+              elseif (rheo .eq. 4 ) then 
+
+                  ! computing some variables 
+
+                  ! Adding a small constant for numerical reasons, TBC
+                  gamma_over_d = gamma_kt/(dilat_coef(i,j)+1e-20)
+                  gamma_over_d_2 = gamma_over_d**2d0
+
+
+                  ! Computing shear 
+                  eII = sqrt(( dudx - dvdy )**2d0 &  
+                       + ( dudy + dvdx )**2d0 )
+
+                  ! Computing div 
+                  eI  = dudx + dvdy 
+
+                  l = eI/(eII+smallNbr)
+
+                  ! macro friction 
+                  phi_macro = phi_micro(i,j) + delta_d(i,j)
+                  mu = sin(phi_macro)
+                  
+
+                  ! Computing sigI (normalized)
+                  sigI = (-(6*(1+Tens)-2*gamma_over_d_2*(l**2)) &
+                     + 2*gamma_over_d*l*sqrt(gamma_over_d_2*(l**2) + 3*(1+Tens)))/9 + Tens
+                     
+                  ! print*, gamma_over_d
+                  sigI = min(sigI, alpha_reg*Tens)
+
+                  if (regularization .eq. 'smooth') then
+                     zeta = (sigI + cyc) * Pp(i,j) &
+                        / SIGN( SQRT(eI*eI+smallNbr**2d0), eI)
+
+
+                     eta = -(mu/(2*gamma_kt))*(sigI-Tens) * SQRT(1d0+sigI) * Pp(i,j) &
+                          / sqrt(( dudx - dvdy )**2d0 &  
+                       + ( dudy + dvdx )**2d0 + smallNbr**2d0)
+
+                  else
+                     zeta = (sigI + cyc) * Pp(i,j) &
+                        / SIGN( MAX( ABS(eI),1e-20 ), eI)
+
+                     eta = -(mu/gamma_kt)*(sigI-Tens) * SQRT(1d0+sigI) * Pp(i,j) &
+                          / MAX(eII,1e-20)
+                  
+                  endif
+                  
+
+                  etamaxTD = zetamax * min(eta &
+                    /(ABS(zeta) + 1e-20), 1d0)
+
+                  zetamaxTD = zetamax  * MIN(zeta /(ABS(eta) + 1e-20), 1d0 )
+
+                  
+                  zetaC(i,j) = min(zeta, zetamaxTD)
+                  etaC (i,j) = min( eta,  etamaxTD)
+                  P(i,j) = cyc * Pp(i,j)
+
+
+
               endif
                   
            endif
