@@ -21,7 +21,7 @@
       integer i, j
 
 
-      if ( Rheology .eq. 1 ) then
+      if ( Rheology .ne. 2) then
 
          do i = 1, nx
             do j = 1, ny
