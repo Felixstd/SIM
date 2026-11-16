@@ -21,6 +21,7 @@
 
         use ellipse
         use elastic
+        use MC_teardrop
         use ice_albedo
         use numerical_VP
         use numerical_EVP
@@ -83,6 +84,17 @@
       theta_cor = datan(sin(phi*pi/180d0))*180d0/pi  ! Stress correction path angle if using generalized MEB
 
 ! Mohr-Coulomb Teardrop rheology (rheology = 4)   
+      phi_prime  = 30d0 
+      delta_c    = 10d0
+      mu_0       = 0.2d0  ! quasi-static fricton coefficient 
+      mu_inf     = 0.9d0  !
+      I0         = 1e-3
+      gamma_kt   = 2d0*(1d0+Tens)*sqrt((1d0+Tens)/3d0)
+      cyc        = (2-Tens)/3
+      alpha_reg  = 0.05d0
+      zetamax    = 1e12
+      friction   = 'constant'
+      dilatation = 'constant'
 
 !------------------------------------------------------------------------
 !     set run parameters (dynamic - thermodynamic - options - domain)
@@ -362,6 +374,7 @@
 subroutine read_namelist
 
         use ellipse
+        use MC_teardrop
         use numerical_VP
         use numerical_EVP
         use solver_choice
@@ -387,14 +400,15 @@ subroutine read_namelist
            adv_scheme, AirTemp, OcnTemp, Wind, RampupWind,      &
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,            &
-           BasalStress
+           BasalStress, friction, dilatation
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub
 
       namelist /phys_param_nml/ &
            Pstar, C, e_ratio, k1, k2, rhoair, rhoice, rhowater, &
-           Cdair, Cdwater, f
+           Cdair, Cdwater, f, Tens, phi_prime, delta_c, mu_0, &
+           mu_inf, I0, alpha_reg
 
       filename = 'namelist'
       filenb = 10
@@ -438,6 +452,8 @@ subroutine read_namelist
       Cdw        =  rhowater * Cdwater
       Cda        =  rhoair * Cdair
       rhof       =  rhoice * f
+      gamma_kt   =  2d0*(1d0+Tens)*sqrt((1d0+Tens)/3d0)
+      cyc        = (2-Tens)/3
 
       end subroutine read_namelist
 
