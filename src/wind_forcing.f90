@@ -156,9 +156,14 @@
 
          do i = 1, nx+1
             do j = 1, ny+1
-               
-               uair(i,j) = rampfactor*wspeed
-               vair(i,j) = 0d0
+
+               if (uniaxial) then 
+                  uair(i,j) = 0d0
+                  vair(i,j) = -rampfactor*wspeed
+               else
+                  uair(i,j) = rampfactor*wspeed
+                  vair(i,j) = 0d0
+               endif
                
 !     call random_number(rdnumb)
 !               uair(i,j) = wm * (rdnumb - 0.5d0)
