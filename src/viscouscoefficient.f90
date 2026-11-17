@@ -105,7 +105,7 @@ subroutine ViscousCoeff_method1(utp,vtp)
   integer i, j, rheo, peri
 
   double precision dudx, dvdy, dudy, dvdx, deno, denoT, denomin
-  double precision eII, eI, sigI, l, phi_macro, mu
+  double precision eII, eI, x, l, phi_macro, mu
   double precision gamma_over_d, gamma_over_d_2
   double precision etamaxTD, zetamaxTD, zeta, eta, smallNbr
   double precision utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
@@ -284,26 +284,24 @@ subroutine ViscousCoeff_method1(utp,vtp)
                   
 
                   ! Computing sigI (normalized)
-                  sigI = (-(6*(1+Tens)-2*gamma_over_d_2*(l**2)) &
-                     + 2*gamma_over_d*l*sqrt(gamma_over_d_2*(l**2) + 3*(1+Tens)))/9 + Tens
-                     
+                  x = (-(6d0*(1+Tens)-2d0*gamma_over_d_2*(l**2d0)) &
+                     + 2d0*gamma_over_d*l*sqrt(gamma_over_d_2*(l**2d0) + 3d0*(1+Tens)))/9d0 + Tens
+                  
                   ! print*, gamma_over_d
-                  sigI = min(sigI, alpha_reg*Tens)
+                  x = min(x, alpha_reg*Tens)
 
                   if (regularization .eq. 'smooth') then
-                     zeta = (sigI + cyc) * Pp(i,j) &
+                     zeta = (x + cyc) * Pp(i,j) &
                         / SIGN( SQRT(eI*eI+smallNbr**2d0), eI)
 
-
-                     eta = -(mu/(2*gamma_kt))*(sigI-Tens) * SQRT(1d0+sigI) * Pp(i,j) &
-                          / sqrt(( dudx - dvdy )**2d0 &  
-                       + ( dudy + dvdx )**2d0 + smallNbr**2d0)
+                     eta = -(mu/(2*gamma_kt))*(x-Tens) * SQRT(1d0+x) * Pp(i,j) &
+                          / sqrt(eII*2d0 + smallNbr**2d0)
 
                   else
-                     zeta = (sigI + cyc) * Pp(i,j) &
+                     zeta = (x + cyc) * Pp(i,j) &
                         / SIGN( MAX( ABS(eI),1e-20 ), eI)
 
-                     eta = -(mu/gamma_kt)*(sigI-Tens) * SQRT(1d0+sigI) * Pp(i,j) &
+                     eta = -(mu/gamma_kt)*(x-Tens) * SQRT(1d0+x) * Pp(i,j) &
                           / MAX(eII,1e-20)
                   
                   endif
