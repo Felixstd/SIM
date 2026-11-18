@@ -231,6 +231,13 @@
                   
                endif
 
+               if (Rheology .eq. 4 ) then 
+                  
+                  call micro_friction
+                  call dilatation_angle
+
+               endif 
+
                if ( k .le. klinesearch ) then        ! if k .gt. klinesearch zeta,
                   call ViscousCoefficient(uice,vice) ! eta,Cw,Fu were already      
                   call bvect (uice,vice,rhs)         ! calc in linesearch at
