@@ -322,10 +322,8 @@ subroutine ViscousCoeff_method1(utp,vtp)
                   endif
                   
 
-                  etamaxTD = zetamax * min(eta &
-                    /(ABS(zeta) + 1e-20), 1d0)
-
-                  zetamaxTD = zetamax  * MIN(zeta /(ABS(eta) + 1e-20), 1d0 )
+                  etamaxTD  = zetamax * min(eta  / (ABS(zeta) + smallNbr), 1d0)
+                  zetamaxTD = zetamax * min(zeta / (ABS(eta) + smallNbr), 1d0 )
 
                   
                   zetaC(i,j) = min(zeta, zetamaxTD)
