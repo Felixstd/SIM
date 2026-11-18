@@ -107,7 +107,7 @@ subroutine ViscousCoeff_method1(utp,vtp)
   double precision dudx, dvdy, dudy, dvdx, deno, denoT, denomin
   double precision eII, eI, x, l, phi_macro, mu
   double precision gamma_over_d, gamma_over_d_2
-  double precision etamaxTD, zetamaxTD, zeta, eta, smallNbr
+  double precision etamaxTD, zetamaxTD, zeta, eta, smallNbr, etapr
   double precision utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
 
   denomin = 2d-09 ! Hibler, 1979
@@ -330,9 +330,20 @@ subroutine ViscousCoeff_method1(utp,vtp)
                   
                   zetaC(i,j) = min(zeta, zetamaxTD)
                   etaC (i,j) = min( eta,  etamaxTD)
-                  P(i,j) = cyc * Pp(i,j)
+                                         
+                  P(i,j) = ( Pp(i,j)*( 1d0 - repl_press )             &     
+                           + zetaC(i,j) * eI * repl_press             &         
+                           / SIGN(ABS(x+cyc) + smallNbr, x+cyc ) )    &                  
+                           * ( 1d0 - Tens )                                            
+                                                                         
+                      
+                  etapr = -(x-Tens) * (1d0 + x) * P(i,j)/(1-Tens)     &    
+                         * sqrt(eII**2d0 + smallNbr**2d0)   
 
+                  etapr = MIN( etapr, etamaxTD )    
 
+                  etaC(i,j) =  repl_press * etapr          &        
+                              + etaC(i,j) * ( 1d0 - repl_press )
 
               endif
                   
