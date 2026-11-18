@@ -310,7 +310,7 @@ subroutine ViscousCoeff_method1(utp,vtp)
                         / SIGN( SQRT(eI*eI+smallNbr**2d0), eI)
 
                      eta = -(mu/(2*gamma_kt))*(x-Tens) * SQRT(1d0+x) * Pp(i,j) &
-                          / sqrt(eII*2d0 + smallNbr**2d0)
+                          / sqrt(eII**2d0 + smallNbr**2d0)
 
                   else
                      zeta = (x + cyc) * Pp(i,j) &
