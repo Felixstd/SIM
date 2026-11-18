@@ -68,5 +68,7 @@ config.log
 #python files
 *.pyc
 
+.nsf*
+
 
 
