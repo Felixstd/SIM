@@ -146,6 +146,7 @@
       OcnTemp    = 'calculated'      ! MonthlyClim, specified,calculated
       calc_month_mean = .false.      ! to calc monthly mean fields
       runoff     = .false.
+      post_def   = .false.
         
 !------------------------------------------------------------------------
 !     Grid parameters: depending on resolution
@@ -402,7 +403,7 @@ subroutine read_namelist
            adv_scheme, AirTemp, OcnTemp, Wind, RampupWind,      &
            RampupForcing, Current, Periodic_x, Periodic_y,      &
            ideal, Rheology, IMEX, BDF, visc_method, solver,            &
-           BasalStress, friction, dilatation
+           BasalStress, friction, dilatation, post_def
 
       namelist /numerical_param_nml/ &
            Deltat, gamma_nl, NLmax, OLmax, Nsub

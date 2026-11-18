@@ -234,6 +234,8 @@ PROGRAM ice
          if (now_date .eq. post_date(k)) then
             write(*,*) k, ' -- Calling sea-ice_post'
             call sea_ice_post (now_date, expno)
+
+            if (post_def) call stress_strain(uice, vice, now_date, 9, expno)
             k = k + 1
          endif
 

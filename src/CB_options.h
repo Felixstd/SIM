@@ -10,7 +10,8 @@
                 RampupWind,     &
                 RampupForcing,  &
                 ideal,          &
-                runoff
+                runoff,         &
+                post_def
 
       character(LEN=20)         &
                 BndyCond,       &
@@ -55,7 +56,8 @@
                 BDF,            & ! 0: standard, 1: Backward diff formula (2nd order)
                 visc_method,    & ! choice of calc of visc coeff
                 startdate,      & ! starting date
-                enddate           ! end date
+                enddate,        &  ! end date
+                post_def
 
       common/options/           &
                 linearization,  & ! Tremblay, Zhang
