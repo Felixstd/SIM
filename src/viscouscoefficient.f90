@@ -291,9 +291,17 @@ subroutine ViscousCoeff_method1(utp,vtp)
 
                
                   ! Computing sigI (normalized)
-                  x = (-(6d0*(1+Tens)-2d0*gamma_over_d_2*(l**2d0)) &
-                     + 2d0*gamma_over_d*l*sqrt(gamma_over_d_2*(l**2d0) + 3d0*(1+Tens)))/9d0 + Tens
-                  
+
+                  if (l < -1d3) then 
+                     x = 3d0*(1d0+Tens)*(-1d0 + 0.125d0*(3d0*(1d0+Tens))/(gamma_over_d_2*(l**2d0)))
+                  else
+                     x = 2d0*gamma_over_d_2*(l**2d0) &
+                     + 2d0*gamma_over_d*l*sqrt(gamma_over_d_2*(l**2d0) + 3d0*(1d0+Tens))
+                  endif 
+
+                  x = (x - (6d0 * (1d0+Tens)))/9d0 + Tens
+
+      
                   ! print*, gamma_over_d
                   x = min(x, alpha_reg*Tens)
 
