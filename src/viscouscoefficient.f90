@@ -418,6 +418,7 @@ end subroutine ViscousCoeff_method1
 
 subroutine ViscousCoeff_method2(utp,vtp)
   use ellipse
+  use MC_teardrop
   implicit none
   
   include 'parameter.h'
@@ -430,9 +431,12 @@ subroutine ViscousCoeff_method2(utp,vtp)
 
   double precision dudx, dvdy, dudy, dvdx, deno, denoT, denomin, pnode
   double precision utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
+  double precision eII, eI, x, l, phi_macro, mu
+  double precision gamma_over_d, gamma_over_d_2
+  double precision etamaxTD, zetamaxTD, zeta, eta, smallNbr, etapr
   
   denomin = 2d-09 ! Hibler, 1979
-
+  smallNbr = 1e-20
   rheo = Rheology ! define local variable to speed up the code
   peri = Periodic_x + Periodic_y ! =1 if we have periodic conditions
 
@@ -582,6 +586,96 @@ subroutine ViscousCoeff_method2(utp,vtp)
               elseif ( rheo .eq. 2 ) then ! triangle, jfl p.1124
 
                  stop
+
+               elseif (rheo .eq. 4) then 
+                  
+                  if (non_normal .eq. 1) then 
+                     gamma_over_d = gamma_kt/(dilat_coef(i,j)+1e-20)
+
+                     phi_macro = phi_micro(i,j) + delta_d(i,j)
+                     mu = sin(phi_macro)
+
+                  else 
+
+                     gamma_over_d = 1d0
+                     mu = 1d0
+
+                  endif 
+
+                  gamma_over_d_2 = gamma_over_d**2d0
+
+                  ! gamm
+
+
+                  ! Computing shear 
+                  eII = sqrt(( dudx - dvdy )**2d0 &  
+                       + ( dudy + dvdx )**2d0 )
+
+                  ! Computing div 
+                  eI  = dudx + dvdy 
+
+                  l = eI/(eII+smallNbr)
+
+                  ! macro friction 
+                  phi_macro = phi_micro(i,j) + delta_d(i,j)
+                  ! mu = sin(phi_macro)
+                  mu = 1d0
+                  
+
+                  ! Computing sigI (normalized)
+
+                  if (l < -1d3) then 
+                     x = 3d0*(1d0+Tens)*(-1d0 + 0.125d0*(3d0*(1d0+Tens))/(gamma_over_d_2*(l**2d0)))
+                  else
+                     x = 2d0*gamma_over_d_2*(l**2d0) &
+                     + 2d0*gamma_over_d*l*sqrt(gamma_over_d_2*(l**2d0) + 3d0*(1d0+Tens))
+                  endif 
+
+                  x = (x - (6d0 * (1d0+Tens)))/9d0 + Tens
+
+      
+                  ! print*, gamma_over_d
+                  x = min(x, alpha_reg*Tens)
+
+                  if (regularization .eq. 'smooth') then
+                     zeta = (x + cyc) * Pp(i,j) &
+                        / SIGN( SQRT(eI*eI+smallNbr**2d0), eI)
+
+                     eta = -(mu/(2*gamma_kt))*(x-Tens) * SQRT(1d0+x) * Pp(i,j) &
+                          / sqrt(eII**2d0 + smallNbr**2d0)
+
+                  else
+                     zeta = (x + cyc) * Pp(i,j) &
+                        / SIGN( MAX( ABS(eI),1e-20 ), eI)
+
+                     eta = -(mu/gamma_kt)*(x-Tens) * SQRT(1d0+x) * Pp(i,j) &
+                          / MAX(eII,1e-20)
+                  
+                  endif
+                  
+
+                  etamaxTD  = zetamax * min(eta  / (ABS(zeta) + smallNbr), 1d0)
+                  zetamaxTD = zetamax * min(zeta / (ABS(eta) + smallNbr), 1d0 )
+
+                  
+                  zetaC(i,j) = min(zeta, zetamaxTD)
+                  etaC (i,j) = min( eta,  etamaxTD)
+
+                                         
+                  P(i,j) = ( Pp(i,j)*( 1d0 - repl_press )             &     
+                           + zetaC(i,j) * eI * repl_press             &         
+                           / SIGN(ABS(x+cyc) + smallNbr, x+cyc ) )    &                  
+                           * ( 1d0 - Tens )                                            
+                                                                         
+                      
+                  etapr = -(x-Tens) * (1d0 + x) * P(i,j)/(1-Tens)     &    
+                         * sqrt(eII**2d0 + smallNbr**2d0)   
+
+                  etapr = MIN( etapr, etamaxTD )    
+
+                  etaC(i,j) =  repl_press * etapr          &        
+                              + etaC(i,j) * ( 1d0 - repl_press )
+
                    
               endif
                   
@@ -838,6 +932,82 @@ subroutine ViscousCoeff_method2(utp,vtp)
               elseif ( rheo .eq. 2 ) then ! triangle, jfl p.1124
 
                  stop
+
+              elseif (rheo .eq. 4) then 
+                                                   ! computing some variables 
+
+                  ! Adding a small constant for numerical reasons, TBC
+                  ! gamma_over_d = gamma_kt/(dilat_coef(i,j)+1e-20)
+                  gamma_over_d = 1d0
+                  gamma_over_d_2 = gamma_over_d**2d0
+
+                  ! Computing shear 
+                  eII = sqrt(( dudx - dvdy )**2d0 &  
+                       + ( dudy + dvdx )**2d0 )
+
+                  ! Computing div 
+                  eI  = dudx + dvdy 
+
+                  l = eI/(eII+smallNbr)
+
+                  ! macro friction 
+                  phi_macro = phi_micro(i,j) + delta_d(i,j)
+                  ! mu = sin(phi_macro)
+                  mu = 1d0
+                  
+
+                  ! Computing sigI (normalized)
+
+                  if (l < -1d3) then 
+                     x = 3d0*(1d0+Tens)*(-1d0 + 0.125d0*(3d0*(1d0+Tens))/(gamma_over_d_2*(l**2d0)))
+                  else
+                     x = 2d0*gamma_over_d_2*(l**2d0) &
+                     + 2d0*gamma_over_d*l*sqrt(gamma_over_d_2*(l**2d0) + 3d0*(1d0+Tens))
+                  endif 
+
+                  x = (x - (6d0 * (1d0+Tens)))/9d0 + Tens
+
+      
+                  ! print*, gamma_over_d
+                  x = min(x, alpha_reg*Tens)
+
+                  if (regularization .eq. 'smooth') then
+                     zeta = (x + cyc) * pnode &
+                        / SIGN( SQRT(eI*eI+smallNbr**2d0), eI)
+
+                     eta = -(mu/(2*gamma_kt))*(x-Tens) * SQRT(1d0+x) * pnode &
+                          / sqrt(eII**2d0 + smallNbr**2d0)
+
+                  else
+                     zeta = (x + cyc) * pnode &
+                        / SIGN( MAX( ABS(eI),1e-20 ), eI)
+
+                     eta = -(mu/gamma_kt)*(x-Tens) * SQRT(1d0+x) * pnode &
+                          / MAX(eII,1e-20)
+                  
+                  endif
+                  
+
+                  etamaxTD  = zetamax * min(eta  / (ABS(zeta) + smallNbr), 1d0)
+                  zetamaxTD = zetamax * min(zeta / (ABS(eta) + smallNbr), 1d0 )
+
+
+                  etaB (i,j) = min( eta,  etamaxTD)
+
+                                         
+                  pnode = ( pnode*( 1d0 - repl_press )             &     
+                           + zetaC(i,j) * eI * repl_press             &         
+                           / SIGN(ABS(x+cyc) + smallNbr, x+cyc ) )    &                  
+                           * ( 1d0 - Tens )                                            
+                                                                         
+                      
+                  etapr = -(x-Tens) * (1d0 + x) * pnode/(1-Tens)     &    
+                         * sqrt(eII**2d0 + smallNbr**2d0)   
+
+                  etapr = MIN( etapr, etamaxTD )    
+
+                  etaB(i,j) =  repl_press * etapr          &        
+                              + etaB(i,j) * ( 1d0 - repl_press )
                    
               endif
               
