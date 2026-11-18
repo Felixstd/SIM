@@ -58,5 +58,7 @@ MODULE MC_teardrop
   DOUBLE PRECISION :: phi_prime
   DOUBLE PRECISION :: delta_c
   DOUBLE PRECISION :: zetamax
+  DOUBLE PRECISION :: repl_press
+  INTEGER :: non_normal
 
 END MODULE MC_teardrop

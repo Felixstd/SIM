@@ -93,6 +93,8 @@
       cyc        = (2-Tens)/3
       alpha_reg  = 0.05d0
       zetamax    = 1e12
+      repl_press = 0d0
+      non_normal = 1
       friction   = 'constant'
       dilatation = 'constant'
 
@@ -408,7 +410,7 @@ subroutine read_namelist
       namelist /phys_param_nml/ &
            Pstar, C, e_ratio, k1, k2, rhoair, rhoice, rhowater, &
            Cdair, Cdwater, f, Tens, phi_prime, delta_c, mu_0, &
-           mu_inf, I0, alpha_reg
+           mu_inf, I0, alpha_reg, repl_press, non_normal
 
       filename = 'namelist'
       filenb = 10
