@@ -265,9 +265,20 @@ subroutine ViscousCoeff_method1(utp,vtp)
                   ! computing some variables 
 
                   ! Adding a small constant for numerical reasons, TBC
-                  gamma_over_d = gamma_kt/(dilat_coef(i,j)+1e-20)
-                  gamma_over_d_2 = gamma_over_d**2d0
 
+                  if (non_normal .eq. 1) then 
+                     gamma_over_d = gamma_kt/(dilat_coef(i,j)+1e-20)
+                     phi_macro = phi_micro(i,j) + delta_d(i,j)
+                     mu = sin(phi_macro)
+
+                  else 
+
+                     gamma_over_d = 1d0
+                     mu = 1d0
+
+                  endif 
+                  
+                  gamma_over_d_2 = gamma_over_d**2d0
 
                   ! Computing shear 
                   eII = sqrt(( dudx - dvdy )**2d0 &  
@@ -278,11 +289,7 @@ subroutine ViscousCoeff_method1(utp,vtp)
 
                   l = eI/(eII+smallNbr)
 
-                  ! macro friction 
-                  phi_macro = phi_micro(i,j) + delta_d(i,j)
-                  mu = sin(phi_macro)
-                  
-
+               
                   ! Computing sigI (normalized)
                   x = (-(6d0*(1+Tens)-2d0*gamma_over_d_2*(l**2d0)) &
                      + 2d0*gamma_over_d*l*sqrt(gamma_over_d_2*(l**2d0) + 3d0*(1+Tens)))/9d0 + Tens
