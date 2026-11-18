@@ -63,6 +63,14 @@
               year, month, day, hour, minute, expno
          open (13, file = filename, status = 'unknown')
 
+         write (filename,'("output/eta",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, expno
+         open (14, file = filename, status = 'unknown')
+
+         write (filename,'("output/zeta",i4.4,"_",i2.2,"_",i2.2,"_",i2.2,"_",i2.2,".",i2.2)') &
+              year, month, day, hour, minute, expno
+         open (15, file = filename, status = 'unknown')
+
       endif
 
       if ( Thermodyn ) then
@@ -126,14 +134,14 @@
 !            write(17,20) ( uwatnd(i,j), i = 1, nx+1 )
          enddo
 
-         do j = 0, ny+1
-!            write(15,30) ( etaC(i,j), i = 0, nx+1 )
-!            write(38,30) ( zetaC(i,j), i = 0, nx+1 )
-         enddo
-
          do j = 1, ny+1
             write(13,10) ( vice(i,j), i = 1, nx )
 !            write(18,10) ( vwatnd(i,j), i = 1, nx )
+         enddo
+
+         do j = 0, ny+1
+           write(14,*) ( etaC(i,j), i = 0, nx+1 )
+           write(15,*) ( zetaC(i,j), i = 0, nx+1 )
          enddo
 
       endif
