@@ -431,6 +431,7 @@ subroutine ViscousCoeff_method2(utp,vtp)
 
   double precision dudx, dvdy, dudy, dvdx, deno, denoT, denomin, pnode
   double precision utp(0:nx+2,0:ny+2), vtp(0:nx+2,0:ny+2)
+  double precision dilat_coef_node, phi_micro_node, delta_d_node
   double precision eII, eI, x, l, phi_macro, mu
   double precision gamma_over_d, gamma_over_d_2
   double precision etamaxTD, zetamaxTD, zeta, eta, smallNbr, etapr
@@ -741,6 +742,19 @@ subroutine ViscousCoeff_method2(utp,vtp)
                      
                  pnode = ( Pp(i-1,j) + Pp(i,j) + Pp(i,j-1) + Pp(i-1,j-1) + & 
                            Pt(i-1,j) + Pt(i,j) + Pt(i,j-1) + Pt(i-1,j-1) ) / 4d0 
+
+                  if (rheo .eq. 4) then
+                  
+                     delta_d_node = (delta_d(i-1,j) + delta_d(i,j) + & 
+                                       delta_d(i,j-1) + delta_d(i-1,j-1)) / 4d0
+
+                     phi_micro_node = (phi_micro(i-1,j) + phi_micro(i,j) & 
+                                       + phi_micro(i,j-1) + phi_micro(i-1,j-1)) / 4d0
+
+                     dilat_coef_node = (dilat_coef(i-1,j) + dilat_coef(i,j) & 
+                                       + dilat_coef(i,j-1) + dilat_coef(i-1,j-1)) / 4d0
+
+                  endif
                      
               elseif (summaskC .eq. 3) then 
 
@@ -759,6 +773,20 @@ subroutine ViscousCoeff_method2(utp,vtp)
                     pnode = ( Pp(i,j) + Pp(i,j-1) + Pp(i-1,j-1) + & ! check ca 
                               Pt(i,j) + Pt(i,j-1) + Pt(i-1,j-1) ) / 3d0 ! check ca 
 
+
+                  if (rheo .eq. 4) then
+                  
+                     delta_d_node    = (  delta_d(i,j) & 
+                                       + delta_d(i,j-1) + delta_d(i-1,j-1)) / 3d0
+
+                     phi_micro_node  = (  phi_micro(i,j) & 
+                                       + phi_micro(i,j-1) + phi_micro(i-1,j-1)) / 3d0
+
+                     dilat_coef_node = ( dilat_coef(i,j) & 
+                                       + dilat_coef(i,j-1) + dilat_coef(i-1,j-1)) / 3d0
+
+                  endif
+
                  elseif (maskC(i,j) .eq. 0) then !case 3
 ! ox
 ! oo           
@@ -773,6 +801,20 @@ subroutine ViscousCoeff_method2(utp,vtp)
 
                     pnode = ( Pp(i-1,j) + Pp(i,j-1) + Pp(i-1,j-1) + & 
                               Pt(i-1,j) + Pt(i,j-1) + Pt(i-1,j-1) ) / 3d0
+
+
+                  if (rheo .eq. 4) then
+                  
+                     delta_d_node    = (  delta_d(i-1,j) & 
+                                       + delta_d(i,j-1) + delta_d(i-1,j-1)) / 3d0
+
+                     phi_micro_node  = (  phi_micro(i-1,j) & 
+                                       + phi_micro(i,j-1) + phi_micro(i-1,j-1)) / 3d0
+
+                     dilat_coef_node = ( dilat_coef(i-1,j) & 
+                                       + dilat_coef(i,j-1) + dilat_coef(i-1,j-1)) / 3d0
+
+                  endif
 
                  elseif (maskC(i,j-1) .eq. 0) then !case 5
 ! oo                                                          
@@ -789,6 +831,19 @@ subroutine ViscousCoeff_method2(utp,vtp)
                     pnode = ( Pp(i-1,j) + Pp(i,j) + Pp(i-1,j-1) + &
                               Pt(i-1,j) + Pt(i,j) + Pt(i-1,j-1) ) / 3d0
 
+                    if (rheo .eq. 4) then
+                  
+                        delta_d_node    = (  delta_d(i-1,j) & 
+                                          + delta_d(i,j) + delta_d(i-1,j-1)) / 3d0
+
+                        phi_micro_node  = (  phi_micro(i-1,j) & 
+                                          + phi_micro(i,j) + phi_micro(i-1,j-1)) / 3d0
+
+                        dilat_coef_node = ( dilat_coef(i-1,j) & 
+                                          + dilat_coef(i,j) + dilat_coef(i-1,j-1)) / 3d0
+
+                  endif
+
                  elseif (maskC(i-1,j-1) .eq. 0) then !case 4
 ! oo                                                            
 ! xo      
@@ -803,6 +858,21 @@ subroutine ViscousCoeff_method2(utp,vtp)
 
                     pnode = ( Pp(i-1,j) + Pp(i,j) + Pp(i,j-1) + &
                               Pt(i-1,j) + Pt(i,j) + Pt(i,j-1) ) / 3d0
+
+                    if (rheo .eq. 4) then
+                  
+                        delta_d_node    = (  delta_d(i-1,j) & 
+                                          + delta_d(i,j) + delta_d(i,j-1)) / 3d0
+
+                        phi_micro_node  = (  phi_micro(i-1,j) & 
+                                          + phi_micro(i,j) + phi_micro(i,j-1)) / 3d0
+
+                        dilat_coef_node = ( dilat_coef(i-1,j) & 
+                                          + dilat_coef(i,j) + dilat_coef(i,j-1)) / 3d0
+
+                  endif
+
+
                  else
 
                     print *, 'wowowo1'
@@ -826,6 +896,17 @@ subroutine ViscousCoeff_method2(utp,vtp)
                     pnode = ( Pp(i,j) + Pp(i,j-1) + &
                               Pt(i,j) + Pt(i,j-1) )/2d0
 
+                    if (rheo .eq. 4) then
+                  
+                        delta_d_node    = ( delta_d(i,j) + delta_d(i,j-1)) / 2d0
+
+                        phi_micro_node  = (phi_micro(i,j) + phi_micro(i,j-1)) / 2d0
+
+                        dilat_coef_node = (dilat_coef(i,j) + dilat_coef(i,j-1)) / 2d0
+
+                    endif
+
+
                  elseif(maskC(i,j) .eq. 0 .and. & !case 6
                       maskC(i,j-1) .eq. 0) then
 ! ox
@@ -840,6 +921,16 @@ subroutine ViscousCoeff_method2(utp,vtp)
                     pnode = ( Pp(i-1,j) + Pp(i-1,j-1) + &
                               Pt(i-1,j) + Pt(i-1,j-1) )/2d0
 
+                    if (rheo .eq. 4) then
+                  
+                        delta_d_node    = ( delta_d(i-1,j) + delta_d(i-1,j-1)) / 2d0
+
+                        phi_micro_node  = (phi_micro(i-1,j) + phi_micro(i-1,j-1)) / 2d0
+
+                        dilat_coef_node = (dilat_coef(i-1,j) + dilat_coef(i-1,j-1)) / 2d0
+
+                    endif
+
                  elseif(maskC(i-1,j) .eq. 0 .and. & !case 8           
                       maskC(i,j) .eq. 0) then
 ! xx
@@ -851,7 +942,17 @@ subroutine ViscousCoeff_method2(utp,vtp)
                          ( vtp(i-1,j-2) + vtp(i,j-2) ) * maskB(i,j-2)/4d0 ) / Deltax
                     
                     pnode = ( Pp(i-1,j-1) + Pp(i,j-1) + &
-			      Pt(i-1,j-1) + Pt(i,j-1) )/2d0
+			                  Pt(i-1,j-1) + Pt(i,j-1) )/2d0
+
+                     if (rheo .eq. 4) then
+                  
+                        delta_d_node    = ( delta_d(i,j-1) + delta_d(i-1,j-1)) / 2d0
+
+                        phi_micro_node  = (phi_micro(i,j-1) + phi_micro(i-1,j-1)) / 2d0
+
+                        dilat_coef_node = (dilat_coef(i,j-1) + dilat_coef(i-1,j-1)) / 2d0
+
+                    endif
 
                  elseif(maskC(i,j-1) .eq. 0 .and. & !case 9
                       maskC(i-1,j-1) .eq. 0) then
@@ -864,6 +965,16 @@ subroutine ViscousCoeff_method2(utp,vtp)
                          ( vtp(i-1,j+2) + vtp(i,j+2) ) * maskB(i,j+2)/4d0 ) / Deltax
                         
                     pnode = ( Pp(i-1,j) + Pp(i,j) + Pt(i-1,j) + Pt(i,j)) / 2d0
+
+                    if (rheo .eq. 4) then
+                  
+                        delta_d_node    = ( delta_d(i,j) + delta_d(i-1,j)) / 2d0
+
+                        phi_micro_node  = (phi_micro(i,j) + phi_micro(i-1,j)) / 2d0
+
+                        dilat_coef_node = (dilat_coef(i,j) + dilat_coef(i-1,j)) / 2d0
+
+                    endif
 
                  elseif(maskC(i-1,j) .eq. 0 .and. & !case 15
                       maskC(i,j-1) .eq. 0) then
