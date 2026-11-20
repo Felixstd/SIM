@@ -616,12 +616,6 @@ subroutine ViscousCoeff_method2(utp,vtp)
 
                   l = eI/(eII+smallNbr)
 
-                  ! macro friction 
-                  phi_macro = phi_micro(i,j) + delta_d(i,j)
-                  ! mu = sin(phi_macro)
-                  mu = 1d0
-                  
-
                   ! Computing sigI (normalized)
 
                   if (l < -1d3) then 
