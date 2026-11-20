@@ -641,7 +641,7 @@ subroutine ViscousCoeff_method2(utp,vtp)
                      zeta = (x + cyc) * Pp(i,j) &
                         / SIGN( SQRT(eI*eI+smallNbr**2d0), eI)
 
-                     eta = -(mu/(2*gamma_kt))*(x-Tens) * SQRT(1d0+x) * Pp(i,j) &
+                     eta = -(mu/(gamma_kt))*(x-Tens) * SQRT(1d0+x) * Pp(i,j) &
                           / sqrt(eII**2d0 + smallNbr**2d0)
 
                   else
@@ -668,8 +668,8 @@ subroutine ViscousCoeff_method2(utp,vtp)
                            * ( 1d0 - Tens )                                            
                                                                          
                       
-                  etapr = -(x-Tens) * (1d0 + x) * P(i,j)/(1-Tens)     &    
-                         * sqrt(eII**2d0 + smallNbr**2d0)   
+                  etapr = -(mu/gamma_kt)*(x-Tens) * sqrt(1d0 + x) * P(i,j)/(1-Tens)     &    
+                         / sqrt(eII**2d0 + smallNbr**2d0)   
 
                   etapr = MIN( etapr, etamaxTD )    
 
@@ -1006,8 +1006,8 @@ subroutine ViscousCoeff_method2(utp,vtp)
                            * ( 1d0 - Tens )                                            
                                                                          
                       
-                  etapr = -(x-Tens) * (1d0 + x) * pnode/(1-Tens)     &    
-                         * sqrt(eII**2d0 + smallNbr**2d0)   
+                  etapr = -(mu/gamma_kt)*(x-Tens) * sqrt(1d0 + x) * pnode/(1-Tens)     &    
+                         / sqrt(eII**2d0 + smallNbr**2d0)   
 
                   etapr = MIN( etapr, etamaxTD )    
 
